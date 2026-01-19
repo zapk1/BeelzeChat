@@ -2606,6 +2606,11 @@
                     });
                 }
             });
+            // Hide loading overlay after initialization
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }, 1500);
+        }
 
             
 
