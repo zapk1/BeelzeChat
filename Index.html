@@ -2357,3 +2357,249 @@
         </div>
     </div>
         
+<!-- User Profile Modal -->
+    <div id="userProfileModal" class="modal-overlay" onclick="if(event.target===this) closeUserProfile()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">User Profile</h2>
+                <button class="close-btn" onclick="closeUserProfile()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="profile-info">
+                <div class="profile-avatar-large" id="userProfileAvatar">U</div>
+                <div class="profile-name" id="userProfileName">User Name</div>
+                <div class="profile-identifier" id="userProfileIdentifier">user@example.com</div>
+            </div>
+            <div class="profile-actions">
+                <button class="action-btn chat-btn" onclick="startChatFromProfile()">
+                    <i data-lucide="message-circle"></i>
+                    Send Message
+                </button>
+                <button class="action-btn block-btn" id="blockBtn" onclick="toggleBlock()">
+                    <i data-lucide="ban"></i>
+                    <span id="blockBtnText">Block User</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div id="createPostModal" class="modal-overlay" onclick="if(event.target===this) closeCreatePost()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Post</h2>
+                <button class="close-btn" onclick="closeCreatePost()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form class="create-post-form" onsubmit="handleCreatePost(event)">
+                <textarea class="post-textarea" id="postText" placeholder="What's on your mind?"></textarea>
+                
+                <div id="postImagesPreview" class="post-images-preview"></div>
+                
+                <input type="file" id="postImagesInput" class="file-input" accept="image/*,video/*" multiple onchange="handlePostImagesSelect(event)">
+                <label for="postImagesInput" class="upload-btn">
+                    <i data-lucide="image"></i>
+                    Add Photos/Videos (Max 5 images or 1 video)
+                </label>
+
+                <div class="post-options">
+                    <div class="post-option">
+                        <div class="option-label">
+                            <i data-lucide="message-square"></i>
+                            Allow Comments
+                        </div>
+                        <div class="toggle-switch active" id="commentsToggle" onclick="toggleComments()"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="send"></i>
+                    Post
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Group Modal -->
+    <div id="createGroupModal" class="modal-overlay" onclick="if(event.target===this) closeCreateGroup()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Group</h2>
+                <button class="close-btn" onclick="closeCreateGroup()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form class="create-post-form" onsubmit="handleCreateGroup(event)">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i data-lucide="users"></i>
+                        Group Name
+                    </label>
+                    <input type="text" class="form-input" id="groupName" placeholder="Enter group name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i data-lucide="user-plus"></i>
+                        Select Members
+                    </label>
+                    <div id="groupMembersPreview" class="group-members"></div>
+                    <div id="groupUsersList" style="max-height: 300px; overflow-y: auto;"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="check"></i>
+                    Create Group
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Switcher Modal -->
+    <div id="accountSwitcherModal" class="modal-overlay" onclick="if(event.target===this) closeAccountSwitcher()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Switch Account</h2>
+                <button class="close-btn" onclick="closeAccountSwitcher()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="account-list" id="accountList"></div>
+            <button class="btn btn-primary mt-2" onclick="addNewAccount()">
+                <i data-lucide="user-plus"></i>
+                Add Account
+            </button>
+        </div>
+    </div>
+
+    <!-- Image Viewer -->
+    <div id="imageViewer" class="image-viewer">
+        <button class="viewer-close" onclick="closeImageViewer()">
+            <i data-lucide="x"></i>
+        </button>
+        <img id="viewerImage" class="viewer-image" src="" alt="Full view">
+        <button class="viewer-download" onclick="downloadImage()">
+            <i data-lucide="download"></i>
+            Download
+        </button>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="contextMenu" class="context-menu">
+        <div class="context-menu-item" onclick="replyToMessage()">
+            <i data-lucide="reply"></i>
+            Reply
+        </div>
+        <div class="context-menu-item danger" onclick="deleteMessage()">
+            <i data-lucide="trash-2"></i>
+            Delete
+        </div>
+    </div>
+
+    <!-- Firebase & Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            databaseURL: "https://streamx-a4099-default-rtdb.firebaseio.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Global State
+        let currentUser = null;
+        let currentChatId = null;
+        let currentChatUser = null;
+        let allUsers = {};
+        let selectedPostImages = [];
+        let replyingTo = null;
+        let selectedGroupMembers = [];
+        let messageContextTarget = null;
+        let longPressTimer = null;
+        let currentViewedUserId = null;
+
+        // Local Storage for Quick Message Display
+        const localMessages = {};
+
+        // Initialize 20 default users and 30 default posts
+        function initializeDefaults() {
+            const defaultUsers = [
+                { id: 'sarah_wilson', name: 'Sarah Wilson', identifier: '+1234567890', password: 'demo123', resetCode: '123456', bio: 'Travel enthusiast | Coffee lover ☕' },
+                { id: 'mike_johnson', name: 'Mike Johnson', identifier: 'mike@example.com', password: 'demo123', resetCode: '234567', bio: 'Tech geek | Gamer 🎮' },
+                { id: 'emma_davis', name: 'Emma Davis', identifier: '+1987654321', password: 'demo123', resetCode: '345678', bio: 'Photographer 📸 | Nature lover 🌿' },
+                { id: 'alex_brown', name: 'Alex Brown', identifier: 'alex@example.com', password: 'demo123', resetCode: '456789', bio: 'Fitness coach | Healthy lifestyle 💪' },
+                { id: 'jessica_lee', name: 'Jessica Lee', identifier: '+1555123456', password: 'demo123', resetCode: '567890', bio: 'Artist 🎨 | Creative soul ✨' },
+                { id: 'david_martinez', name: 'David Martinez', identifier: '+1444555666', password: 'demo123', resetCode: '678901', bio: 'Chef | Food enthusiast 🍳' },
+                { id: 'olivia_garcia', name: 'Olivia Garcia', identifier: 'olivia@example.com', password: 'demo123', resetCode: '789012', bio: 'Fashion blogger | Style icon 👗' },
+                { id: 'james_rodriguez', name: 'James Rodriguez', identifier: '+1333444555', password: 'demo123', resetCode: '890123', bio: 'Developer | Code ninja 💻' },
+                { id: 'sophia_miller', name: 'Sophia Miller', identifier: 'sophia@example.com', password: 'demo123', resetCode: '901234', bio: 'Yoga instructor | Mindfulness 🧘' },
+                { id: 'daniel_anderson', name: 'Daniel Anderson', identifier: '+1222333444', password: 'demo123', resetCode: '012345', bio: 'Musician | Guitar player 🎸' },
+                { id: 'mia_taylor', name: 'Mia Taylor', identifier: 'mia@example.com', password: 'demo123', resetCode: '112233', bio: 'Writer | Book lover 📚' },
+                { id: 'ryan_thomas', name: 'Ryan Thomas', identifier: '+1111222333', password: 'demo123', resetCode: '223344', bio: 'Entrepreneur | Startup founder 🚀' },
+                { id: 'isabella_jackson', name: 'Isabella Jackson', identifier: 'isabella@example.com', password: 'demo123', resetCode: '334455', bio: 'Marketing specialist | Brand expert 📊' },
+                { id: 'ethan_white', name: 'Ethan White', identifier: '+1999888777', password: 'demo123', resetCode: '445566', bio: 'Cyclist | Adventure seeker 🚴' },
+                { id: 'ava_harris', name: 'Ava Harris', identifier: 'ava@example.com', password: 'demo123', resetCode: '556677', bio: 'Interior designer | Home decor 🏡' },
+                { id: 'noah_martin', name: 'Noah Martin', identifier: '+1888777666', password: 'demo123', resetCode: '667788', bio: 'Photographer | Street art 📷' },
+                { id: 'charlotte_thompson', name: 'Charlotte Thompson', identifier: 'charlotte@example.com', password: 'demo123', resetCode: '778899', bio: 'Dancer | Ballet instructor 💃' },
+                { id: 'liam_moore', name: 'Liam Moore', identifier: '+1777666555', password: 'demo123', resetCode: '889900', bio: 'Film director | Cinema lover 🎬' },
+                { id: 'amelia_clark', name: 'Amelia Clark', identifier: 'amelia@example.com', password: 'demo123', resetCode: '990011', bio: 'Nurse | Healthcare hero 🏥' },
+                { id: 'mason_lewis', name: 'Mason Lewis', identifier: '+1666555444', password: 'demo123', resetCode: '001122', bio: 'Architect | Building dreams 🏗️' }
+            ];
+
+            defaultUsers.forEach(user => {
+                db.ref('users/' + user.id).once('value', snapshot => {
+                    if (!snapshot.exists()) {
+                        db.ref('users/' + user.id).set({
+                            name: user.name,
+                            identifier: user.identifier,
+                            password: user.password,
+                            resetCode: user.resetCode,
+                            bio: user.bio,
+                            profilePic: null,
+                            createdAt: Date.now(),
+                            online: Math.random() > 0.5,
+                            blockedUsers: []
+                        });
+                    }
+                });
+            });
+
+            // Create 30 default posts
+            const defaultPosts = [
+                { userId: 'sarah_wilson', text: 'Just finished an amazing hike! The view was absolutely breathtaking 🏔️✨', allowComments: true },
+                { userId: 'mike_johnson', text: 'New gaming setup complete! Ready for some epic sessions 🎮', allowComments: true },
+                { userId: 'emma_davis', text: 'Golden hour shots from today\'s photoshoot. Mother nature never disappoints! 📸🌅', allowComments: true },
+                { userId: 'alex_brown', text: 'Morning workout done! Remember, your body can do anything, it\'s your mind you need to convince 💪', allowComments: true },
+                { userId: 'jessica_lee', text: 'Finished this painting today. Art is the way I express my soul ✨🎨', allowComments: true },
+                { userId: 'david_martinez', text: 'Experimenting with new recipes in the kitchen today! Food is love made edible 🍳❤️', allowComments: true },
+                { userId: 'olivia_garcia', text: 'New fashion collection dropping soon! Stay tuned for some amazing styles 👗✨', allowComments: true },
+                { userId: 'james_rodriguez', text: 'Just deployed a new feature to production. The feeling of seeing your code come to life 💻🚀', allowComments: true },
+                { userId: 'sophia_miller', text: 'Morning meditation session complete. Peace begins with a smile 🧘‍♀️☮️', allowComments: true },
+                { userId: 'daniel_anderson', text: 'Recording new tracks in the studio. Music is the universal language 🎸🎵', allowComments: true },
+                { userId: 'mia_taylor', text: 'Just finished writing a new chapter. Every story deserves to be told 📚✍️', allowComments: true },
+                { userId: 'ryan_thomas', text: 'Exciting pitch meeting today! Building the future one idea at a time 🚀💡', allowComments: true },
+                { userId: 'isabella_jackson', text: 'Launched a successful campaign today! Marketing is all about connecting with people 📊', allowComments: true },
+                { userId: 'ethan_white', text: '50km bike ride completed! The journey is the reward 🚴‍♂️', allowComments: true },
+                { userId: 'ava_harris', text: 'New home makeover project finished! Your home should tell your story 🏡', allowComments: true },
+                { userId: 'noah_martin', text: 'Captured some incredible street art today. Every wall tells a story 📷', allowComments: true },
+                { userId: 'charlotte_thompson', text: 'Dance rehearsal was intense today! Movement is poetry in motion 💃', allowComments: true },
+                { userId: 'liam_moore', text: 'Wrapped up filming today. Making movies is creating magic 🎬', allowComments: true },
+                { userId: 'amelia_clark', text: 'Another day of making a difference in people\'s lives. Healthcare heroes unite! 🏥', allowComments: true },
+                { userId: 'mason_lewis', text: 'New architectural design approved! Buildings shape our world 🏗️', allowComments: true },
+                { userId: 'sarah_wilson', text: 'Coffee and sunset views - the perfect end to a perfect day ☕🌅', allowComments: true },
+                { userId: 'mike_johnson', text: 'Just hit level 100 in my favorite game! Gaming is my passion 🎮🏆', allowComments: true },
+                { userId: 'emma_davis', text: 'Nature photography is my therapy. Every sunrise is a new beginning 🌄', allowComments: true },
+                { userId: 'alex_brown', text: 'Leg day complete! No pain, no gain 💪🔥', allowComments: true },
+                { userId: 'jessica_lee', text: 'Art exhibition this weekend! Come see my latest work 🎨', allowComments: true },
+                { userId: 'david_martinez', text: 'Homemade pasta from scratch. Cooking is love in edible form 🍝', allowComments: true },
+                { userId: 'olivia_garcia', text: 'Fashion week was incredible! So much inspiration 👗✨', allowComments: true },
+                { userId: 'james_rodriguez', text: 'Open source contribution accepted! Love this community 💻❤️', allowComments: true },
+                { userId: 'sophia_miller', text: 'Yoga retreat this weekend. Find your inner peace 🧘‍♀️', allowComments: true },
+                { userId: 'daniel_anderson', text: 'Live concert tonight! Music brings us together 🎸🎵', allowComments: true }
+            ];
