@@ -1959,5 +1959,230 @@
         }
 
         
+@keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #94a3b8;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .auth-container {
+                padding: 32px 24px;
+            }
+
+            .app-title {
+                font-size: 32px;
+            }
+
+            .header-title {
+                font-size: 22px;
+            }
+
+            .nav-item {
+                padding: 12px 20px;
+            }
+
+            .nav-item span {
+                font-size: 11px;
+            }
+
+            .post-image, .post-video {
+                min-width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        /* Utilities */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-2 {
+            margin-top: 8px;
+        }
+
+        .mb-2 {
+            margin-bottom: 8px;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #06b6d4;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading StreamXChat...</div>
+    </div>
+
+    <!-- Authentication Screen -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-container">
+            <div class="logo-container">
+                <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/696781b5cd24aaa6f7244a06/b681b950d_Screenshot_20251203_143408_Chrome.jpg" alt="StreamXChat Logo" class="app-logo">
+                <div class="app-title">StreamXChat</div>
+                <div class="auth-subtitle">Free messaging for everyone</div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i data-lucide="user"></i>
+                        Phone or Email
+                    </label>
+                    <input type="text" class="form-input" id="loginIdentifier" placeholder="+1234567890 or email@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <i data-lucide="lock"></i>
+                        Password
+                    </label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="log-in"></i>
+                    Sign In
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="showForgotPassword()">
+                    <i data-lucide="key"></i>
+                    Forgot Password?
+                </button>
+                <div id="loginError" class="error-message"></div>
+                <div class="auth-toggle">
+                    Don't have an account? <a onclick="showSignup()">Sign Up</a>
+                </div>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signupForm" class="hidden" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i data-lucide="user-plus"></i>
+                        Full Name
+                    </label>
+                    <input type="text" class="form-input" id="signupName" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <i data-lucide="mail"></i>
+                        Phone or Email
+                    </label>
+                    <input type="text" class="form-input" id="signupIdentifier" placeholder="+1234567890 or email@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <i data-lucide="shield"></i>
+                        Password
+                    </label>
+                    <input type="password" class="form-input" id="signupPassword" placeholder="Create a strong password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="user-check"></i>
+                    Create Account
+                </button>
+                <div id="signupError" class="error-message"></div>
+                <div id="signupSuccess" class="success-message"></div>
+                <div class="auth-toggle">
+                    Already have an account? <a onclick="showLogin()">Sign In</a>
+                </div>
+            </form>
+
+            <!-- Forgot Password Form -->
+            <form id="forgotForm" class="hidden" onsubmit="handleResetPassword(event)">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i data-lucide="user"></i>
+                        Phone or Email
+                    </label>
+                    <input type="text" class="form-input" id="forgotIdentifier" placeholder="+1234567890 or email@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <i data-lucide="hash"></i>
+                        6-Digit Reset Code
+                    </label>
+                    <input type="text" class="form-input" id="resetCode" placeholder="Enter your 6-digit code" maxlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <i data-lucide="lock"></i>
+                        New Password
+                    </label>
+                    <input type="password" class="form-input" id="newPassword" placeholder="Enter new password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="check-circle"></i>
+                    Reset Password
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="showLogin()">
+                    <i data-lucide="arrow-left"></i>
+                    Back to Login
+                </button>
+                <div id="resetError" class="error-message"></div>
+                <div id="resetSuccess" class="success-message"></div>
+            </form>
+        </div>
+    </div>
         
