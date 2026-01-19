@@ -2603,3 +2603,469 @@
                 { userId: 'sophia_miller', text: 'Yoga retreat this weekend. Find your inner peace 🧘‍♀️', allowComments: true },
                 { userId: 'daniel_anderson', text: 'Live concert tonight! Music brings us together 🎸🎵', allowComments: true }
             ];
+
+        db.ref('posts').once('value', snapshot => {
+                const existingPosts = snapshot.val() || {};
+                if (Object.keys(existingPosts).length < 30) {
+                    defaultPosts.forEach((post, index) => {
+                        const postRef = db.ref('posts').push();
+                        const hoursAgo = index * 2;
+                        postRef.set({
+                            ...post,
+                            id: postRef.key,
+                            images: [],
+                            timestamp: Date.now() - (hoursAgo * 3600000),
+                            views: Math.floor(Math.random() * 100) + 10,
+                            targetViews: Math.floor(Math.random() * (67000 - 25) + 25),
+                            likes: 0,
+                            likedBy: [],
+                            comments: []
+                        });
+                    });
+                }
+            });
+
+            // Hide loading overlay after initialization
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }, 1500);
+        }
+
+        // Auth Functions
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('forgotForm').classList.add('hidden');
+        }
+
+        function showSignup() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.remove('hidden');
+            document.getElementById('forgotForm').classList.add('hidden');
+        }
+
+        function showForgotPassword() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('forgotForm').classList.remove('hidden');
+        }
+
+        function generateResetCode() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            const name = document.getElementById('signupName').value.trim();
+            const identifier = document.getElementById('signupIdentifier').value.trim();
+            const password = document.getElementById('signupPassword').value;
+
+            if (!name || !identifier || !password) {
+                showError('signupError', 'Please fill all fields');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('signupError', 'Password must be at least 6 characters');
+                return;
+            }
+
+            const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
+            const resetCode = generateResetCode();
+
+            try {
+                const snapshot = await db.ref('users/' + userId).once('value');
+                if (snapshot.exists()) {
+                    showError('signupError', 'Account already exists');
+                    return;
+                }
+
+                await db.ref('users/' + userId).set({
+                    name: name,
+                    identifier: identifier,
+                    password: password,
+                    resetCode: resetCode,
+                    createdAt: Date.now(),
+                    online: false,
+                    blockedUsers: [],
+                    profilePic: null,
+                    bio: ''
+                });
+
+                document.getElementById('signupSuccess').textContent = `Account created! Your reset code is: ${resetCode}. Save it securely!`;
+                document.getElementById('signupSuccess').classList.add('show');
+                document.getElementById('signupError').classList.remove('show');
+                
+                setTimeout(() => {
+                    showLogin();
+                    document.getElementById('signupSuccess').classList.remove('show');
+                    document.getElementById('signupForm').reset();
+                }, 4000);
+            } catch (error) {
+                showError('signupError', 'Error creating account. Please try again.');
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const identifier = document.getElementById('loginIdentifier').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!identifier || !password) {
+                showError('loginError', 'Please fill all fields');
+                return;
+            }
+
+            const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
+
+            try {
+                const snapshot = await db.ref('users/' + userId).once('value');
+                const user = snapshot.val();
+
+                if (!user) {
+                    showError('loginError', 'Account not found. Please sign up.');
+                    return;
+                }
+
+                if (user.password !== password) {
+                    showError('loginError', 'Incorrect password');
+                    return;
+                }
+
+                currentUser = { id: userId, ...user };
+                
+                let accounts = JSON.parse(localStorage.getItem('streamxAccounts') || '[]');
+                if (!accounts.find(a => a.id === userId)) {
+                    accounts.push({ id: userId, name: user.name, identifier: user.identifier });
+                    localStorage.setItem('streamxAccounts', JSON.stringify(accounts));
+                }
+                
+                localStorage.setItem('streamxUser', JSON.stringify(currentUser));
+                await db.ref('users/' + userId + '/online').set(true);
+                
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('app').classList.add('active');
+                updateProfileButton();
+                
+                loadChats();
+                loadUsers();
+                loadPosts();
+                startRealtimeSync();
+            } catch (error) {
+                showError('loginError', 'Login error. Please try again.');
+            }
+        }
+
+        async function handleResetPassword(event) {
+            event.preventDefault();
+            const identifier = document.getElementById('forgotIdentifier').value.trim();
+            const resetCode = document.getElementById('resetCode').value.trim();
+            const newPassword = document.getElementById('newPassword').value;
+
+            if (!identifier || !resetCode || !newPassword) {
+                showError('resetError', 'Please fill all fields');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showError('resetError', 'Password must be at least 6 characters');
+                return;
+            }
+
+            const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
+
+            try {
+                const snapshot = await db.ref('users/' + userId).once('value');
+                const user = snapshot.val();
+
+                if (!user) {
+                    showError('resetError', 'Account not found');
+                    return;
+                }
+
+                if (user.resetCode !== resetCode) {
+                    showError('resetError', 'Incorrect reset code');
+                    return;
+                }
+
+                await db.ref('users/' + userId + '/password').set(newPassword);
+                
+                document.getElementById('resetSuccess').textContent = 'Password reset successfully!';
+                document.getElementById('resetSuccess').classList.add('show');
+                document.getElementById('resetError').classList.remove('show');
+                
+                setTimeout(() => {
+                    showLogin();
+                    document.getElementById('resetSuccess').classList.remove('show');
+                    document.getElementById('forgotForm').reset();
+                }, 2000);
+            } catch (error) {
+                showError('resetError', 'Reset error. Please try again.');
+            }
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+            setTimeout(() => errorElement.classList.remove('show'), 4000);
+        }
+
+        // Profile Functions
+        function updateProfileButton() {
+            const btn = document.getElementById('profileBtn');
+            if (currentUser.profilePic) {
+                btn.innerHTML = `<img src="${currentUser.profilePic}" alt="Profile">`;
+            } else {
+                btn.textContent = currentUser.name.charAt(0).toUpperCase();
+            }
+
+            const myStoryAvatar = document.getElementById('myStoryAvatar');
+            if (myStoryAvatar) {
+                if (currentUser.profilePic) {
+                    myStoryAvatar.innerHTML = `<img src="${currentUser.profilePic}" alt="Profile">`;
+                } else {
+                    myStoryAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+                }
+            }
+        }
+
+        async function handleProfilePicChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Image too large. Maximum size is 2MB');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const base64 = e.target.result;
+                await db.ref('users/' + currentUser.id + '/profilePic').set(base64);
+                currentUser.profilePic = base64;
+                localStorage.setItem('streamxUser', JSON.stringify(currentUser));
+                updateProfileButton();
+                
+                const profileAvatar = document.getElementById('profileAvatarLarge');
+                profileAvatar.innerHTML = `<img src="${base64}" alt="Profile">`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Check if user is already logged in
+        window.onload = function() {
+            initializeDefaults();
+            
+            const saved = localStorage.getItem('streamxUser');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('app').classList.add('active');
+                document.getElementById('loadingOverlay').classList.add('hidden');
+                updateProfileButton();
+                
+                db.ref('users/' + currentUser.id + '/online').set(true);
+                loadChats();
+                loadUsers();
+                loadPosts();
+                startRealtimeSync();
+            }
+            
+            lucide.createIcons();
+        };
+
+        // Tab Switching
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+
+            document.getElementById('messagesTab').classList.add('hidden');
+            document.getElementById('usersTab').classList.add('hidden');
+            document.getElementById('storiesTab').classList.add('hidden');
+
+            const titles = {
+                messages: { icon: 'messages-square', text: 'StreamXChat' },
+                users: { icon: 'users', text: 'People' },
+                stories: { icon: 'image', text: 'Posts' }
+            };
+
+            document.getElementById('headerTitle').innerHTML = `
+                <i data-lucide="${titles[tab].icon}"></i>
+                ${titles[tab].text}
+            `;
+
+            if (tab === 'messages') {
+                document.getElementById('messagesTab').classList.remove('hidden');
+                loadChats();
+            } else if (tab === 'users') {
+                document.getElementById('usersTab').classList.remove('hidden');
+                loadUsers();
+            } else if (tab === 'stories') {
+                document.getElementById('storiesTab').classList.remove('hidden');
+                loadPosts();
+            }
+
+            lucide.createIcons();
+        }
+
+        // Load Chats
+        function loadChats() {
+            const chatsRef = db.ref('chats');
+            chatsRef.on('value', (snapshot) => {
+                const chats = snapshot.val() || {};
+                const chatsList = document.getElementById('chatsList');
+                chatsList.innerHTML = '';
+
+                const userChats = Object.entries(chats).filter(([id, chat]) => {
+                    if (chat.isGroup) {
+                        return chat.members && chat.members.includes(currentUser.id);
+                    }
+                    return chat.participants && chat.participants.includes(currentUser.id);
+                });
+
+                if (userChats.length === 0) {
+                    chatsList.innerHTML = `
+                        <div class="empty-state">
+                            <i data-lucide="message-circle" class="empty-icon"></i>
+                            <div class="empty-title">No conversations yet</div>
+                            <div class="empty-text">Go to People tab to start chatting</div>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    return;
+                }
+
+                userChats.sort((a, b) => (b[1].lastMessageTime || 0) - (a[1].lastMessageTime || 0));
+
+                userChats.forEach(([chatId, chat]) => {
+                    const div = document.createElement('div');
+                    div.className = 'chat-item';
+
+                    if (chat.isGroup) {
+                        const timeStr = chat.lastMessageTime 
+                            ? new Date(chat.lastMessageTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                            : '';
+
+                        div.innerHTML = `
+                            <div class="avatar-wrapper">
+                                <div class="avatar">${chat.name.charAt(0).toUpperCase()}</div>
+                            </div>
+                            <div class="chat-info">
+                                <div class="chat-header-row">
+                                    <div class="chat-name">${chat.name}</div>
+                                    <div class="chat-time">${timeStr}</div>
+                                </div>
+                                <div class="chat-preview">
+                                    <i data-lucide="users"></i>
+                                    ${chat.lastMessage || 'Start chatting'}
+                                </div>
+                            </div>
+                        `;
+                        div.onclick = () => openGroupChat(chatId, chat);
+                    } else {
+                        const otherUserId = chat.participants.find(p => p !== currentUser.id);
+                        db.ref('users/' + otherUserId).once('value', (userSnap) => {
+                            const otherUser = userSnap.val();
+                            if (otherUser) {
+                                const timeStr = chat.lastMessageTime 
+                                    ? new Date(chat.lastMessageTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                                    : '';
+
+                                const avatarContent = otherUser.profilePic 
+                                    ? `<img src="${otherUser.profilePic}" alt="${otherUser.name}">`
+                                    : otherUser.name.charAt(0).toUpperCase();
+
+                                div.innerHTML = `
+                                    <div class="avatar-wrapper">
+                                        <div class="avatar">${avatarContent}</div>
+                                        ${otherUser.online ? '<div class="online-indicator"></div>' : ''}
+                                    </div>
+                                    <div class="chat-info">
+                                        <div class="chat-header-row">
+                                            <div class="chat-name">${otherUser.name}</div>
+                                            <div class="chat-time">${timeStr}</div>
+                                        </div>
+                                        <div class="chat-preview">
+                                            ${chat.lastMessage || 'Start chatting'}
+                                        </div>
+                                    </div>
+                                `;
+                                div.onclick = () => openChat(chatId, otherUser, otherUserId);
+                            }
+                        });
+                    }
+                    chatsList.appendChild(div);
+                });
+
+                lucide.createIcons();
+            });
+        }
+
+        // Load Users
+        function loadUsers() {
+            const usersRef = db.ref('users');
+            usersRef.on('value', (snapshot) => {
+                allUsers = snapshot.val() || {};
+                renderUsers(allUsers);
+            });
+        }
+
+        function renderUsers(users) {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
+
+            const searchTerm = (document.getElementById('userSearch')?.value || '').toLowerCase();
+            const blockedUsers = currentUser.blockedUsers || [];
+            
+            const filteredUsers = Object.entries(users).filter(([id, user]) => {
+                if (id === currentUser.id) return false;
+                if (blockedUsers.includes(id)) return false;
+                
+                const matchesSearch = !searchTerm || 
+                    user.name.toLowerCase().includes(searchTerm) ||
+                    user.identifier.toLowerCase().includes(searchTerm);
+                
+                return matchesSearch;
+            });
+
+            if (filteredUsers.length === 0) {
+                usersList.innerHTML = `
+                    <div class="empty-state">
+                        <i data-lucide="search" class="empty-icon"></i>
+                        <div class="empty-title">No users found</div>
+                        <div class="empty-text">Try a different search</div>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filteredUsers.forEach(([userId, user]) => {
+                const div = document.createElement('div');
+                div.className = 'user-item';
+                
+                const avatarContent = user.profilePic 
+                    ? `<img src="${user.profilePic}" alt="${user.name}">`
+                    : user.name.charAt(0).toUpperCase();
+
+                div.innerHTML = `
+                    <div class="avatar-wrapper">
+                        <div class="avatar">${avatarContent}</div>
+                        ${user.online ? '<div class="online-indicator"></div>' : ''}
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">${user.name}</div>
+                        <div class="user-bio">${user.bio || (user.online ? 'Online' : 'Offline')}</div>
+                    </div>
+                    <button class="chat-btn" onclick="event.stopPropagation(); startChat('${userId}', ${JSON.stringify(user).replace(/"/g, '&quot;')})">
+                        <i data-lucide="message-circle"></i>
+                        Chat
+                    </button>
+                `;
+                div.onclick = () => showUserProfile(userId, user);
+                usersList.appendChild(div);
+            })
+
+
+        
