@@ -1,6 +1,6 @@
 {
-  "name": "StreamxChat",
-  "short_name": "SXCHAT",
+  "name": "BeelzeChat",
+  "short_name": "BeelzeChat",
   "description": "Chat free without limitation",
   "start_url": "/",
   "scope": "/",
