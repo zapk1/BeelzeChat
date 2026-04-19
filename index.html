@@ -6922,11 +6922,6 @@ document.getElementById('downloadImageBtn').addEventListener('click', async () =
         const x = imgBitmap.width - logoW - pad;
         const y = imgBitmap.height - logoH - pad;
 
-        // Semi-transparent background pill
-        ctx.fillStyle = 'rgba(255,255,255,0.75)';
-        ctx.beginPath();
-        ctx.roundRect(x - 10, y - 10, logoW + 20, logoH + 20, 16);
-        ctx.fill();
 
         // Draw logo
         ctx.drawImage(logo, x, y, logoW, logoH);
