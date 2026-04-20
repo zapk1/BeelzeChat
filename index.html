@@ -6914,7 +6914,7 @@ document.getElementById('downloadImageBtn').addEventListener('click', async () =
         await new Promise(r => { logo.onload = r; logo.onerror = r; });
 
         // Logo size - big enough to be clearly visible
-        const logoW = Math.max(500, Math.floor(imgBitmap.width * 0.33));
+        const logoW = Math.max(700, Math.floor(imgBitmap.width * 0.35));
         const logoH = Math.floor(logoW * (logo.naturalHeight / logo.naturalWidth));
         const pad = 20;
 
