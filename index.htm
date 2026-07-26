@@ -1,0 +1,25 @@
+<script>
+  // Only load OneSignal on a real https origin (it breaks on file:// and http:// origins,
+  // which is what throws the "Cannot read properties of null (reading 'appendChild')" error)
+  if (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    var _osScript = document.createElement('script');
+    _osScript.src = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
+    _osScript.defer = true;
+    _osScript.onerror = function () { console.log('OneSignal SDK failed to load — push disabled'); };
+    document.head.appendChild(_osScript);
+
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function (OneSignal) {
+      try {
+        await OneSignal.init({ appId: "53af1df1-7f88-4756-9c19-7d7d50811c51" });
+        if (OneSignal.Notifications && typeof OneSignal.Notifications.requestPermission === 'function') {
+          await OneSignal.Notifications.requestPermission();
+        }
+      } catch (e) {
+        console.log('OneSignal init skipped:', e && e.message);
+      }
+    });
+  } else {
+    console.log('Push notifications disabled — app is running from ' + location.protocol + ' origin');
+  }
+</script>
