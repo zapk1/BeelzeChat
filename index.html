@@ -3432,32 +3432,17 @@ form input[type="text"] {
 
          
             
-<!-- SKELETON LOADER (YouTube-style shimmer) -->
-            <div id="postsSkeleton" style="display:none;">
-                <div style="padding:16px;border-bottom:8px solid #f1f5f9;">
-                    <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
-                        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                        <div style="flex:1;">
-                            <div style="height:14px;width:35%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;margin-bottom:6px;"></div>
-                            <div style="height:11px;width:20%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;"></div>
-                        </div>
-                    </div>
-                    <div style="height:200px;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:8px;margin-bottom:12px;"></div>
-                    <div style="height:14px;width:70%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;margin-bottom:6px;"></div>
-                    <div style="height:14px;width:50%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;"></div>
-                </div>
-                <div style="padding:16px;border-bottom:8px solid #f1f5f9;">
-                    <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
-                        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                        <div style="flex:1;">
-                            <div style="height:14px;width:35%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;margin-bottom:6px;"></div>
-                            <div style="height:11px;width:20%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;"></div>
-                        </div>
-                    </div>
-                    <div style="height:200px;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:8px;margin-bottom:12px;"></div>
-                    <div style="height:14px;width:70%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;margin-bottom:6px;"></div>
-                    <div style="height:14px;width:50%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;"></div>
-                </div>
+<!-- SKELETON LOADER — 3-COLUMN GRID (matches grid view) -->
+            <div id="postsSkeleton" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:3px;padding:4px;">
+                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
             </div>
             
             
@@ -4504,22 +4489,20 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // === GUEST MODE: open the app instantly, no loading screen ===
+// === GUEST MODE: open the app instantly, no loading screen ===
 (function openAppInstantly(){
-    const ls = document.getElementById('loadingScreen');
-    if (ls) ls.style.display = 'none';
+    // Show the loading modal while the app prepares (auth resolves, first posts load)
+    if (typeof showLoadingScreen === 'function') showLoadingScreen();
     const auth = document.getElementById('authScreen');
     if (auth) auth.style.display = 'none';
     const app = document.getElementById('app');
     if (app) app.classList.add('active');
 
-    // Show skeleton boxes immediately on EVERY tab — guest or logged-in
+    // Only build the skeleton for the tab the user actually opens — DO NOT spam all tabs.
+    // Market/People/Groups skeletons build lazily when their nav button is pressed.
     if (typeof showPostsSkeleton === 'function') showPostsSkeleton();
-    if (typeof showUsersSkeleton === 'function') showUsersSkeleton();
-    if (typeof showGroupsSkeleton === 'function') showGroupsSkeleton();
-    if (typeof showMarketSkeleton === 'function') showMarketSkeleton();
-    if (typeof showProfileSkeleton === 'function') showProfileSkeleton();
 
-    // Default to the Posts tab so the skeleton is immediately visible
+    // Default to the Posts tab so the grid skeleton is visible
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
     ['messagesTab','usersTab','groupsTab'].forEach(t => { const el=document.getElementById(t); if(el) el.classList.add('hidden'); });
@@ -4602,8 +4585,13 @@ function closeAuthScreen() {
 function showPostsSkeleton() {
     const sk = document.getElementById('postsSkeleton');
     const list = document.getElementById('postsList');
-    if (sk) sk.style.display = 'block';
+    const grid = document.getElementById('postsGrid');
+    // Always render as a 3-column grid skeleton (matches the default view).
+    // Never reference currentViewMode here — it's declared lower in the file
+    // and this runs inside openAppInstantly before that line executes.
+    if (sk) sk.style.display = 'grid';
     if (list) list.style.display = 'none';
+    if (grid) grid.style.display = 'none';
 }
 function hidePostsSkeleton() {
     const sk = document.getElementById('postsSkeleton');
@@ -6063,6 +6051,9 @@ document.getElementById('bottomNav').addEventListener('click', e => {
         }
         const tabMap = { messages: 'messagesTab', users: 'usersTab', stories: 'storiesTab', groups: 'groupsTab' };
         if (tabMap[tab]) document.getElementById(tabMap[tab]).classList.remove('hidden');
+        // Only show a skeleton when the tab is empty — never overwrite users/groups already loaded on login
+        if (tab === 'users' && document.getElementById('usersList').children.length === 0) { if (typeof showUsersSkeleton === 'function') showUsersSkeleton(); }
+        if (tab === 'groups' && document.getElementById('groupsList').children.length === 0) { if (typeof showGroupsSkeleton === 'function') showGroupsSkeleton(); }
         updateSearchIconVisibility(tab);
         lucide.createIcons();
     }
@@ -6496,17 +6487,6 @@ async function loadMorePosts() {
     if (_postsLoading || !_postsHasMore) return;
     _postsLoading = true;
 
-    // Show loading indicator
-    let loadEl = document.getElementById('postsLoadingIndicator');
-    if (!loadEl) {
-        loadEl = document.createElement('div');
-        loadEl.id = 'postsLoadingIndicator';
-        loadEl.style.cssText = 'text-align:center;padding:20px;grid-column:1/-1;';
-        loadEl.innerHTML = `<div style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#f1f5f9;border-radius:20px;"><div style="width:16px;height:16px;border:2px solid #000;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div><span style="font-size:13px;font-weight:600;color:#64748b;">Loading posts...</span></div>`;
-        document.getElementById('postsList').after(loadEl);
-    }
-    loadEl.style.display = 'block';
-
     try {
         let query = db.collection('posts').orderBy('timestamp', 'desc').limit(POSTS_PAGE_SIZE);
         if (_postsLastDoc) query = query.startAfter(_postsLastDoc);
@@ -6554,7 +6534,6 @@ async function loadMorePosts() {
         console.error('Posts load error:', e);
     }
 
-    loadEl.style.display = 'none';
     _postsLoading = false;
 
     // Refresh the grid "Load posts" button
