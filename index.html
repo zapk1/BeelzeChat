@@ -45,8 +45,7 @@
  
 
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9548659809623237"
-     crossorigin="anonymous"></script>
+    
 
 
 
@@ -185,7 +184,7 @@
 #userSearch,
 #postSearch {
     border: 2px solid transparent !important;
-    background-image: linear-gradient(white, white), linear-gradient(135deg, #38bdf8, #3b82f6) !important;
+    background-image: linear-gradient(white, white), linear-gradient(135deg, #6366f1, #4338ca) !important;
     background-origin: border-box !important;
     background-clip: padding-box, border-box !important;
 }
@@ -231,15 +230,7 @@ label[for="postImagesInput"].upload-btn {
         
         
         
-        .auth-container::before { 
-            content: ''; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            height: 4px; 
-            background: #000; 
-        }
+        .auth-container::before { content: none; }
         
         .logo-container { 
             text-align: center; 
@@ -248,20 +239,20 @@ label[for="postImagesInput"].upload-btn {
             font-size: 2px ;
         }
         
-        .app-logo { 
-            width: 90px; 
-            height: 90px; 
-            margin: 0 auto 20px; 
-            display: block; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+        .app-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            display: block;
+            border-radius: 28px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.25);
         }
-        
-        .app-title { 
-            font-size: 10px; 
-            font-weight: 800 ; 
-            color: #0f172a; 
-            letter-spacing: -1px; 
+
+        .app-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #0f172a;
+            letter-spacing: -1px;
         }
         
         
@@ -303,12 +294,12 @@ label[for="postImagesInput"].upload-btn {
 
         
         
- .search-input, .comment-input {
-    border: 2px solid transparent;
-    background-image: linear-gradient(white, white), linear-gradient(135deg, #38bdf8, #3b82f6);
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
-}
+  .search-input, .comment-input {
+     border: 2px solid transparent;
+     background-image: linear-gradient(white, white), linear-gradient(135deg, #6366f1, #4338ca);
+     background-origin: border-box;
+     background-clip: padding-box, border-box;
+ }
 
 
 
@@ -321,33 +312,34 @@ label[for="postImagesInput"].upload-btn {
             margin-top: 8px; 
         }
         
-        .form-group { 
-            margin-bottom: 20px; 
+.form-group {
+            margin-bottom: 24px;
         }
         
-        .form-label { 
-            display: flex; 
-            margin-bottom: 8px; 
-            color: #334155; 
-            font-weight: 600; 
-            font-size: 14px; 
-            align-items: center; 
-            gap: 6px; 
+        .form-label {
+            display: flex;
+            margin-bottom: 10px;
+            color: #334155;
+            font-weight: 800;
+            font-size: 17px;
+            align-items: center;
+            gap: 8px;
         }
-        
-        .form-label i { 
-            width: 16px; 
-            height: 16px; 
+
+        .form-label i {
+            width: 22px;
+            height: 22px;
         }
-        
-        .form-input { 
-            width: 100%; 
-            padding: 14px 16px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 12px; 
-            font-size: 15px; 
-            transition: all 0.3s; 
-            background: #f8fafc; 
+
+        .form-input {
+            width: 100%;
+            padding: 18px 20px;
+            border: 3px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s;
+            background: #f8fafc;
         }
         
         .form-input:focus { 
@@ -357,24 +349,24 @@ label[for="postImagesInput"].upload-btn {
             box-shadow: 0 0 0 4px rgba(0,0,0,0.08); 
         }
         
-        .btn { 
-            width: 100%; 
-            padding: 16px; 
-            border: none; 
-            border-radius: 12px; 
-            font-size: 16px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
+        .btn {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 16px;
+            font-size: 19px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        
-        .btn i { 
-            width: 20px; 
-            height: 20px; 
+
+        .btn i {
+            width: 26px;
+            height: 26px;
         }
         
         .btn-primary { 
@@ -424,11 +416,12 @@ label[for="postImagesInput"].upload-btn {
             display: none; 
         }
         
-        .auth-toggle { 
-            text-align: center; 
-            margin-top: 24px; 
-            color: #64748b; 
-            font-size: 14px; 
+.auth-toggle {
+            text-align: center;
+            margin-top: 24px;
+            color: #64748b;
+            font-size: 17px;
+            font-weight: 600;
         }
         
         .auth-toggle a { 
@@ -1146,12 +1139,15 @@ label[for="postImagesInput"].upload-btn {
             cursor: not-allowed; 
         }
         
-        .chat-view { 
-            display: none; 
-            height: 100vh; 
-            height: 100dvh; 
-            flex-direction: column; 
-            background: #f8fafc; 
+        .chat-view {
+            display: none;
+            height: 100vh;
+            height: 100dvh;
+            flex-direction: column;
+            background: #f8fafc;
+            /* Let keyboard push content up instead of covering it */
+            position: fixed;
+            inset: 0;
         }
         
         .chat-view.active { 
@@ -1478,12 +1474,14 @@ label[for="postImagesInput"].upload-btn {
     margin-bottom: 2px;
 }
         
-        .message-input-container { 
-            padding: 12px 16px; 
-            background: white; 
-            border-top: 1px solid #e2e8f0; 
-            position: relative; 
-            z-index: 50; 
+        .message-input-container {
+            padding: 12px 16px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            position: relative;
+            z-index: 50;
+            flex-shrink: 0;
         }
         
         .reply-context { 
@@ -2049,22 +2047,193 @@ label[for="postImagesInput"].upload-btn {
         }
         
         .create-post-form { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 16px; 
-        }
+    display: flex; 
+    flex-direction: column; 
+    gap: 16px; 
+}
+
+/* ═══ FULL-SCREEN REDESIGN: CREATE POST + PROFILE (login-card style) ═══ */
+#createPostModal,
+#profileModal {
+    background: #D1D6F2 !important;
+    padding: 24px 16px !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+#createPostModal.active,
+#profileModal.active {
+    display: flex !important;
+}
+#createPostModal > .modal-content,
+#profileModal > .modal-content {
+    background: #ffffff !important;
+    width: 100% !important;
+    max-width: 440px !important;
+    margin: 0 !important;
+    border-radius: 24px !important;
+    padding: 0 !important;
+    max-height: 92vh !important;
+    overflow-y: auto !important;
+    box-shadow: 0 20px 60px rgba(67,56,202,0.18) !important;
+}
+.fs-logo {
+    width: 56px;
+    height: 56px;
+    background: transparent;
+    background-image: url('https://i.postimg.cc/mD0dbHM0/1000287857.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 14px;
+    margin: 0 auto 14px;
+    box-shadow: 0 6px 18px rgba(67,56,202,0.2);
+}
+.fs-heading {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    text-align: center;
+}
+.fs-sub {
+    color: #6b7280;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 4px;
+}
+#createPostModal .post-textarea {
+    border: 1.5px solid #e5e7eb !important;
+    border-radius: 14px !important;
+    background: #ffffff !important;
+    padding: 16px !important;
+    font-size: 15px !important;
+    min-height: 110px !important;
+}
+#createPostModal .post-textarea:focus {
+    border-color: #4338ca !important;
+    box-shadow: 0 0 0 3px rgba(67,56,202,0.1) !important;
+    outline: none !important;
+}
+#createPostModal .form-label {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #6b7280 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-bottom: 6px !important;
+}
+#createPostModal .form-input,
+#createPostModal select {
+    border: 1.5px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 12px 14px !important;
+    font-size: 15px !important;
+    background: #ffffff !important;
+    outline: none !important;
+}
+#createPostModal .form-input:focus,
+#createPostModal select:focus {
+   ! border-color: #4338ca !important;
+    box-shadow: 0 0 0 3px rgba(67,56,202,0.1) !important;
+}
+#createPostModal .upload-btn {
+    border: 2px dashed #c7d2fe !important;
+    border-radius: 14px !important;
+    background: #f5f3ff !important;
+    color: #4338ca !important;
+    font-weight: 700 !important;
+    padding: 16px !important;
+}
+#createPostModal .upload-btn i { color: #4338ca !important; }
+#createPostModal #addVideoBtn {
+    background: #fff1f2 !important;
+    color: #e11d48 !important;
+    border: 2px dashed #fda4af !important;
+}
+#createPostModal #addVideoBtn i { color: #e11d48 !important; }
+#createPostModal #videoUploadOptions {
+    background: #f8fafc !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 14px !important;
+    padding: 16px !important;
+}
+#createPostModal #videoByUrlBtn,
+#createPostModal #videoFileUploadBtn { border-radius: 12px !important; }
+#createPostModal #videoFileUploadBtn { border-color: #4338ca !important; color: #4338ca !important; }
+#createPostModal #videoFileUploadBtn i,
+#createPostModal #videoByUrlBtn i { color: #4338ca !important; }
+#createPostModal #confirmVideoUrl {
+    background: #4338ca !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+}
+#createPostModal .comments-toggle {
+    background: #f5f3ff !important;
+    border-radius: 14px !important;
+    border: 1px solid #e5e7eb !important;
+    padding: 14px !important;
+}
+#createPostModal .comments-toggle label { color: #374151 !important; font-weight: 600 !important; }
+#createPostModal .toggle-switch { background: #cbd5e1 !important; border-radius: 99px !important; }
+#createPostModal .toggle-switch.active { background: #4338ca !important; }
+#createPostModal form > button[type="submit"] {
+    border-radius: 14px !important;
+    background: linear-gradient(135deg, #4338ca, #6366f1) !important;
+    box-shadow: 0 4px 16px rgba(67,56,202,0.3) !important;
+    font-weight: 800 !important;
+}
+#createPostModal .preview-image-wrapper { border-radius: 12px !important; overflow: hidden !important; }
+#createPostModal .remove-image-btn { border-radius: 50% !important; }
+#profileModal .profile-info { text-align: center !important; padding: 8px 0 20px !important; }
+#profileModal .profile-avatar-large {
+    width: 96px !important;
+    height: 96px !important;
+    border-radius: 28px !important;
+    margin: 0 auto 14px !important;
+    background: linear-gradient(135deg, #4338ca, #6366f1) !important;
+    color: #ffffff !important;
+    font-size: 36px !important;
+    font-weight: 800 !important;
+    animation: avatarGlow 3600s ease infinite !important;
+}
+#profileModal .profile-avatar-large img { border-radius: 28px !important; object-fit: cover !important; }
+#profileModal .profile-avatar-camera {
+    background: #4338ca !important;
+    border: 3px solid #ffffff !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    box-shadow: 0 4px 10px rgba(67,56,202,0.35) !important;
+}
+#profileModal .profile-avatar-camera i {
+    color: #ffffff !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+#profileModal .profile-name { font-size: 20px !important; font-weight: 800 !important; color: #111827 !important; }
+#profileModal .profile-identifier { color: #6b7280 !important; font-size: 14px !important; margin-top: 2px !important; }
+#profileModal #profileBioDisplay { color: #374151 !important; font-size: 14px !important; }
+#profileModal .profile-code-box { border-radius: 16px !important; padding: 16px !important; border: 1px solid transparent !important; }
+#profileModal .code-label {
+    font-size: 12px !important; font-weight: 700 !important; text-transform: uppercase !important;
+    letter-spacing: 0.05em !important; display: flex !important; align-items: center !important;
+    gap: 6px !important; margin-bottom: 8px !important;
+}
+#profileModal #profileContactFields > div {
+    border: 1.5px solid #e5e7eb !important; border-radius: 14px !important; background: #ffffff !important;
+    padding: 14px !important;
+}
+#profileModal #profileContactFields i { color: #4338ca !important; }
+#profileModal .action-btn { border-radius: 14px !important; font-weight: 700 !important; padding: 14px !important; }
+#profileModal .logout-btn { background: #fef2f2 !important; color: #dc2626 !important; border: 1.5px solid #fecaca !important; }
+#profileModal .logout-btn i { color: #dc2626 !important; }
+#profileModal .chat-btn { background: #4338ca !important; color: #ffffff !important; }
+#profileModal .block-btn { background: #fef9c3 !important; color: #854d0e !important; border: 1.5px solid #fde68a !important; }
         
-        .post-textarea { 
-            width: 100%; 
-            min-height: 120px; 
-            padding: 14px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 12px; 
-            font-size: 15px; 
-            font-family: inherit; 
-            resize: vertical; 
-            background: #f8fafc; 
-        }
+        
         
         .post-textarea:focus { 
             outline: none; 
@@ -2133,13 +2302,14 @@ label[for="postImagesInput"].upload-btn {
         
         
         @keyframes avatarGlow {
-    0%   { box-shadow: 0 0 0 4px #38bdf8, 0 0 20px #38bdf8; }
-    33%  { box-shadow: 0 0 0 4px #8b5cf6, 0 0 20px #8b5cf6; }
-    66%  { box-shadow: 0 0 0 4px #3b82f6, 0 0 20px #3b82f6; }
-    100% { box-shadow: 0 0 0 4px #38bdf8, 0 0 20px #38bdf8; }
+    0%   { box-shadow: 0 0 0 4px #8b5cf6, 0 0 24px rgba(139,92,246,0.6); }
+    25%  { box-shadow: 0 0 0 4px #a855f7, 0 0 24px rgba(168,85,247,0.6); }
+    50%  { box-shadow: 0 0 0 4px #6366f1, 0 0 24px rgba(99,102,241,0.6); }
+    75%  { box-shadow: 0 0 0 4px #d946ef, 0 0 24px rgba(217,70,239,0.6); }
+    100% { box-shadow: 0 0 0 4px #8b5cf6, 0 0 24px rgba(139,92,246,0.6); }
 }
-.profile-avatar-large {
-    animation: avatarGlow 3600s ease infinite;
+#profileModal .profile-avatar-large {
+    animation: avatarGlow 3600s ease infinite !important;
 }
         
         
@@ -2731,6 +2901,38 @@ form input[type="text"] {
             display: none; 
         }
         
+        /* ===== FULL-WIDTH BANNER ADS ===== */
+.ad-banner-wrap {
+    width: 100% !important;
+    overflow: hidden;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    text-align: center;
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+}
+.ad-banner-wrap > div,
+.ad-banner-wrap > div > div,
+.ad-banner-wrap > div > div > div,
+.ad-banner-wrap > div > div > div > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    display: block !important;
+    float: none !important;
+    padding: 0 !important;
+    text-align: center !important;
+}
+.ad-banner-wrap iframe {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 250px !important;
+    border: none !important;
+    display: block !important;
+    margin: 0 auto !important;
+}
+        
         .category-btn { 
             padding: 7px 14px; 
             border: none; 
@@ -2825,19 +3027,21 @@ form input[type="text"] {
 
 
     <!-- Loading screen — only shown during logout & account creation, NOT normal app access -->
-  <div id="loadingScreen" style="display:none;position:fixed;inset:0;z-index:9999999;background:#ffffff;flex-direction:column;align-items:center;justify-content:center;">
-    <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:72px;height:72px;border-radius:18px;margin-bottom:12px;">
-    <div style="font-size:24px;font-weight:900;color:#0f172a;letter-spacing:1px;margin-bottom:24px;">BeelzeChat</div>
-    <div style="width:240px;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin-bottom:12px;">
-        <div id="realLoadingBar" style="height:100%;width:0%;background:linear-gradient(90deg,#3b82f6,#22c55e);border-radius:4px;transition:width 0.3s;"></div>
-    </div>
-    <div id="realLoadingPct" style="color:#0f172a;font-weight:800;font-size:16px;">0%</div>
-    <!-- Inner phone-style loading (for account switcher) -->
-    <div id="innerPhoneWrap" style="display:none;margin-top:20px;text-align:center;">
-        <div style="width:120px;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin:0 auto 8px;">
-            <div id="innerPhoneBar" style="height:100%;width:0%;background:#3b82f6;border-radius:4px;transition:width 0.3s;"></div>
+    <div id="loadingScreen" style="display:none;position:fixed;inset:0;z-index:9999999;background:#4338ca;flex-direction:column;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:24px;padding:32px 28px;width:300px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:64px;height:64px;border-radius:16px;margin:0 auto 16px;display:block;">
+        <div style="font-size:20px;font-weight:800;color:#4338ca;letter-spacing:0.5px;margin-bottom:20px;">BeelzeChat</div>
+        <div style="width:44px;height:44px;margin:0 auto 16px;border:4px solid #e0e7ff;border-top-color:#4338ca;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+        <div style="width:220px;height:8px;background:#e0e7ff;border-radius:4px;overflow:hidden;margin:0 auto 12px;">
+            <div id="realLoadingBar" style="height:100%;width:0%;background:#4338ca;border-radius:4px;transition:width 0.3s;"></div>
         </div>
-        <div id="innerPhonePct" style="color:#0f172a;font-size:13px;font-weight:600;">Loading...</div>
+        <div id="realLoadingPct" style="color:#4338ca;font-weight:800;font-size:15px;">0%</div>
+        <div id="innerPhoneWrap" style="display:none;margin-top:16px;text-align:center;">
+            <div style="width:120px;height:6px;background:#e0e7ff;border-radius:4px;overflow:hidden;margin:0 auto 8px;">
+                <div id="innerPhoneBar" style="height:100%;width:0%;background:#4338ca;border-radius:4px;transition:width 0.3s;"></div>
+            </div>
+            <div id="innerPhonePct" style="color:#4338ca;font-size:12px;font-weight:600;">Loading...</div>
+        </div>
     </div>
 </div>
 
@@ -2870,151 +3074,141 @@ form input[type="text"] {
 <!-- SYSTEM FOR LOG IN & SIGN UP -->
 
 
-<div id="authScreen" class="auth-screen" style="display:none;position:fixed;inset:0;z-index:99999;background:#f8fafc;overflow-y:auto;">
-    <div class="auth-container">
-        <div class="logo-container">
-            <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" alt="BeelzeChat" class="app-logo" style>
-            <div class="app-title" style="font-size:22px;font-weight:900;">BeelzeChat</div>
-            <div class="auth-subtitle" style=" color : red ">Free messaging for everyone</div>
+<div id="authScreen" class="auth-screen" style="display:none;position:fixed;inset:0;z-index:99999;background:#e0e7ff;overflow-y:auto;align-items:center;justify-content:center;padding:24px 16px;">
+  <div class="auth-container" style="background:#ffffff;border-radius:20px;box-shadow:0 20px 60px rgba(43,43,158,0.18);width:100%;max-width:400px;padding:32px 26px;margin:auto;box-sizing:border-box;">
+
+    <!-- LOGO -->
+    <div class="logo-container" style="text-align:center;margin-bottom:22px;">
+      <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" alt="BeelzeChat" class="app-logo" style="width:64px;height:64px;border-radius:16px;margin:0 auto 12px;display:block;box-shadow:0 8px 20px rgba(43,43,158,0.25);">
+      <div class="app-title" style="font-size:24px;font-weight:800;color:#111827;letter-spacing:-0.5px;">Welcome to BeelzeChat</div>
+      <div class="auth-subtitle" style="color:#9ca3af;font-size:14px;margin-top:6px;font-weight:500;">Free messaging for everyone</div>
+    </div>
+
+    <!-- LOGIN -->
+    <form id="loginForm">
+      <!-- Google -->
+      <button type="button" class="btn" id="googleSignInBtn" style="background:#ffffff;color:#111827;border:1.5px solid #D1D1D1;border-radius:10px;padding:13px 16px;font-size:15px;font-weight:600;margin-bottom:10px;position:relative;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+        <svg width="20" height="20" viewBox="0 0 24 24" style="flex-shrink:0;">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Continue with Google
+        <span style="position:absolute;top:-9px;right:10px;background:#3F51B5;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:0.3px;">Last Used</span>
+      </button>
+
+      <!-- Guest -->
+      <button type="button" class="btn" id="guestBtn" style="background:#ffffff;color:#111827;border:1.5px solid #D1D1D1;border-radius:10px;padding:13px 16px;font-size:15px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+        <i data-lucide="user-x" style="width:20px;height:20px;color:#111827;"></i>
+        Continue as Guest
+      </button>
+
+      <!-- OR -->
+      <div style="display:flex;align-items:center;gap:12px;margin:18px 0 14px;">
+        <div style="flex:1;height:1px;background:#E5E7EB;"></div>
+        <span style="color:#9ca3af;font-size:12px;font-weight:600;">OR</span>
+        <div style="flex:1;height:1px;background:#E5E7EB;"></div>
+      </div>
+
+      <!-- Inputs -->
+      <div class="form-group" style="margin-bottom:12px;">
+        <input type="text" class="form-input" id="loginIdentifier" placeholder="Enter your email or phone" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+      </div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <div style="position:relative;">
+          <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required style="width:100%;padding:13px 44px 13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+          <button type="button" onclick="togglePw('loginPassword','loginEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
+            <i data-lucide="eye" id="loginEye" style="width:20px;height:20px;color:#9ca3af;"></i>
+          </button>
         </div>
-        
-        <form id="loginForm">
-            <div class="form-group">
-                <label class="form-label">
-                    <i data-lucide="user"></i>
-                    Phone or Email
-                </label>
-                <input type="text" class="form-input" id="loginIdentifier" placeholder="+27456784390 or email@example.com" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">
-                    <i data-lucide="lock"></i>
-                    Password
-                </label>
-                <div style="position:relative;">
-    <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required style="padding-right:48px;">
-    <button type="button" onclick="togglePw('loginPassword','loginEye')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;">
-        <i data-lucide="eye" id="loginEye" style="width:20px;height:20px;color:#94a3b8;"></i>
-    </button>
+      </div>
+
+      <!-- Primary purple CTA -->
+      <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);">
+        <i data-lucide="log-in" style="width:20px;height:20px;"></i>
+        Continue with email
+      </button>
+
+      <div id="loginError" class="error-message"></div>
+
+      <div style="text-align:center;margin-top:12px;">
+        <button type="button" id="forgotBtn" style="background:none;border:none;color:#6b7280;font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;">Forgot password?</button>
+      </div>
+
+      <div class="auth-toggle" style="text-align:center;margin-top:16px;color:#6b7280;font-size:14px;">
+        Don't have an account?
+        <a id="showSignupLink" style="color:#3F51B5;font-weight:700;text-decoration:underline;cursor:pointer;margin-left:4px;">Sign up</a>
+      </div>
+    </form>
+
+    <!-- SIGNUP -->
+    <form id="signupForm" class="hidden">
+      <div class="form-group" style="margin-bottom:12px;">
+        <input type="text" class="form-input" id="signupName" placeholder="Full name" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+      </div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <input type="text" class="form-input" id="signupIdentifier" placeholder="Email or phone" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+      </div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <div style="position:relative;">
+          <input type="password" class="form-input" id="signupPassword" placeholder="Create a password" required style="width:100%;padding:13px 44px 13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+          <button type="button" onclick="togglePw('signupPassword','signupEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
+            <i data-lucide="eye" id="signupEye" style="width:20px;height:20px;color:#9ca3af;"></i>
+          </button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <div style="position:relative;">
+          <input type="password" class="form-input" id="signupConfirmPassword" placeholder="Confirm password" required style="width:100%;padding:13px 44px 13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+          <button type="button" onclick="togglePw('signupConfirmPassword','confirmEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
+            <i data-lucide="eye" id="confirmEye" style="width:20px;height:20px;color:#9ca3af;"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);">
+        <i data-lucide="user-check" style="width:20px;height:20px;"></i>
+        Create account
+      </button>
+      <div id="signupError" class="error-message"></div>
+      <div id="signupSuccess" class="success-message"></div>
+      <div class="auth-toggle" style="text-align:center;margin-top:16px;color:#6b7280;font-size:14px;">
+        Already have an account?
+        <a id="showLoginLink" style="color:#3F51B5;font-weight:700;text-decoration:underline;cursor:pointer;margin-left:4px;">Sign in</a>
+      </div>
+    </form>
+
+    <!-- FORGOT -->
+    <form id="forgotForm" class="hidden">
+      <div class="form-group" style="margin-bottom:12px;">
+        <input type="text" class="form-input" id="forgotIdentifier" placeholder="Email or phone" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+      </div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <input type="text" class="form-input" id="resetCode" placeholder="6-digit reset code" maxlength="6" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+      </div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <div style="position:relative;">
+          <input type="password" class="form-input" id="newPassword" placeholder="New password" required style="width:100%;padding:13px 44px 13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+          <button type="button" onclick="togglePw('newPassword','newPwEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
+            <i data-lucide="eye" id="newPwEye" style="width:20px;height:20px;color:#9ca3af;"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);">
+        <i data-lucide="check-circle" style="width:20px;height:20px;"></i>
+        Reset password
+      </button>
+      <button type="button" class="btn btn-secondary" id="backToLoginBtn" style="background:#fff;color:#6b7280;border:1.5px solid #D1D1D1;border-radius:10px;padding:13px;font-size:15px;font-weight:600;margin-top:10px;">
+        <i data-lucide="arrow-left" style="width:20px;height:20px;"></i>
+        Back to login
+      </button>
+      <div id="resetError" class="error-message"></div>
+      <div id="resetSuccess" class="success-message"></div>
+    </form>
+
+  </div>
 </div>
-            </div>
-            <button type="submit" class="btn btn-primary" style="...!important;">
-    <i data-lucide="log-in"></i>
-                Sign In
-            </button>
-            <button type="button" class="btn btn-secondary" id="forgotBtn" style=" color: White  ; background : red ;">
-                <i data-lucide="key"></i>
-                Forgot Password?
-            </button>
-            <div id="loginError" class="error-message"></div>
-            <div style="text-align:center;margin:16px 0;color:red;font-size:14px;">or</div>
-            <button type="button" class="btn" id="googleSignInBtn" style="background:white;color:red;border:2px solid red;">
-                <svg width="20" height="20" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-                Continue with Google
-            </button>
-            <button type="button" class="btn" id="guestBtn" style="background:#f1f5f9;color:#475569;border:2px solid #e2e8f0;margin-top:10px;">
-                <i data-lucide="user-x" style="width:20px;height:20px;"></i>
-                Continue as Guest
-            </button>
-            <div class="auth-toggle">
-                Don't have an account? 
-                <a id="showSignupLink">Sign Up</a>
-            </div>
-        </form>
-        
-        <form id="signupForm" class="hidden">
-            <div class="form-group">
-                <label class="form-label">
-                    <i data-lucide="user-plus"></i>
-                    Full Name
-                </label>
-                <input type="text" class="form-input" id="signupName" placeholder="John Doe" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">
-                    <i data-lucide="mail"></i>
-                    Phone or Email
-                </label>
-                <input type="text" class="form-input" id="signupIdentifier" placeholder="+1234567890 or email@example.com" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">
-                    <i data-lucide="shield"></i>
-                    Password
-                </label>
-                <div style="position:relative;">
-    <input type="password" class="form-input" id="signupPassword" placeholder="Create a strong password" required style="padding-right:48px;">
-    <button type="button" onclick="togglePw('signupPassword','signupEye')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;">
-        <i data-lucide="eye" id="signupEye" style="width:20px;height:20px;color:#94a3b8;"></i>
-    </button>
-</div>
-<div class="form-group" style="margin-top:12px;">
-    <label class="form-label"><i data-lucide="shield-check"></i> Confirm Password</label>
-    <div style="position:relative;">
-        <input type="password" class="form-input" id="signupConfirmPassword" placeholder="Confirm your password" required style="padding-right:48px;">
-        <button type="button" onclick="togglePw('signupConfirmPassword','confirmEye')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;">
-            <i data-lucide="eye" id="confirmEye" style="width:20px;height:20px;color:#94a3b8;"></i>
-        </button>
-    </div>
-</div>
-            </div>
-            <button type="submit" class="btn btn-primary" style=" background: purple ; color: white;">
-                <i data-lucide="user-check"></i>
-                Create Account
-            </button>
-            <div id="signupError" class="error-message"></div>
-            <div id="signupSuccess" class="success-message"></div>
-            <div class="auth-toggle">
-                Already have an account? 
-                <a id="showLoginLink">Sign In</a>
-            </div>
-        </form>
-        
-        <form id="forgotForm" class="hidden">
-            <div class="form-group">
-                <label class="form-label">
-                    <i data-lucide="user"></i>
-                    Phone or Email
-                </label>
-                <input type="text" class="form-input" id="forgotIdentifier" placeholder="+1234567890 or email@example.com" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">
-                    <i data-lucide="hash"></i>
-                    6-Digit Reset Code
-                </label>
-                <input type="text" class="form-input" id="resetCode" placeholder="Enter your 6-digit code" maxlength="6" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">
-                    <i data-lucide="lock"></i>
-                    New Password
-                </label>
-                <div style="position:relative;">
-    <input type="password" class="form-input" id="newPassword" placeholder="Enter new password" required style="padding-right:48px;">
-    <button type="button" onclick="togglePw('newPassword','newPwEye')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;">
-        <i data-lucide="eye" id="newPwEye" style="width:20px;height:20px;color:#94a3b8;"></i>
-    </button>
-</div>
-            </div>
-            <button type="submit" class="btn btn-primary">
-                <i data-lucide="check-circle"></i>
-                Reset Password
-            </button>
-            <button type="button" class="btn btn-secondary" id="backToLoginBtn">
-                <i data-lucide="arrow-left"></i>
-                Back to Login
-            </button>
-            <div id="resetError" class="error-message"></div>
-            <div id="resetSuccess" class="success-message"></div>
-        </form>
-    </div>
-</div>
+
 
 
 <!-- END SYSTEM FOR LOG IN & SIGN UP -->
@@ -3037,10 +3231,10 @@ form input[type="text"] {
             </button>
         </div>
         <!-- CENTERED APP NAME WITH LOGO (smaller to prevent overlap) -->
-        <h1 class="header-title" id="headerTitle" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;font-size:20px;">
-            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698a063d7a95f71fa9ac96d7/5b4f163f7_1000287857.png" style="width:26px;height:26px;border-radius:7px;">
-            BeelzeChat
-        </h1>
+        <h1 class="header-title" id="headerTitle" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;font-size:24px;">
+    <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698a063d7a95f71fa9ac96d7/5b4f163f7_1000287857.png" style="width:34px;height:34px;border-radius:8px;">
+    BeelzeChat
+</h1>
         <!-- RIGHT SIDE ICONS: bell + profile -->
         <div class="header-actions">
             <button class="icon-btn" id="notificationsBtn" style="position:relative;">
@@ -3176,24 +3370,20 @@ form input[type="text"] {
     </button>
 </div>
             
+     
+<!-- ADSTERRA NATIVE BANNER 1:1 — POSTS TOP -->       
+ <script async="async" data-cfasync="false" src="https://pl30707691.effectivecpmnetwork.com/bfa816e41ee47a741496e0b4efc9b55e/invoke.js"></script>
+<div id="container-bfa816e41ee47a741496e0b4efc9b55e"></div>
+
+            
             
             <div id="newPostsBtn" onclick="this.style.display='none';loadPosts();" style="display:none;position:sticky;top:0;z-index:100;background:#ef4444;color:white;border:none;border-radius:12px;padding:10px;font-weight:700;text-align:center;cursor:pointer;margin:4px;display:none;align-items:center;justify-content:center;gap:6px;"><i data-lucide="bell-ring" style="width:16px;height:16px;"></i> New Posts - Tap to refresh</div>
       <div id="postsList" style="display:none;">
                 <!-- Dynamic posts will load here (FEED VIEW) -->
             </div>
 
-<script>
-  atOptions = {
-    'key' : '4b679a3ef982bc5c3cb729d6492509bb',
-    'format' : 'iframe',
-    'height' : 250,
-    'width' : 300,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/4b679a3ef982bc5c3cb729d6492509bb/invoke.js"></script>
 
-            
+         
             
 <!-- SKELETON LOADER (YouTube-style shimmer) -->
             <div id="postsSkeleton" style="display:none;">
@@ -3228,19 +3418,43 @@ form input[type="text"] {
                 <!-- Dynamic posts will load here (GRID VIEW) -->
             </div>
 
-            <!-- Grid "Load posts" button — white Lucide icon + BeelzeChat logo -->
-            <button id="loadMorePostsBtn" onclick="loadMorePosts()" style="display:none;flex-direction:row;align-items:center;justify-content:center;gap:10px;width:calc(100% - 24px);margin:14px 12px 90px;padding:13px;background:#000;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;">
-                <i data-lucide="chevrons-down" style="width:20px;height:20px;color:#fff;"></i>
-                <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" alt="BeelzeChat" style="width:22px;height:22px;border-radius:50%;">
-                <span>Load posts</span>
+            <!-- Load more posts — clean Lucide icon button with in-button spinner -->
+            <button id="loadMorePostsBtn" onclick="handleLoadMorePosts()" style="display:none;flex-direction:row;align-items:center;justify-content:center;gap:10px;width:calc(100% - 24px);margin:16px 12px 90px;padding:14px 18px;background:#ffffff;color:#3F51B5;border:1.5px solid #3F51B5;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 8px rgba(63,81,181,0.08);">
+                <i data-lucide="chevrons-down" id="loadMorePostsIcon" style="width:20px;height:20px;color:#3F51B5;"></i>
+                <span id="loadMorePostsText">Load more posts</span>
             </button>
+            <script>
+            async function handleLoadMorePosts(){
+              const btn = document.getElementById('loadMorePostsBtn');
+              const icon = document.getElementById('loadMorePostsIcon');
+              const txt = document.getElementById('loadMorePostsText');
+              if(!btn || btn.dataset.loading === '1') return;
+              btn.dataset.loading = '1';
+              btn.style.opacity = '0.75';
+              btn.style.cursor = 'wait';
+              btn.style.pointerEvents = 'none';
+              if(icon){ icon.setAttribute('data-lucide','loader-circle'); icon.style.animation='spin 0.8s linear infinite'; }
+              if(txt) txt.textContent = 'Loading posts...';
+              lucide.createIcons();
+              try { await loadMorePosts(); } catch(e){}
+              setTimeout(()=>{
+                btn.dataset.loading = '0';
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                btn.style.pointerEvents = 'auto';
+                if(icon){ icon.style.animation='none'; icon.setAttribute('data-lucide','chevrons-down'); }
+                if(txt) txt.textContent = 'Load more posts';
+                lucide.createIcons();
+              }, 500);
+            }
+            </script>
         </div>
         
         <div id="groupsTab" class="hidden">
     <div class="search-container">
         <div class="search-wrapper" style="margin-bottom:12px;">
             <i data-lucide="search" class="search-icon" style="color:#ef4444;"></i>
-            <input type="text" class="search-input" id="groupSearch" placeholder="Search groups & chats..." style="border:2px solid transparent;background-image:linear-gradient(white,white),linear-gradient(135deg,#38bdf8,#3b82f6);background-origin:border-box;background-clip:padding-box,border-box;">
+            <input type="text" class="search-input" id="groupSearch" placeholder="Search groups & chats..." style="border:2px solid transparent;background-image:linear-gradient(white,white),linear-gradient(135deg,#6366f1,#4338ca);background-origin:border-box;background-clip:padding-box,border-box;">
         </div>
         <button class="btn btn-primary" id="createGroupBtn">
         
@@ -3283,6 +3497,11 @@ form input[type="text"] {
             </div>
         </div>
     </div>
+    
+    
+    <!-- ADSTERRA NATIVE BANNER 1:1 — POSTS TOP -->
+    
+
     
     <div class="bottom-nav" id="bottomNav">
         <button class="nav-item active" data-tab="messages" style="position:relative;">
@@ -3412,12 +3631,15 @@ form input[type="text"] {
 <!-- MODALS -->
 <div id="profileModal" class="modal-overlay">
     <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title">My Profile</h2>
-            <button class="close-btn" id="closeProfileBtn">
+        <div style="position:relative;padding:28px 24px 8px;text-align:center;">
+            <button class="close-btn" id="closeProfileBtn" style="position:absolute;top:16px;right:16px;">
                 <i data-lucide="x"></i>
             </button>
+            <div class="fs-logo"></div>
+            <div class="fs-heading">My Profile</div>
+            <div class="fs-sub">Manage your account</div>
         </div>
+        <div style="padding:8px 24px 28px;">
         <div class="profile-info">
             <input type="file" id="profilePicInput" class="file-input" accept="image/*">
             <div class="profile-avatar-large" id="profileAvatarLarge">
@@ -3427,137 +3649,86 @@ form input[type="text"] {
                 </div>
             </div>
             <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
-    <div class="profile-name" id="profileName">User Name</div>
-    <button onclick="editName()" style="background:none;border:none;cursor:pointer;padding:4px;">
-        <i data-lucide="pencil" style="width:16px;height:16px;color:#94a3b8;"></i>
-    </button>
-</div>       
-   <div class="profile-identifier" id="profileIdentifier">user@example.com</div>
-<div style="display:flex;align-items:center;gap:6px;margin-top:8px;">
-    <span id="profileBioDisplay" style="color:#1e293b;font-size:14px;text-align:center;display:block;width:100%;">No bio yet</span>
-    <button onclick="editBio()" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:14px;height:14px;color:#94a3b8;"></i></button>
-</div>
-  </div>
-                <div class="profile-code-box" style="background:#dbeafe;border-color:#3b82f6;">
-    <div class="code-label" style="color:#1e40af;">
-        <i data-lucide="key"></i>
-        Your Reset Code (Save it!)
-    </div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
-        <div class="code-value" id="resetCodeDisplay" style="color:#1e3a8a;">••••••</div>
-        <button id="toggleResetCodeBtn" onclick="
-            const el = document.getElementById('resetCodeDisplay');
-            if (el.dataset.visible === 'true') {
-                el.textContent = '••••••';
-                el.dataset.visible = 'false';
-            } else {
-                el.textContent = currentUser.resetCode || '000000';
-                el.dataset.visible = 'true';
-            }
-            const wrapper = this;
-            const oldIcon = wrapper.querySelector('svg, i[data-lucide]');
-            const newIcon = document.createElement('i');
-            newIcon.setAttribute('data-lucide', el.dataset.visible === 'true' ? 'eye-off' : 'eye');
-            newIcon.style.width = '20px';
-            newIcon.style.height = '20px';
-            newIcon.style.color = '#1e40af';
-            if (oldIcon) oldIcon.replaceWith(newIcon);
-            lucide.createIcons();
-        " style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;">
-            <i data-lucide="eye" id="resetCodeEyeIcon" style="width:20px;height:20px;color:#1e40af;"></i>
-        </button>
-    </div>
-</div>
-
-<div class="profile-code-box" style="background:#f0fdf4;border-color:#22c55e;margin-top:0;">
-    <div class="code-label" style="color:#166534;">
-        <i data-lucide="fingerprint"></i>
-        Your BeelzeChat ID
-    </div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:4px;">
-        <div class="code-value" id="beelzeIdDisplay" style="color:#15803d;font-size:13px;letter-spacing:1px;">—</div>
-        <button onclick="
-            const id = document.getElementById('beelzeIdDisplay').textContent;
-            if(navigator.clipboard){ navigator.clipboard.writeText(id).then(()=>showToast('success','Copied!','BeelzeChat ID copied')); }
-            else{ const ta=document.createElement('textarea');ta.value=id;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('success','Copied!','BeelzeChat ID copied'); }
-        " style="background:#22c55e;border:none;border-radius:8px;padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:5px;color:white;font-size:12px;font-weight:700;flex-shrink:0;">
-            <i data-lucide="copy" style="width:14px;height:14px;color:white;"></i> Copy
-        </button>
-    </div>
-    <div style="font-size:11px;color:#16a34a;margin-top:6px;text-align:center;">Share this ID so people can find you in Search</div>
-</div>
-<div style="margin:12px 0;display:flex;flex-direction:column;gap:10px;" id="profileContactFields">
-    <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
-        <i data-lucide="phone" style="width:20px;height:20px;color:#3b82f6;flex-shrink:0;"></i>
-        <span id="profilePhone" style="flex:1;color:#334155;font-size:14px;">Not set</span>
-        <button onclick="editProfileField('phone')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
-        <i data-lucide="globe" style="width:20px;height:20px;color:#3b82f6;flex-shrink:0;"></i>
-        <span id="profileWebsite" style="flex:1;color:#334155;font-size:14px;">Not set</span>
-        <button onclick="editProfileField('website')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
-        <i data-lucide="mail" style="width:20px;height:20px;color:#3b82f6;flex-shrink:0;"></i>
-        <span id="profileEmail" style="flex:1;color:#334155;font-size:14px;">Not set</span>
-        <button onclick="editProfileField('email')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
-    </div>
-</div>
-
-                    <div class="profile-actions">
+                <div class="profile-name" id="profileName">User Name</div>
+                <button onclick="editName()" style="background:none;border:none;cursor:pointer;padding:4px;">
+                    <i data-lucide="pencil" style="width:16px;height:16px;color:#94a3b8;"></i>
+                </button>
+            </div>
+            <div class="profile-identifier" id="profileIdentifier">user@example.com</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:8px;">
+                <span id="profileBioDisplay" style="color:#1e293b;font-size:14px;text-align:center;display:block;width:100%;">No bio yet</span>
+                <button onclick="editBio()" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:14px;height:14px;color:#94a3b8;"></i></button>
+            </div>
+        </div>
+        <div class="profile-code-box" style="background:#dbeafe;border-color:#3b82f6;">
+            <div class="code-label" style="color:#1e40af;">
+                <i data-lucide="key"></i>
+                Your Reset Code (Save it!)
+            </div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
+                <div class="code-value" id="resetCodeDisplay" style="color:#1e3a8a;">••••••</div>
+                <button id="toggleResetCodeBtn" onclick="
+                    const el = document.getElementById('resetCodeDisplay');
+                    if (el.dataset.visible === 'true') {
+                        el.textContent = '••••••';
+                        el.dataset.visible = 'false';
+                    } else {
+                        el.textContent = currentUser.resetCode || '000000';
+                        el.dataset.visible = 'true';
+                    }
+                    const wrapper = this;
+                    const oldIcon = wrapper.querySelector('svg, i[data-lucide]');
+                    const newIcon = document.createElement('i');
+                    newIcon.setAttribute('data-lucide', el.dataset.visible === 'true' ? 'eye-off' : 'eye');
+                    newIcon.style.width = '20px';
+                    newIcon.style.height = '20px';
+                    newIcon.style.color = '#1e40af';
+                    if (oldIcon) oldIcon.replaceWith(newIcon);
+                    lucide.createIcons();
+                " style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;">
+                    <i data-lucide="eye" id="resetCodeEyeIcon" style="width:20px;height:20px;color:#1e40af;"></i>
+                </button>
+            </div>
+        </div>
+        <div class="profile-code-box" style="background:#f0fdf4;border-color:#22c55e;margin-top:0;">
+            <div class="code-label" style="color:#166534;">
+                <i data-lucide="fingerprint"></i>
+                Your BeelzeChat ID
+            </div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:4px;">
+                <div class="code-value" id="beelzeIdDisplay" style="color:#15803d;font-size:13px;letter-spacing:1px;">—</div>
+                <button onclick="
+                    const id = document.getElementById('beelzeIdDisplay').textContent;
+                    if(navigator.clipboard){ navigator.clipboard.writeText(id).then(()=>showToast('success','Copied!','BeelzeChat ID copied')); }
+                    else{ const ta=document.createElement('textarea');ta.value=id;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('success','Copied!','BeelzeChat ID copied'); }
+                " style="background:#22c55e;border:none;border-radius:8px;padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:5px;color:white;font-size:12px;font-weight:700;flex-shrink:0;">
+                    <i data-lucide="copy" style="width:14px;height:14px;color:white;"></i> Copy
+                </button>
+            </div>
+            <div style="font-size:11px;color:#16a34a;margin-top:6px;text-align:center;">Share this ID so people can find you in Search</div>
+        </div>
+        <div style="margin:12px 0;display:flex;flex-direction:column;gap:10px;" id="profileContactFields">
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
+                <i data-lucide="phone" style="width:20px;height:20px;color:#3b82f6;flex-shrink:0;"></i>
+                <span id="profilePhone" style="flex:1;color:#334155;font-size:14px;">Not set</span>
+                <button onclick="editProfileField('phone')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
+                <i data-lucide="globe" style="width:20px;height:20px;color:#3b82f6;flex-shrink:0;"></i>
+                <span id="profileWebsite" style="flex:1;color:#334155;font-size:14px;">Not set</span>
+                <button onclick="editProfileField('website')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
+                <i data-lucide="mail" style="width:20px;height:20px;color:#3b82f6;flex-shrink:0;"></i>
+                <span id="profileEmail" style="flex:1;color:#334155;font-size:14px;">Not set</span>
+                <button onclick="editProfileField('email')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
+            </div>
+        </div>
+        <div class="profile-actions">
             <button class="action-btn logout-btn" id="logoutBtn">
                 <i data-lucide="log-out"></i>
                 Logout
             </button>
-
-<!-- Logout options modal — Continue as Guest or Sign Another Account -->
-<div id="logoutConfirmModal" style="display:none;position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;">
-    <div style="background:white;border-radius:24px;padding:32px 24px;width:320px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
-        <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:56px;height:56px;border-radius:14px;margin-bottom:16px;">
-        <h3 style="font-size:20px;font-weight:800;color:#0f172a;margin-bottom:8px;">Logging Out</h3>
-        <p style="color:#64748b;font-size:14px;margin-bottom:24px;">What would you like to do?</p>
-        <button id="logoutGuest" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:14px;cursor:pointer;margin-bottom:10px;">
-            <i data-lucide="user-x" style="width:24px;height:24px;color:#64748b;flex-shrink:0;"></i>
-            <div style="text-align:left;flex:1;">
-                <div style="font-weight:800;font-size:14px;color:#0f172a;">Continue as Guest</div>
-                <div style="font-size:11px;color:#64748b;">Browse without an account</div>
-            </div>
-        </button>
-        <button id="logoutSwitchAccount" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;background:#eff6ff;border:2px solid #3b82f6;border-radius:14px;cursor:pointer;margin-bottom:10px;">
-            <i data-lucide="users-round" style="width:24px;height:24px;color:#3b82f6;flex-shrink:0;"></i>
-            <div style="text-align:left;flex:1;">
-                <div style="font-weight:800;font-size:14px;color:#0f172a;">Sign Another Account</div>
-                <div style="font-size:11px;color:#64748b;">Switch to a different account</div>
-            </div>
-        </button>
-        <button id="logoutStay" style="width:100%;padding:12px;border:none;background:none;color:#64748b;border-radius:10px;cursor:pointer;font-weight:700;">Cancel</button>
-    </div>
-</div>
-
-<!-- Logout options modal — Continue as Guest or Sign Another Account -->
-<div id="logoutConfirmModal" style="display:none;position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;">
-    <div style="background:white;border-radius:24px;padding:32px 24px;width:320px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
-        <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:56px;height:56px;border-radius:14px;margin-bottom:16px;">
-        <h3 style="font-size:20px;font-weight:800;color:#0f172a;margin-bottom:8px;">Logging Out</h3>
-        <p style="color:#64748b;font-size:14px;margin-bottom:24px;">What would you like to do?</p>
-        <button id="logoutGuest" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:14px;cursor:pointer;margin-bottom:10px;">
-            <i data-lucide="user-x" style="width:24px;height:24px;color:#64748b;flex-shrink:0;"></i>
-            <div style="text-align:left;flex:1;">
-                <div style="font-weight:800;font-size:14px;color:#0f172a;">Continue as Guest</div>
-                <div style="font-size:11px;color:#64748b;">Browse without an account</div>
-            </div>
-        </button>
-        <button id="logoutSwitchAccount" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;background:#eff6ff;border:2px solid #3b82f6;border-radius:14px;cursor:pointer;margin-bottom:10px;">
-            <i data-lucide="users-round" style="width:24px;height:24px;color:#3b82f6;flex-shrink:0;"></i>
-            <div style="text-align:left;flex:1;">
-                <div style="font-weight:800;font-size:14px;color:#0f172a;">Sign Another Account</div>
-                <div style="font-size:11px;color:#64748b;">Switch to a different account</div>
-            </div>
-        </button>
-        <button id="logoutStay" style="width:100%;padding:12px;border:none;background:none;color:#64748b;border-radius:10px;cursor:pointer;font-weight:700;">Cancel</button>
-    </div>
-</div>
-            
             <button class="action-btn" id="blockedUsersBtn" style="background:#f59e0b;color:white;margin-top:8px;" onclick="showBlockedUsers()">
                 <i data-lucide="ban"></i>
                 Blocked Users
@@ -3567,50 +3738,30 @@ form input[type="text"] {
                 Delete Account Permanently
             </button>
         </div>
+        </div>
     </div>
 </div>
 
-<div id="userProfileModal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title">User Profile</h2>
-            <button class="close-btn" id="closeUserProfileBtn">
-                <i data-lucide="x"></i>
-            </button>
-        </div>
-        <div class="profile-info">
-            <div class="profile-avatar-large" id="userProfileAvatar">U</div>
-            <div class="profile-name" id="userProfileName">User Name</div>
-            <div class="profile-identifier" id="userProfileIdentifier">user@example.com</div>
-        </div>
-        <div class="profile-actions">
-            <button class="action-btn chat-btn" id="startChatFromProfileBtn">
-                <i data-lucide="message-circle"></i>
-                Send Message
-            </button>
-            <button class="action-btn block-btn" id="blockBtn">
-                <i data-lucide="ban"></i>
-                <span id="blockBtnText">Block User</span>
-            </button>
-        </div>
-    </div>
-</div>
+
+
 
 
 <!-- SYSTEM TO CREATE POSTS -->
 
 <div id="createPostModal" class="modal-overlay">
     <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title">Create Post</h2>
-            <button class="close-btn" id="closeCreatePostBtn">
+        <div style="position:relative;padding:28px 24px 8px;text-align:center;">
+            <button class="close-btn" id="closeCreatePostBtn" style="position:absolute;top:16px;right:16px;">
                 <i data-lucide="x"></i>
             </button>
+            <div class="fs-logo"></div>
+            <div class="fs-heading">Create Post</div>
+            <div class="fs-sub">Share something with the community</div>
         </div>
-        <form class="create-post-form" id="createPostForm">
+        <form class="create-post-form" id="createPostForm" style="padding:16px 24px 28px;">
             <textarea class="post-textarea" id="postText" placeholder="What's on your mind?" autocomplete="off" autocorrect="on" autocapitalize="sentences" spellcheck="true" inputmode="text"></textarea>
             <div class="form-group">
-                <label class="form-label">Category</label>
+                <label class="form-label"><i data-lucide="tag" style="width:13px;height:13px;"></i> Category</label>
                 <select class="form-input" id="postCategory">
                     <option value="entertainment">Entertainment</option>
                     <option value="music">Music</option>
@@ -3627,52 +3778,42 @@ form input[type="text"] {
                 <i data-lucide="image"></i>
                 Add Photos (Max 10)
             </label>
-            <button type="button" id="addVideoBtn" class="upload-btn" style="background:#fff0f0;color:#ef4444;border:2px dashed #ef4444;margin-top:8px;">
-                <i data-lucide="camera" style="color:#ef4444;"></i>
+            <button type="button" id="addVideoBtn" class="upload-btn">
+                <i data-lucide="camera"></i>
                 Add Video
             </button>
-            <div id="videoUploadOptions" style="display:none;background:#f8fafc;border-radius:12px;padding:16px;margin-top:8px;border:1px solid #e2e8f0;">
-                <button type="button" id="videoByUrlBtn" style="width:100%;padding:12px;background:white;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px;">
-                    <i data-lucide="link" style="color:#3b82f6;"></i> Paste Video URL
+            <div id="videoUploadOptions" style="display:none;">
+                <button type="button" id="videoByUrlBtn">
+                    <i data-lucide="link"></i> Paste Video URL
                 </button>
-                
-                
-       
-                
-                
                 <div id="videoUrlInputArea" style="display:none;margin-top:8px;">
                     <input type="text" id="videoUrlInput" class="form-input" placeholder="https://res.cloudinary.com/...">
                     <button type="button" id="confirmVideoUrl" class="btn btn-primary" style="margin-top:8px;width:100%;"><i data-lucide="check"></i> Add Video</button>
                 </div>
-                
-                
-<button id="videoFileUploadBtn" type="button" style="width:100%;padding:14px 16px;background:white;border:2px solid #3b82f6;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:12px;font-weight:700;font-size:15px;color:#1d4ed8;margin-top:8px;">
-    <i data-lucide="upload-cloud" style="width:24px;height:24px;color:#3b82f6;flex-shrink:0;"></i> Upload Video
-</button>
-                
-                
+                <button id="videoFileUploadBtn" type="button" style="width:100%;padding:14px 16px;background:white;border:2px solid #4338ca;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:12px;font-weight:700;font-size:15px;color:#4338ca;margin-top:8px;">
+                    <i data-lucide="upload-cloud" style="width:24px;height:24px;flex-shrink:0;"></i> Upload Video
+                </button>
                 <input type="file" id="postVideoFileInput" accept="video/*" style="display:none;">
-                
-                <div style="font-size:11px;color:#64748b;margin-top:10px;text-align:center;">→ <a href="https://cloudinary.com" target="_blank" style="color:#3b82f6;font-weight:700;">BeelzeChat </a></div>
+                <div style="font-size:11px;color:#64748b;margin-top:10px;text-align:center;">Powered by BeelzeChat Cloud</div>
             </div>
             <div class="comments-toggle">
-    <label>Allow Comments</label>
-    <div class="toggle-switch active" id="commentsToggle"></div>
-</div>
-<div class="comments-toggle">
-    <label>Allow Likes</label>
-    <div class="toggle-switch active" id="likesToggle"></div>
-</div>
-   <button type="submit" style="width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,#22c55e,#3b82f6);color:white;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;">
-    <i data-lucide="send" style="width:18px;height:18px;"></i>
-    Post
-</button>
+                <label>Allow Comments</label>
+                <div class="toggle-switch active" id="commentsToggle"></div>
+            </div>
+            <div class="comments-toggle">
+                <label>Allow Likes</label>
+                <div class="toggle-switch active" id="likesToggle"></div>
+            </div>
+            <button type="submit" style="width:100%;padding:14px;border:none;border-radius:14px;color:white;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;">
+                <i data-lucide="send" style="width:18px;height:18px;"></i>
+                Post
+            </button>
         </form>
     </div>
 </div>
 
 
-<!-- SYSTEM TO CREATE POSTS -->
+<!-- END SYSTEM TO CREATE POSTS -->
 
 
 
@@ -3855,7 +3996,7 @@ form input[type="text"] {
                 <i data-lucide="upload"></i>
                 <div>
                     <div style="font-weight:700;font-size:16px;">Upload from Device</div>
-                    <div style="font-size:13px;color:#64748b;">Auto-upload to ImgBB</div>
+              <div style="font-size:13px;color:#64748b;">Auto-upload to cloud</div>
                 </div>
             </button>
             <button class="upload-method-btn" id="pasteUrlBtn">
@@ -4006,12 +4147,27 @@ form input[type="text"] {
         </div>
         <button class="profile-btn" id="mktProfileBtn" style="flex-shrink:0;">U</button>
     </div>
+    
+    <!-- ADSTERRA 728x90 BANNER — MARKETPLACE -->
+    <script>
+  atOptions = {
+    'key' : 'c20f3a6306ae83ed2355cb5805166662',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/c20f3a6306ae83ed2355cb5805166662/invoke.js"></script>
+
     <div style="padding:12px 12px 0;">
         <div class="search-wrapper">
             <i data-lucide="search" class="search-icon"></i>
             <input type="text" class="search-input" id="marketSearch" placeholder="Search listings...">
         </div>
     </div>
+    
+    
 <div style="flex:1;overflow-y:auto;min-height:0;">
   <div id="marketplaceGrid" style="padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-bottom:20px;align-items:start;align-content:start;"></div>
 </div>
@@ -4320,9 +4476,20 @@ const db = firebase.firestore();
     }
 })();
 
-const storage = firebase.storage();
-const auth = firebase.auth();
-const googleProvider = new firebase.auth.GoogleAuthProvider();
+let storage = null;
+let auth = null;
+let googleProvider = null;
+try {
+    storage = firebase.storage();
+} catch (e) { console.log('Firebase storage unavailable:', e); }
+try {
+    auth = firebase.auth();
+    googleProvider = new firebase.auth.GoogleAuthProvider();
+} catch (e) {
+    console.log('Firebase Auth unavailable (incompatible browser):', e);
+    showToast('info', 'Limited Browser', 'Google login may not work — use email login instead');
+}
+
 
 
 // To this:
@@ -4817,24 +4984,24 @@ function pickUploadProvider() {
         const m = document.createElement('div');
         m.id = 'uploadProviderPicker';
         m.style.cssText = 'position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;';
-        m.innerHTML = `<div style="background:white;border-radius:24px;padding:28px 24px;width:320px;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+                m.innerHTML = `<div style="background:white;border-radius:24px;padding:28px 24px;width:320px;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
             <div style="text-align:center;margin-bottom:18px;">
                 <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:44px;height:44px;border-radius:12px;margin-bottom:8px;">
                 <div style="font-weight:800;font-size:16px;color:#0f172a;">Choose Upload Method</div>
-                <div style="font-size:12px;color:#64748b;">Pick where to host your image</div>
+                <div style="font-size:12px;color:#64748b;">Pick where to host your media</div>
             </div>
             <button id="upImgBB" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px;background:#eff6ff;border:2px solid #3b82f6;border-radius:14px;cursor:pointer;margin-bottom:10px;">
                 <i data-lucide="image" style="width:24px;height:24px;color:#3b82f6;flex-shrink:0;"></i>
                 <div style="text-align:left;flex:1;">
-                    <div style="font-weight:800;font-size:14px;color:#0f172a;">ImgBB <span style="font-size:10px;background:#22c55e;color:white;padding:1px 6px;border-radius:8px;margin-left:4px;">RECOMMENDED</span></div>
-                    <div style="font-size:11px;color:#64748b;">Fast & reliable image hosting</div>
+                    <div style="font-weight:800;font-size:14px;color:#0f172a;">Quick Upload <span style="font-size:10px;background:#22c55e;color:white;padding:1px 6px;border-radius:8px;margin-left:4px;">RECOMMENDED</span></div>
+                    <div style="font-size:11px;color:#64748b;">Fast & reliable hosting</div>
                 </div>
             </button>
             <button id="upGithub" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px;background:#f8fafc;border:2px solid #e2e8f0;border-radius:14px;cursor:pointer;margin-bottom:14px;">
-                <i data-lucide="github" style="width:24px;height:24px;color:#0f172a;flex-shrink:0;"></i>
+                <i data-lucide="cloud" style="width:24px;height:24px;color:#0f172a;flex-shrink:0;"></i>
                 <div style="text-align:left;flex:1;">
-                    <div style="font-weight:800;font-size:14px;color:#0f172a;">GitHub</div>
-                    <div style="font-size:11px;color:#64748b;">Host via GitHub repository</div>
+                    <div style="font-weight:800;font-size:14px;color:#0f172a;">Backup Hosting</div>
+                    <div style="font-size:11px;color:#64748b;">Alternative cloud storage</div>
                 </div>
             </button>
             <button id="upCancel" style="width:100%;padding:12px;border:none;background:#f1f5f9;color:#64748b;border-radius:12px;font-weight:700;cursor:pointer;">Cancel</button>
@@ -5162,6 +5329,7 @@ document.getElementById('cancelReplyBtn').addEventListener('click', () => {
 // ============================================================
 // FIREBASE AUTH STATE — THE MAIN ENTRY POINT
 // ============================================================
+if (auth) {
 auth.onAuthStateChanged(async (firebaseUser) => {
     if (firebaseUser) {
     // User is signed in via Firebase Auth
@@ -5272,6 +5440,12 @@ setTimeout(() => {
         }, 400);
     }
 });
+} else {
+    // Firebase Auth not available — show auth screen directly so login still works
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('authScreen').style.display = 'flex';
+}
+
 
 
 function editBio() {
@@ -6203,30 +6377,12 @@ async function loadAllPosts() {
 
     const pl = document.getElementById('postsList');
     const alreadyLoaded = pl.querySelectorAll('.post-card').length > 0;
-    const savedScroll = bz_getScroll('postsScroll');
 
-    if (!alreadyLoaded) {
-        // Cold start: paint cached posts from IndexedDB instantly (no reload-from-scratch feel)
-        try {
-            const cached = await bzDB.getAll('posts');
-            if (cached.length) {
-                pl.innerHTML = '';
-                const sorted = cached.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
-                for (const p of sorted.slice(0, 60)) {
-                    const el = await createPostElement(p);
-                    if (el && el.tagName) pl.appendChild(el);
-                }
-                lucide.createIcons();
-                filterPosts();
-                if (currentViewMode === 'grid') buildGridView();
-                const ac = document.querySelector('.app-content');
-                if (ac && savedScroll) ac.scrollTop = savedScroll;
-            } else {
-                const skel = document.getElementById('postsSkeleton');
-                if (skel) skel.style.display = 'block';
-                pl.innerHTML = '';
-            }
-        } catch(e) { pl.innerHTML = ''; }
+
+if (!alreadyLoaded) {
+        const skel = document.getElementById('postsSkeleton');
+        if (skel) skel.style.display = 'block';
+        pl.innerHTML = '';
     }
 
     // Then fetch fresh page 1 from Firestore and merge only NEW posts
@@ -6277,11 +6433,15 @@ async function loadMorePosts() {
             for (const doc of snap.docs) {
                 const p = { id: doc.id, ...doc.data() };
                 toCache.push(p);
+                
+                
+                
+                
                 if (existingIds.has(p.id)) continue; // already on screen — don't duplicate
                 const el = await createPostElement(p);
                 if (el && el.tagName) pl.appendChild(el);
             }
-            if (toCache.length) { try { await bzDB.putAll('posts', toCache); } catch(e){} }
+                      // cache removed — always load fresh
         }
 
         filterPosts();
@@ -6481,7 +6641,6 @@ if (appContent) {
     appContent.addEventListener('scroll', () => {
         const storiesTab = document.getElementById('storiesTab');
         if (!storiesTab || storiesTab.classList.contains('hidden')) return;
-        bz_saveScroll('postsScroll', appContent.scrollTop);
         if (appContent.scrollTop + appContent.clientHeight >= appContent.scrollHeight - 300) {
             loadMorePosts();
         }
@@ -6507,9 +6666,12 @@ async function recordView(postId) {
 
 
 
-function renderCommentHTML(c, postId, allUsers) {
+function renderCommentHTML(c, postId, allUsersMap) {
+    // Always fetch the freshest user data from the global allUsers — never trust a stale snapshot
     const au = allUsers[c.userId] || {};
-    const av = au.profilePic ? `<img src="${au.profilePic}">` : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(au.name||'U')}&background=000&color=fff&size=128">`;
+    const pic = au.profilePic || '';
+    const name = au.name || 'User';
+    const av = pic ? `<img src="${pic}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=000&color=fff&size=128';">` : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=000&color=fff&size=128">`;
     const rx = c.reactions || {};
     const uEm = {};
     Object.values(rx).forEach(e => { uEm[e] = (uEm[e]||0)+1; });
@@ -6636,7 +6798,7 @@ if (post.commentsEnabled !== false) {
     cmts = `
         <div class="post-comments" id="comments-section-${post.id}" style="display:none;">
             <div class="comment-input-wrapper">
-                <div class="comment-avatar">${currentUser.profilePic ? `<img src="${currentUser.profilePic}">` : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=000&color=fff&size=128">`}</div>
+              <div class="comment-avatar" id="commentInputAvatar_${post.id}">${currentUser.profilePic ? `<img src="${currentUser.profilePic}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=000&color=fff&size=128';">` : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=000&color=fff&size=128">`}</div>
                 <div class="comment-input-group">
                     <input type="text" class="comment-input" data-postid="${post.id}" placeholder="Write a comment...">
                     <button class="comment-send-btn" data-postid="${post.id}"><i data-lucide="send"></i></button>
@@ -7292,25 +7454,9 @@ document.getElementById('closeChatBtn').addEventListener('click', () => {
 async function loadMessages() {
     const chatId = currentChatId;
     if (msgUnsub) { msgUnsub(); msgUnsub = null; }
-    // Show cached messages INSTANTLY before Firestore responds
-    const cached = getMsgs(chatId);
-    if (cached.length) {
-        renderMessages(cached);
-        const mc = document.getElementById('messagesContainer');
-        mc.scrollTop = mc.scrollHeight;
-    }
     const unsub = db.collection('chats').doc(chatId).collection('messages').orderBy('timestamp', 'asc').onSnapshot(snap => {
         if (currentChatId !== chatId) return;
         const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        const oldMsgs = getMsgs(chatId);
-        // Fast change check — no JSON.stringify of the whole chat.
-        // When you just switch to a chat, cached == Firestore → skip re-render → instant, no blink.
-        const same = oldMsgs.length === msgs.length &&
-            (oldMsgs.length === 0 ||
-             (oldMsgs[oldMsgs.length-1]?.id === msgs[msgs.length-1]?.id &&
-              oldMsgs[oldMsgs.length-1]?.timestamp === msgs[msgs.length-1]?.timestamp));
-        if (same) return;
-        saveMsgs(chatId, msgs);
         const mc = document.getElementById('messagesContainer');
         const wasAtBottom = mc.scrollHeight - mc.scrollTop - mc.clientHeight < 50;
         renderMessages(msgs);
@@ -7414,14 +7560,19 @@ function formatMsgText(text) {
 // SEND MESSAGE
 // ============================================================
 const msgInput = document.getElementById('messageInput');
+// Fixed height — text scrolls INSIDE the box instead of expanding it
+msgInput.style.height = '44px';
+msgInput.style.maxHeight = '44px';
+msgInput.style.overflowY = 'auto';
+msgInput.style.resize = 'none';
 msgInput.addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    // Keep fixed height — never expand. Scroll handles long text.
+    this.style.height = '44px';
 });
 msgInput.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
-        // Do nothing — let Enter create new line naturally
-        return;
+        e.preventDefault();
+        sendMessage();
     }
 });
 
@@ -7539,13 +7690,8 @@ async function sendMessage() {
     selectedFiles = [];
     renderUploadPreview();
 
-    // 1) Message shows up in the chat INSTANTLY (optimistic)
-    const cached = getMsgs(currentChatId);
-    cached.push({ ...msg, id: 'tmp_' + Date.now() });
-    saveMsgs(currentChatId, cached);
-    renderMessages(cached);
-    const mc = document.getElementById('messagesContainer');
-    mc.scrollTop = mc.scrollHeight;
+        // No local cache — Firestore onSnapshot will render the message when it arrives
+
 
     // 2) Fire the OUTSIDE alert (push + in-app notification) INSTANTLY — do NOT wait for Firestore
     if (currentChatUser?.isGroup) {
@@ -8728,6 +8874,7 @@ document.addEventListener('click', function enableNotifications() {
 }, { once: true });
 
 // Setup notifications after login
+if (auth) {
 auth.onAuthStateChanged((firebaseUser) => {
     if (firebaseUser) {
         setTimeout(() => {
@@ -8736,6 +8883,7 @@ auth.onAuthStateChanged((firebaseUser) => {
         }, 2000);
     }
 });
+}
 
 
 
