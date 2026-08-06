@@ -50,42 +50,75 @@
 
 
 
-   <!-- ✅ SEO -->
-<meta name="description" content="BeelzeChat - Free messaging platform. Chat instantly with friends and family. Fast, simple and free.">
-<meta name="keywords" content="beelzechat, free messaging, chat app, instant messaging, beelzeapps, south africa chat">
-<meta name="robots" content="index, follow">
-<meta name="author" content="BeelzeChat">
-<link rel="canonical" href="https://beelzechat.beelzeapps.co.za/">
+      <!-- ✅ SEO -->
+<title>BeelzeChat — Free Chat & Messaging App in South Africa | beelzechat.co.za</title>
+<meta name="description" content="BeelzeChat is a free messaging platform for South Africa. Chat instantly with friends & family, share posts, buy & sell in the marketplace. Fast, simple and free.">
+<meta name="keywords" content="BeelzeChat, free chat app, messaging app South Africa, chat, instant messaging, beelzechat.co.za, social app SA, online chat, buy and sell South Africa, beelzeapps">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="googlebot" content="index, follow">
+<meta name="author" content="BeelzeChat (CEO: ceo@beelzechat.co.za)">
+<meta name="theme-color" content="#3F51B5">
+<link rel="canonical" href__="https://beelzechat.co.za/">
+<link rel="icon" href__="https://i.postimg.cc/mD0dbHM0/1000287857.png" type="image/png">
+<link rel="apple-touch-icon" href__="https://i.postimg.cc/mD0dbHM0/1000287857.png">
+<meta name="google-site-verification" content="PASTE_YOUR_GOOGLE_VERIFICATION_CODE_HERE">
 
 <!-- ✅ OPEN GRAPH (WhatsApp / Facebook) -->
-<meta property="og:title" content="BeelzeChat - Free Messaging Platform">
+<meta property="og:title" content="BeelzeChat — Free Messaging Platform">
 <meta property="og:description" content="Chat instantly with friends and family. Fast, simple and free.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://beelzechat.beelzeapps.co.za/">
+<meta property="og:url" content="https://beelzechat.co.za/">
 <meta property="og:site_name" content="BeelzeChat">
 <meta property="og:locale" content="en_ZA">
+<meta property="og:image" content="https://i.postimg.cc/mD0dbHM0/1000287857.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
 
 <!-- ✅ TWITTER CARD -->
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BeelzeChat - Free Messaging Platform">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BeelzeChat — Free Messaging Platform">
 <meta name="twitter:description" content="Chat instantly with friends and family. Fast, simple and free.">
+<meta name="twitter:image" content="https://i.postimg.cc/mD0dbHM0/1000287857.png">
 
 <!-- ✅ STRUCTURED DATA -->
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "BeelzeChat",
-    "url": "https://beelzechat.beelzeapps.co.za",
-    "description": "Free messaging platform. Chat instantly with friends and family.",
-    "applicationCategory": "CommunicationApplication",
-    "operatingSystem": "All",
-    "areaServed": "ZA",
-    "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "ZAR"
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "id": "https://beelzechat.co.za/#app",
+      "name": "BeelzeChat",
+      "url": "https://beelzechat.co.za/",
+      "description": "Free messaging platform. Chat instantly with friends and family, share posts and use the marketplace.",
+      "applicationCategory": "CommunicationApplication",
+      "operatingSystem": "All",
+      "areaServed": "ZA",
+      "inLanguage": "en-ZA",
+      "image": "https://i.postimg.cc/mD0dbHM0/1000287857.png",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "ZAR" }
+    },
+    {
+      "@type": "Organization",
+      "id": "https://beelzechat.co.za/#org",
+      "name": "BeelzeChat",
+      "url": "https://beelzechat.co.za/",
+      "logo": "https://i.postimg.cc/mD0dbHM0/1000287857.png",
+      "contactPoint": [
+        { "@type": "ContactPoint", "contactType": "customer support", "email": "support@beelzechat.co.za", "areaServed": "ZA", "availableLanguage": ["English"] },
+        { "@type": "ContactPoint", "contactType": "sales", "email": "ads@beelzechat.co.za", "description": "Banner advertising from R500", "areaServed": "ZA" },
+        { "@type": "ContactPoint", "contactType": "public relations", "email": "ceo@beelzechat.co.za", "areaServed": "ZA" }
+      ]
+    },
+    {
+      "@type": "Service",
+      "name": "BeelzeChat Banner Advertising",
+      "serviceType": "Banner Ads",
+      "provider": { "@id": "https://beelzechat.co.za/#org" },
+      "areaServed": "ZA",
+      "offers": { "@type": "Offer", "price": "500", "priceCurrency": "ZAR", "description": "Banner ads starting from R500" }
     }
+  ]
 }
 </script>
 
@@ -2750,62 +2783,72 @@ form input[type="text"] {
             color: #64748b; 
         }
         
-        .account-list { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            max-height: 300px; 
-            overflow-y: auto; 
-        }
         
-        .account-item { 
-            padding: 14px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-        }
         
-        .account-item:hover, 
-        .account-item.active { 
-            border-color: #000; 
-            background: rgba(0,0,0,0.04); 
+        /* ===== Account Switcher — purple bg + white card ===== */
+        #accountSwitcherModal { background: #BCC6E5 !important; }
+        #accountSwitcherModal .modal-content {
+            background: #fff !important;
+            border-radius: 24px !important;
+            padding: 28px 22px !important;
+            width: 90% !important; max-width: 380px !important;
+            box-shadow: 0 8px 40px rgba(60,50,120,0.18) !important;
+            border: none !important;
         }
-        
-        .account-avatar { 
-            width: 48px; 
-            height: 48px; 
-            border-radius: 50%; 
-            overflow: hidden; 
-            flex-shrink: 0; 
+        #accountSwitcherModal .modal-header {
+            border: none !important; padding: 0 0 20px 0 !important; margin: 0 !important;
+            position: relative;
         }
-        
-        .account-avatar img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
+        #accountSwitcherModal .modal-title { display: none; }
+        #accountSwitcherModal .close-btn {
+            position: absolute; top: -8px; right: -8px;
+            background: #fff; border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        
-        .account-info { 
-            flex: 1; 
-            min-width: 0; 
+
+        .account-list {
+            display: flex; flex-direction: column; gap: 10px;
+            max-height: 360px; overflow-y: auto;
         }
-        
-        .account-name { 
-            font-weight: 700; 
-            color: #0f172a; 
+        .account-item {
+            padding: 14px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            display: flex; align-items: center; gap: 12px;
+            cursor: pointer; transition: all 0.2s;
+            background: #fff; position: relative;
         }
-        
-        .account-identifier { 
-            font-size: 13px; 
-            color: #64748b; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap; 
+        .account-item:hover { border-color: #3D48A5; background: #f8f9ff; }
+        .account-item.active { border-color: #3D48A5; background: #f0f1ff; }
+        .account-item.active::after {
+            content: 'Last Used';
+            position: absolute; top: -8px; right: 12px;
+            background: #3D48A5; color: #fff;
+            font-size: 10px; font-weight: 700;
+            padding: 2px 8px; border-radius: 8px;
         }
+        .account-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            overflow: hidden; flex-shrink: 0;
+        }
+        .account-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .account-info { flex: 1; min-width: 0; }
+        .account-name { font-weight: 600; color: #1a1a2e; font-size: 15px; }
+        .account-identifier {
+            font-size: 12px; color: #8892b0;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+
+        #accountSwitcherModal .btn-primary,
+        #accountSwitcherModal #addAccountBtn {
+            width: 100%; margin-top: 18px;
+            padding: 14px; border: 1.5px solid #e2e8f0;
+            border-radius: 14px; background: #fff;
+            color: #1a1a2e; font-weight: 600; font-size: 14px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        #accountSwitcherModal #addAccountBtn:hover { border-color: #3D48A5; background: #f8f9ff; }
         
         
         
@@ -3026,21 +3069,24 @@ form input[type="text"] {
 
 
 
-    <!-- Loading screen — only shown during logout & account creation, NOT normal app access -->
-    <div id="loadingScreen" style="display:none;position:fixed;inset:0;z-index:9999999;background:#4338ca;flex-direction:column;align-items:center;justify-content:center;">
-    <div style="background:#fff;border-radius:24px;padding:32px 28px;width:300px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-        <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:64px;height:64px;border-radius:16px;margin:0 auto 16px;display:block;">
-        <div style="font-size:20px;font-weight:800;color:#4338ca;letter-spacing:0.5px;margin-bottom:20px;">BeelzeChat</div>
-        <div style="width:44px;height:44px;margin:0 auto 16px;border:4px solid #e0e7ff;border-top-color:#4338ca;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-        <div style="width:220px;height:8px;background:#e0e7ff;border-radius:4px;overflow:hidden;margin:0 auto 12px;">
-            <div id="realLoadingBar" style="height:100%;width:0%;background:#4338ca;border-radius:4px;transition:width 0.3s;"></div>
+    <!-- Loading screen — shown right after login, stays purple/white until the account is fully loaded -->
+    <div id="loadingScreen" style="display:none;position:fixed;inset:0;z-index:9999999;background:#e8eaf6;flex-direction:column;align-items:center;justify-content:center;">
+    <div style="background:#ffffff;border-radius:24px;padding:32px 28px;width:300px;text-align:center;box-shadow:0 20px 60px rgba(63,81,181,0.25);">
+        <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:64px;height:64px;border-radius:16px;margin:0 auto 14px;display:block;box-shadow:0 8px 20px rgba(63,81,181,0.25);">
+        <div style="font-size:20px;font-weight:800;color:#3F51B5;letter-spacing:0.5px;margin-bottom:6px;">BeelzeChat</div>
+        <div id="loadingStatusText" style="font-size:13px;color:#9ca3af;font-weight:500;margin-bottom:18px;">Loading your account…</div>
+        <div style="width:48px;height:48px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;color:#3F51B5;animation:spin 1s linear infinite;">
+            <i data-lucide="loader-circle" style="width:44px;height:44px;"></i>
         </div>
-        <div id="realLoadingPct" style="color:#4338ca;font-weight:800;font-size:15px;">0%</div>
+        <div style="width:220px;height:8px;background:#e8eaf6;border-radius:4px;overflow:hidden;margin:0 auto 10px;">
+            <div id="realLoadingBar" style="height:100%;width:0%;background:#3F51B5;border-radius:4px;transition:width 0.3s;"></div>
+        </div>
+        <div id="realLoadingPct" style="color:#3F51B5;font-weight:800;font-size:15px;">0%</div>
         <div id="innerPhoneWrap" style="display:none;margin-top:16px;text-align:center;">
-            <div style="width:120px;height:6px;background:#e0e7ff;border-radius:4px;overflow:hidden;margin:0 auto 8px;">
-                <div id="innerPhoneBar" style="height:100%;width:0%;background:#4338ca;border-radius:4px;transition:width 0.3s;"></div>
+            <div style="width:120px;height:6px;background:#e8eaf6;border-radius:4px;overflow:hidden;margin:0 auto 8px;">
+                <div id="innerPhoneBar" style="height:100%;width:0%;background:#3F51B5;border-radius:4px;transition:width 0.3s;"></div>
             </div>
-            <div id="innerPhonePct" style="color:#4338ca;font-size:12px;font-weight:600;">Loading...</div>
+            <div id="innerPhonePct" style="color:#3F51B5;font-size:12px;font-weight:600;">Loading…</div>
         </div>
     </div>
 </div>
@@ -3341,6 +3387,7 @@ form input[type="text"] {
                     <button class="category-btn" data-category="music">Music</button>
                     <button class="category-btn" data-category="fun">Fun</button>
                     <button class="category-btn" data-category="breaking_news">Breaking News</button>
+                    <button class="category-btn" data-category="business">Business / Companies</button>
                     <button class="category-btn" data-category="lifestyle">Lifestyle</button>
                     <button class="category-btn" data-category="sports">Sports</button>
                 </div>
@@ -3738,6 +3785,13 @@ form input[type="text"] {
                 Delete Account Permanently
             </button>
         </div>
+        <div style="margin-top:18px;background:#f8fafc;border-radius:14px;padding:14px;border:1px solid #e2e8f0;">
+          <div style="font-weight:800;color:#0f172a;margin-bottom:8px;">BeelzeChat Business</div>
+          <a href="mailto:support@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Support: support@beelzechat.co.za</a>
+          <a href="mailto:ads@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Advertise: ads@beelzechat.co.za</a>
+          <a href="mailto:ceo@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Owner: ceo@beelzechat.co.za</a>
+          <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R500</b> • <a href__="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
+        </div>
         </div>
     </div>
 </div>
@@ -3767,6 +3821,7 @@ form input[type="text"] {
                     <option value="music">Music</option>
                     <option value="fun">Fun</option>
                     <option value="breaking_news">Breaking News</option>
+                    <option value="business">Business / Companies</option>
                     <option value="lifestyle">Lifestyle</option>
                     <option value="sports">Sports</option>
                     <option value="other">Other</option>
@@ -3851,13 +3906,12 @@ form input[type="text"] {
 <div id="accountSwitcherModal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 class="modal-title">Switch Account</h2>
             <button class="close-btn" id="closeAccountSwitcherBtn">
                 <i data-lucide="x"></i>
             </button>
         </div>
         <div class="account-list" id="accountList"></div>
-        <button class="btn btn-primary" style="margin-top:16px;" id="addAccountBtn">
+        <button id="addAccountBtn">
             <i data-lucide="user-plus"></i>
             Add Account
         </button>
@@ -4478,6 +4532,15 @@ const db = firebase.firestore();
 
 let storage = null;
 let auth = null;
+
+document.addEventListener('click', function(e){
+    if (!e.target.closest('#profileBtn')) return;
+    if (!currentUser) {
+        e.stopPropagation(); e.stopImmediatePropagation();
+        showToast('info', 'Sign in', 'Log in to view your profile');
+        requireAuth('view your profile');
+    }
+}, true);
 let googleProvider = null;
 try {
     storage = firebase.storage();
@@ -4646,6 +4709,24 @@ const IMGBB_API_KEY = '7582cc8e40651016b8391c34b4216727';
 
 
 
+function loginWelcomeToast(name) {
+    const c = document.getElementById('toastContainer');
+    if (!c) return;
+    const t = document.createElement('div');
+    t.style.cssText = 'background:#ffffff;border:2px solid #3F51B5;border-radius:16px;' +
+        'box-shadow:0 12px 32px rgba(63,81,181,0.3);display:flex;gap:12px;align-items:center;' +
+        'padding:14px 16px;margin-bottom:10px;color:#0f172a;';
+    t.innerHTML =
+        '<img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:40px;height:40px;border-radius:12px;flex-shrink:0;">' +
+        '<div style="flex:1;">' +
+          '<div style="font-weight:800;font-size:14px;color:#3F51B5;">Welcome back, ' + (name || 'User') + '!</div>' +
+          '<div style="font-size:12px;color:#475569;">You just logged in to your account.</div>' +
+        '</div>';
+    c.appendChild(t);
+    if (window.lucide) lucide.createIcons();
+    setTimeout(() => { t.style.transition = 'all .35s'; t.style.opacity = '0'; t.style.transform = 'translateY(-8px)'; setTimeout(() => t.remove(), 350); }, 4000);
+}
+
 function showLoadingScreen() {
     const ls = document.getElementById('loadingScreen');
     if (!ls) return;
@@ -4659,9 +4740,9 @@ function showLoadingScreen() {
     if (rp) rp.textContent = '0%';
     if (ipb) ipb.style.width = '0%';
     if (ipt) ipt.textContent = 'Loading...';
+    if (window._loadingIv) clearInterval(window._loadingIv);
     let _pct = 0;
-    const _iv = setInterval(() => {
-    
+    window._loadingIv = setInterval(() => {
         if (_pct < 30) _pct += Math.random() * 8;
         else if (_pct < 60) _pct += Math.random() * 5;
         else if (_pct < 85) _pct += Math.random() * 3;
@@ -4674,14 +4755,25 @@ function showLoadingScreen() {
         if (ipb) ipb.style.width = v + '%';
         if (ipt) ipt.textContent = 'Loading ' + v + '%';
     }, 200);
-    window._loadingDone = function() {
-        clearInterval(_iv);
-        if (rb) rb.style.width = '100%';
-        if (rp) rp.textContent = '100%';
-        if (ipb) ipb.style.width = '100%';
-        if (ipt) ipt.textContent = 'Ready!';
-    };
+    clearTimeout(window._loadingSafety);
+    window._loadingSafety = setTimeout(() => window.finishLoading && window.finishLoading(), 15000);
 }
+
+window.finishLoading = function() {
+    if (window._loadingIv) { clearInterval(window._loadingIv); window._loadingIv = null; }
+    clearTimeout(window._loadingSafety);
+    const rb = document.getElementById('realLoadingBar');
+    const rp = document.getElementById('realLoadingPct');
+    const ipb = document.getElementById('innerPhoneBar');
+    const ipt = document.getElementById('innerPhonePct');
+    if (rb) rb.style.width = '100%';
+    if (rp) rp.textContent = '100%';
+    if (ipb) ipb.style.width = '100%';
+    if (ipt) ipt.textContent = 'Ready!';
+    const ls = document.getElementById('loadingScreen');
+    if (ls) { ls.classList.add('hide'); ls.style.display = 'none'; }
+};
+window._loadingDone = window.finishLoading
 
 
 
@@ -5398,10 +5490,9 @@ auth.onAuthStateChanged(async (firebaseUser) => {
             }
         });
 
-setTimeout(() => {
-    window._loadingDone?.();
-    setTimeout(() => document.getElementById('loadingScreen').classList.add('hide'), 600);
-}, 800);
+window.finishLoading();
+if (window._justLoggedIn) { loginWelcomeToast(currentUser ? currentUser.name : ''); window._justLoggedIn = false; }
+
 
     } else {
         const saved = localStorage.getItem('sxchatUser');
@@ -5423,7 +5514,7 @@ setTimeout(() => {
                     document.getElementById('storiesTab').classList.remove('hidden');
 
                     loadNotifications();
-                    setTimeout(() => document.getElementById('loadingScreen').classList.add('hide'), 800);
+                    window.finishLoading();
                     return;
                 }
             } catch(e) {
@@ -5473,6 +5564,7 @@ function editBio() {
 // ============================================================
 document.getElementById('googleSignInBtn').addEventListener('click', async () => {
     try {
+        window._justLoggedIn = true;
         showToast('info', 'Signing In', 'Please wait...');
         // Show loading immediately
         const ls = document.getElementById('loadingScreen');
@@ -5519,17 +5611,33 @@ async function initializeApp() {
 // ============================================================
 // AUTH FORMS — EMAIL/PASSWORD
 // ============================================================
+// Bring the login screen back if login fails (so the user isn't stuck on the loader)
+function restoreAuthScreen() {
+    const ls = document.getElementById('loadingScreen');
+    if (ls) { ls.classList.add('hide'); setTimeout(() => { ls.style.display = 'none'; }, 600); }
+    const as = document.getElementById('authScreen');
+    if (as) as.style.display = 'flex';
+}
+
 document.getElementById('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
-    showToast('info', 'Logging In', 'Wait...');
     const identifier = document.getElementById('loginIdentifier').value.trim();
     const password = document.getElementById('loginPassword').value;
     if (!identifier || !password) { showToast('error', 'Error', 'Fill all fields'); return; }
 
+    // Show the themed purple/white loader RIGHT NOW — stays until the account is fully loaded (kills the white screen)
+    const _ls = document.getElementById('loadingScreen');
+    _ls.style.display = 'flex';
+    _ls.classList.remove('hide');
+    document.getElementById('authScreen').style.display = 'none';
+    showLoadingScreen();
+    window._justLoggedIn = true;
+
     // Check Firestore first to get email
     const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
     const ud = await db.collection('users').doc(userId).get();
-    if (!ud.exists) { showToast('error', 'Error', 'Not found'); return; }
+    if (!ud.exists) { showToast('error', 'Error', 'Not found'); restoreAuthScreen(); return; }
+
 
     const user = ud.data();
     // Try Firebase Auth sign in
@@ -5537,7 +5645,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     // If identifier is phone number, use stored email or password auth
     if (!email.includes('@')) {
         // Legacy password check — also accept reset code as password
-        if (user.password !== password && user.resetCode !== password) { showToast('error', 'Error', 'Wrong password'); return; }
+        if (user.password !== password && user.resetCode !== password) { showToast('error', 'Error', 'Wrong password'); restoreAuthScreen(); return; }
         // Signed in via legacy — set currentUser manually
         
         
@@ -5547,10 +5655,6 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
         await db.collection('users').doc(userId).update({ online: true });
         localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
         showToast('success', 'Welcome!', user.name);
-        document.getElementById('authScreen').style.display = 'none';
-        document.getElementById('loadingScreen').style.display = 'flex';
-        document.getElementById('loadingScreen').classList.remove('hide');
-        showLoadingScreen();
         await initializeApp();
         
         
@@ -5562,8 +5666,8 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
         ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
         document.getElementById('storiesTab').classList.remove('hidden');
         loadNotifications();
-        window._loadingDone?.();
-        setTimeout(() => { document.getElementById('loadingScreen').classList.add('hide'); setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 600); }, 500);
+        window.finishLoading();
+        loginWelcomeToast(user.name);
         return;
            }
 
@@ -5580,8 +5684,6 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
             await db.collection('users').doc(userId).update({ online: true });
             localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
             showToast('success', 'Welcome!', user.name);
-            document.getElementById('authScreen').style.display = 'none';
-            showLoadingScreen();
             await initializeApp();
             await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
             
@@ -5594,11 +5696,11 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
             ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
             document.getElementById('storiesTab').classList.remove('hidden');
             loadNotifications();
-            window._loadingDone?.();
-            setTimeout(() => { document.getElementById('loadingScreen').classList.add('hide'); setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 600); }, 500);
+            window.finishLoading();
+            loginWelcomeToast(user.name);
             return;
          } else {
-            showToast('error', 'Error', 'Wrong password');
+            showToast('error', 'Error', 'Wrong password'); restoreAuthScreen();
         }
     }
 });
@@ -6320,7 +6422,7 @@ function formatPostText(text) {
     if (!text) return '';
     let t = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     t = t.replace(/#([a-zA-Z0-9_]+)/g,'<span style="color:#3b82f6;font-weight:700;">#$1</span>');
-    t = t.replace(/(https?:\/\/[^\s<]+)/g,'<a href__="$1" target="_blank" style="color:#3b82f6;">$1</a>');
+    t = t.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:#3b82f6;">$1</a>');
     t = t.replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,'<span style="color:#3b82f6;">$1</span>');
     t = t.replace(/(?<![/"@='>])\b([a-zA-Z0-9][a-zA-Z0-9.-]*\.(co\.za|com|net|org|io|co|app|dev|xyz|beelzeapps\.co\.za))\b(?![^<]*>)/g,'<a href="https://$1" target="_blank" style="color:#3b82f6;">$1</a>');
     t = t.replace(/\n/g,'<br>');
@@ -7549,8 +7651,8 @@ function renderMessages(messages) {
 function formatMsgText(text) {
     if (!text) return '';
     let t = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    t = t.replace(/(https?:\/\/[^\s<]+)/g,'<a href__="$1" target="_blank" style="color:#93c5fd;text-decoration:underline;">$1</a>');
-    t = t.replace(/(?<![/"@='>])\b([a-zA-Z0-9][a-zA-Z0-9.-]*\.(co\.za|com|net|org|io|co|app|beelzeapps\.co\.za))\b(?![^<]*>)/g,'<a href__="https://$1" target="_blank" style="color:#93c5fd;text-decoration:underline;">$1</a>');
+    t = t.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:#93c5fd;text-decoration:underline;">$1</a>');
+    t = t.replace(/(?<![/"@='>])\b([a-zA-Z0-9][a-zA-Z0-9.-]*\.(co\.za|com|net|org|io|co|app|beelzeapps\.co\.za))\b(?![^<]*>)/g,'<a href="https://$1" target="_blank" style="color:#93c5fd;text-decoration:underline;">$1</a>');
     t = t.replace(/\n/g,'<br>');
     return t;
 }
@@ -7566,15 +7668,11 @@ msgInput.style.maxHeight = '44px';
 msgInput.style.overflowY = 'auto';
 msgInput.style.resize = 'none';
 msgInput.addEventListener('input', function() {
-    // Keep fixed height — never expand. Scroll handles long text.
-    this.style.height = '44px';
+    // Let the textarea grow vertically as you type / press Enter for new lines
+    this.style.height = 'auto';
+    this.style.height = Math.max(44, this.scrollHeight) + 'px';
 });
-msgInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
-});
+// Enter key creates a new line (vertical space) — only the send button sends
 
 document.getElementById('attachmentBtn').addEventListener('click', () => document.getElementById('attachmentOptions').classList.toggle('active'));
 document.querySelectorAll('.attachment-option').forEach(o => o.addEventListener('click', () => {
@@ -7996,22 +8094,22 @@ async function showUserProfile(userId, user) {
 
 
 
-document.getElementById('closeUserProfileBtn').addEventListener('click', () => document.getElementById('userProfileModal').classList.remove('active'));
-document.getElementById('userProfileModal').addEventListener('click', e => {
-    if (e.target === document.getElementById('userProfileModal')) document.getElementById('userProfileModal').classList.remove('active');
+document.getElementById('closeUserProfileBtn')?.addEventListener('click', () => document.getElementById('userProfileModal')?.classList.remove('active'));
+document.getElementById('userProfileModal')?.addEventListener('click', e => {
+    if (e.target === document.getElementById('userProfileModal')) document.getElementById('userProfileModal')?.classList.remove('active');
 });
-document.getElementById('startChatFromProfileBtn').addEventListener('click', () => {
-    document.getElementById('userProfileModal').classList.remove('active');
+document.getElementById('startChatFromProfileBtn')?.addEventListener('click', () => {
+    document.getElementById('userProfileModal')?.classList.remove('active');
     if (currentViewedUserId) startChatDirectly(currentViewedUserId);
 });
-document.getElementById('userProfileAvatar').addEventListener('click', () => {
+document.getElementById('userProfileAvatar')?.addEventListener('click', () => {
     if (currentViewedUserId && allUsers[currentViewedUserId]?.profilePic) viewImage(allUsers[currentViewedUserId].profilePic);
 });
-document.getElementById('chatUserInfo').addEventListener('click', () => {
+document.getElementById('chatUserInfo')?.addEventListener('click', () => {
     if (currentChatUser && !currentChatUser.isGroup) showUserProfile(currentChatUser.id, currentChatUser);
 });
 
-document.getElementById('blockBtn').addEventListener('click', async () => {
+document.getElementById('blockBtn')?.addEventListener('click', async () => {
     const uid = currentViewedUserId;
     const bl = currentUser.blockedUsers || [];
     const isBlocked = bl.includes(uid);
@@ -8020,15 +8118,14 @@ document.getElementById('blockBtn').addEventListener('click', async () => {
     currentUser.blockedUsers = newBl;
     localStorage.setItem('BeelzeChat', JSON.stringify(currentUser));
     showToast('success', isBlocked ? 'Unblocked' : 'Blocked', 'Done');
-    document.getElementById('userProfileModal').classList.remove('active');
+    document.getElementById('userProfileModal')?.classList.remove('active');
     if (!isBlocked && currentChatId) {
         const chatParticipants = currentChatId.split('_');
-        if (chatParticipants.includes(uid)) document.getElementById('closeChatBtn').click();
+        if (chatParticipants.includes(uid)) document.getElementById('closeChatBtn')?.click();
     }
     loadChats();
     renderUsers();
 });
-
 
 
 
@@ -8488,10 +8585,10 @@ document.getElementById('accountSwitcherBtn').addEventListener('click', () => {
                 `<img src="${acc.profilePic}">` :
                 `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(acc.name)}&background=000&color=fff&size=128">`;
             div.innerHTML = `
-                <div class="account-avatar">${av}</div>
-                <div class="account-info"><div class="account-name">${acc.name}</div><div class="account-identifier">${acc.identifier}</div></div>
-                <button class="account-remove-btn"><i data-lucide="x"></i></button>
-            `;
+        <div class="account-avatar">${av}</div>
+        <div class="account-info"><div class="account-name">${acc.name}</div><div class="account-identifier">${acc.identifier}</div></div>
+        <button class="account-remove-btn"><i data-lucide="trash-2"></i></button>
+        `;
             div.querySelector('.account-remove-btn').addEventListener('click', e => {
                 e.stopPropagation();
                 let a = JSON.parse(localStorage.getItem('sxchatAccounts') || '[]');
@@ -8559,10 +8656,8 @@ document.getElementById('accountSwitcherBtn').addEventListener('click', () => {
                 document.getElementById('realLoadingPct').textContent = '100%';
                 document.getElementById('innerPhoneBar').style.width = '100%';
                 document.getElementById('innerPhonePct').textContent = 'Ready!';
-                setTimeout(() => {
-                    document.getElementById('loadingScreen').classList.add('hide');
-                    setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 600);
-                }, 500);
+                window.finishLoading();
+                loginWelcomeToast(currentUser.name);
             });
             list.appendChild(div);
             
@@ -9829,46 +9924,6 @@ async function bulkDeleteMgmtPosts() {
   showToast('success', 'Done!', `${checked.length} posts deleted`);
   loadPosts();
 }
-
-
-
-
-// SYSTEM FOR REAL LOADING SYSTEM 
-
-(function() {
-  let pct = 0;
-  const bar = document.getElementById('realLoadingBar');
-  const barTxt = document.getElementById('realLoadingPct');
-  const innerBar = document.getElementById('innerPhoneBar');
-  const innerTxt = document.getElementById('innerPhonePct');
-
-  function setProgress(val) {
-    if (!bar) return;
-    bar.style.width = val + '%';
-    if (barTxt) barTxt.textContent = val + '%';
-    if (innerBar) innerBar.style.width = val + '%';
-    if (innerTxt) innerTxt.textContent = val < 100 ? 'Loading ' + val + '%' : 'Ready!';
-  }
-
-  const interval = setInterval(() => {
-    // Simulate realistic loading: fast at start, slower near end
-    if (pct < 30) pct += Math.random() * 8;
-    else if (pct < 60) pct += Math.random() * 5;
-    else if (pct < 85) pct += Math.random() * 3;
-    else if (pct < 95) pct += Math.random() * 1.5;
-    else if (pct < 99) pct += 0.2;
-
-    pct = Math.min(pct, 99);
-    setProgress(Math.floor(pct));
-  }, 200);
-
-  // When app is fully ready, jump to 100%
-  window._loadingDone = function() {
-    clearInterval(interval);
-    setProgress(100);
-  };
-})();
-
 
 
 
