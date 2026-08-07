@@ -1,0 +1,32 @@
+{
+  "name": "BeelzeChat",
+  "short_name": "BeelzeChat",
+  "description": "Chat free without limitation",
+  "start_url": "./index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": " https://i.postimg.cc/mD0dbHM0/1000287857.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": " https://i.postimg.cc/mD0dbHM0/1000287857.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.postimg.cc/mD0dbHM0/1000287857.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
