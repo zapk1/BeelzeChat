@@ -21,6 +21,23 @@
       appId: '9b383224-0913-40ee-a7c7-47cf0ff81bc6',
       welcomeNotification: { title: 'BeelzeChat', message: 'Alerts on for messages, likes & comments.' }
     });
+    // Explicitly ask for permission + subscribe on first user gesture (required by browsers)
+    async function bzOptInPush() {
+      try {
+        if (OneSignal.Notifications && !OneSignal.Notifications.permission) {
+          await OneSignal.Notifications.requestPermission();
+        }
+        if (OneSignal.User && OneSignal.User.PushSubscription && !OneSignal.User.PushSubscription.optedOut) {
+          await OneSignal.User.PushSubscription.optIn();
+        }
+        if (typeof window.saveOneSignalId === 'function') window.saveOneSignalId();
+      } catch (e) { console.log('OneSignal opt-in error', e); }
+    }
+    window.bzOptInPush = bzOptInPush;
+    // Browsers require a user gesture — try on first click/tap
+    const _optInOnce = () => { bzOptInPush(); document.removeEventListener('click', _optInOnce); document.removeEventListener('touchend', _optInOnce); };
+    document.addEventListener('click', _optInOnce);
+    document.addEventListener('touchend', _optInOnce);
     async function saveOneSignalId() {
       try {
         let pid = null;
@@ -4431,40 +4448,10 @@ form input[type="text"] {
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+<!-- FCM removed — using OneSignal for push only -->
 
-<!-- ===== ONE SIGNAL WEB SDK ===== -->
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" async></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  window.OneSignalDeferred.push(async function() {
-    await OneSignal.init({
-      appId: '9b383224-0913-40ee-a7c7-47cf0ff81bc6',
-      welcomeNotification: { title: 'BeelzeChat', message: 'Alerts on for messages, likes & comments.' }
-    });
-    // Save the player (subscription) ID to this user's Firestore doc
-    async function saveOneSignalId() {
-      try {
-        let playerId = null;
-        if (OneSignal.User && OneSignal.User.PushSubscription) playerId = OneSignal.User.PushSubscription.id;
-        if (!playerId && OneSignal.getUserId) playerId = await new Promise(r => OneSignal.getUserId(r));
-        if (!playerId) return;
-        const saved = localStorage.getItem('sxchatUser');
-        if (!saved) return;
-        const u = JSON.parse(saved);
-        if (u && u.id && u.oneSignalId !== playerId) {
-          await db.collection('users').doc(u.id).update({ oneSignalId: playerId });
-          u.oneSignalId = playerId;
-          localStorage.setItem('sxchatUser', JSON.stringify(u));
-          console.log('🔔 OneSignal player id saved:', playerId);
-        }
-      } catch(e) { console.log('OneSignal save error', e); }
-    }
-    window.saveOneSignalId = saveOneSignalId;
-    if (OneSignal.User && OneSignal.User.PushSubscription) OneSignal.User.PushSubscription.addEventListener('change', saveOneSignalId);
-    setTimeout(saveOneSignalId, 3000);
-  });
-</script>
+
+
 
 <script>
 // ===========================================================
@@ -5479,7 +5466,18 @@ auth.onAuthStateChanged(async (firebaseUser) => {
         });
 
 window.finishLoading();
-if (window._justLoggedIn) { loginWelcomeToast(currentUser ? currentUser.name : ''); window._justLoggedIn = false; }
+if (window._justLoggedIn) {
+    window._justLoggedIn = false;
+    // Subscribe this device to OneSignal, then save the player id
+    if (typeof window.bzOptInPush === 'function') window.bzOptInPush();
+    if (typeof window.saveOneSignalId === 'function') window.saveOneSignalId();
+    // Give OneSignal a moment to register, then fire a welcome push
+    setTimeout(() => {
+        if (currentUser?.oneSignalId) {
+            sendPushNotification(currentUser.oneSignalId, 'BeelzeChat', '👋 Welcome back, ' + (currentUser.name || '') + '! Alerts are on.');
+        }
+    }, 2500);
+}
 
 
     } else {
@@ -8636,7 +8634,12 @@ document.getElementById('accountSwitcherBtn').addEventListener('click', () => {
                 document.getElementById('innerPhoneBar').style.width = '100%';
                 document.getElementById('innerPhonePct').textContent = 'Ready!';
                 window.finishLoading();
-                loginWelcomeToast(currentUser.name);
+                // Re-bind the OneSignal player id to the NEW account (pushes arrive even after switching)
+                if (typeof window.saveOneSignalId === 'function') window.saveOneSignalId();
+                // Fire a REAL OneSignal push to this device announcing the switch
+                if (currentUser?.oneSignalId) {
+                    sendPushNotification(currentUser.oneSignalId, 'BeelzeChat', '🔄 Switched to ' + (currentUser.name || '') + ' — alerts are on.');
+                }
             });
             list.appendChild(div);
             
