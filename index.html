@@ -3756,6 +3756,37 @@ form input[type="text"] {
             </div>
             <div style="font-size:11px;color:#16a34a;margin-top:6px;text-align:center;">Share this ID so people can find you in Search</div>
         </div>
+        <!-- ACCOUNT SECURITY: Login Email + Password -->
+        <div style="margin:12px 0;background:#0f172a;border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:6px;color:white;font-weight:800;font-size:13px;margin-bottom:2px;">
+                <i data-lucide="shield-check" style="width:16px;height:16px;color:#22c55e;"></i> Account Security
+            </div>
+            <!-- Login Email -->
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,0.06);border-radius:10px;">
+                <i data-lucide="at-sign" style="width:20px;height:20px;color:#60a5fa;flex-shrink:0;"></i>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Login Email</div>
+                    <div id="profileAccountEmail" style="color:white;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Not set</div>
+                </div>
+                <button onclick="editAccountEmail()" style="background:rgba(96,165,250,0.15);border:none;border-radius:8px;padding:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i data-lucide="pencil" style="width:16px;height:16px;color:#60a5fa;"></i>
+                </button>
+            </div>
+            <!-- Password -->
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,0.06);border-radius:10px;">
+                <i data-lucide="key" style="width:20px;height:20px;color:#fbbf24;flex-shrink:0;"></i>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Password</div>
+                    <div id="profilePasswordDisplay" style="color:white;font-size:14px;font-weight:600;letter-spacing:2px;" data-visible="false">••••••</div>
+                </div>
+                <button id="toggleProfilePwBtn" onclick="toggleProfilePwVisibility()" style="background:rgba(255,255,255,0.06);border:none;border-radius:8px;padding:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i data-lucide="eye" style="width:16px;height:16px;color:#94a3b8;"></i>
+                </button>
+                <button onclick="editAccountPassword()" style="background:rgba(251,191,36,0.15);border:none;border-radius:8px;padding:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i data-lucide="pencil" style="width:16px;height:16px;color:#fbbf24;"></i>
+                </button>
+            </div>
+        </div>
         <div style="margin:12px 0;display:flex;flex-direction:column;gap:10px;" id="profileContactFields">
             <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
                 <i data-lucide="phone" style="width:20px;height:20px;color:#3b82f6;flex-shrink:0;"></i>
@@ -4503,14 +4534,10 @@ const db = firebase.firestore();
 let storage = null;
 let auth = null;
 
-document.addEventListener('click', function(e){
-    if (!e.target.closest('#profileBtn')) return;
-    if (!currentUser) {
-        e.stopPropagation(); e.stopImmediatePropagation();
-        showToast('info', 'Sign in', 'Log in to view your profile');
-        requireAuth('view your profile');
-    }
-}, true);
+// Removed: capture-phase profile blocker. It checked the in-memory `currentUser`
+// which is null during the Firebase Auth resolve window, so it blocked the real
+// profile handler for logged-in users. The bubble-phase handler already guards
+// with requireAuth() (localStorage check), so this is no longer needed.
 let googleProvider = null;
 try {
     storage = firebase.storage();
@@ -5619,9 +5646,17 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     showLoadingScreen();
     window._justLoggedIn = true;
 
-    // Check Firestore first to get email
-    const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
-    const ud = await db.collection('users').doc(userId).get();
+        // Check Firestore first to get email
+    let userId = identifier.replace(/[.#$\[\]@+]/g, '_');
+    let ud = await db.collection('users').doc(userId).get();
+    // Fallback: the user changed their login email — look up by the identifier field
+    if (!ud.exists) {
+        const byEmail = await db.collection('users').where('identifier', '==', identifier).limit(1).get();
+        if (!byEmail.empty) {
+            userId = byEmail.docs[0].id;
+            ud = byEmail.docs[0];
+        }
+    }
     if (!ud.exists) { showToast('error', 'Error', 'Not found'); restoreAuthScreen(); return; }
 
 
@@ -5881,7 +5916,25 @@ document.getElementById('guestBtn').addEventListener('click', () => {
     if (btn) { btn.innerHTML = '<i data-lucide="user-x" style="width:20px;height:20px;color:white;"></i>'; btn.style.background = '#94a3b8'; }
     lucide.createIcons();
     showToast('info', 'Guest Mode', 'Sign in to comment, message & more');
+
+    // Give guest a lightweight in-memory user so the existing load functions
+    // (which reference currentUser.id / currentUser.blockedUsers) don't crash.
+    // This is NOT a real account — nothing is written to Firestore or localStorage.
+    currentUser = {
+        id: 'guest_' + Date.now(),
+        name: 'Guest',
+        identifier: 'guest',
+        blockedUsers: [],
+        profilePic: null,
+        bio: 'Browsing as guest'
+    };
+
+    // Trigger the existing lazy loaders so guest sees posts + people
+    // (same functions login uses — no changes to how data loads).
+    if (typeof loadAllPosts === 'function') loadAllPosts();
+    if (typeof loadAllUsers === 'function') loadAllUsers();
 });
+
 
 function updateProfileButton() {
     const btn = document.getElementById('profileBtn');
@@ -6185,6 +6238,155 @@ async function editProfileField(field) {
     document.getElementById('profile' + field.charAt(0).toUpperCase() + field.slice(1)).textContent = val.trim() || 'Not set';
     showToast('success', 'Saved!', `${labels[field]} updated`);
     lucide.createIcons();
+}
+
+// ============================================================
+// ACCOUNT SECURITY — change login email + password
+// ============================================================
+function toggleProfilePwVisibility() {
+    const el = document.getElementById('profilePasswordDisplay');
+    const btn = document.getElementById('toggleProfilePwBtn');
+    if (!el || !btn) return;
+    const show = el.dataset.visible === 'true';
+    if (show) {
+        el.textContent = '••••••';
+        el.dataset.visible = 'false';
+    } else {
+        el.textContent = currentUser.password || '(set via Google)';
+        el.dataset.visible = 'true';
+    }
+    const oldIcon = btn.querySelector('svg, i[data-lucide]');
+    const newIcon = document.createElement('i');
+    newIcon.setAttribute('data-lucide', show ? 'eye' : 'eye-off');
+    newIcon.style.width = '16px';
+    newIcon.style.height = '16px';
+    newIcon.style.color = '#94a3b8';
+    if (oldIcon) oldIcon.replaceWith(newIcon);
+    lucide.createIcons();
+}
+
+
+function showCloudPrompt(title, defaultValue = '', isPassword = false) {
+    return new Promise(resolve => {
+        if (!document.getElementById('cloudPromptStyles')) {
+            const s = document.createElement('style');
+            s.id = 'cloudPromptStyles';
+            s.textContent = '@keyframes cloudPop{0%{transform:scale(0.85);opacity:0}100%{transform:scale(1);opacity:1}}';
+            document.head.appendChild(s);
+        }
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;';
+
+        const modal = document.createElement('div');
+        modal.style.cssText = 'background:#ffffff;border-radius:28px;padding:28px 24px 20px;width:300px;box-shadow:0 20px 60px rgba(0,0,0,0.25),0 8px 24px rgba(0,0,0,0.12);animation:cloudPop 0.25s cubic-bezier(0.34,1.56,0.64,1);';
+
+        const heading = document.createElement('div');
+        heading.textContent = title;
+        heading.style.cssText = 'font-size:16px;font-weight:700;color:#0f172a;text-align:center;margin-bottom:20px;line-height:1.3;';
+
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'position:relative;margin-bottom:20px;';
+
+        const input = document.createElement('input');
+        input.type = isPassword ? 'password' : 'text';
+        input.value = defaultValue;
+        input.style.cssText = 'width:100%;box-sizing:border-box;border:2px solid #e2e8f0;border-radius:14px;padding:12px 14px;font-size:15px;color:#0f172a;outline:none;transition:border-color 0.2s;' + (isPassword ? 'padding-right:42px;' : '');
+        input.addEventListener('focus', () => { input.style.borderColor = '#3b82f6'; });
+        input.addEventListener('blur', () => { input.style.borderColor = '#e2e8f0'; });
+        wrap.appendChild(input);
+
+        if (isPassword) {
+            const eye = document.createElement('button');
+            eye.type = 'button';
+            eye.style.cssText = 'position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;';
+            eye.innerHTML = '<i data-lucide="eye" style="width:18px;height:18px;color:#94a3b8;"></i>';
+            eye.addEventListener('click', () => {
+                const showing = input.type === 'text';
+                input.type = showing ? 'password' : 'text';
+                eye.innerHTML = '<i data-lucide="' + (showing ? 'eye' : 'eye-off') + '" style="width:18px;height:18px;color:#94a3b8;"></i>';
+                lucide.createIcons();
+            });
+            wrap.appendChild(eye);
+        }
+
+        const btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex;gap:10px;justify-content:flex-end;';
+        const cancelBtn = document.createElement('button');
+        cancelBtn.textContent = 'CANCEL';
+        cancelBtn.style.cssText = 'padding:10px 18px;border:none;border-radius:12px;background:#f1f5f9;color:#64748b;font-weight:700;font-size:14px;cursor:pointer;';
+        const okBtn = document.createElement('button');
+        okBtn.textContent = 'OK';
+        okBtn.style.cssText = 'padding:10px 22px;border:none;border-radius:12px;background:#3b82f6;color:white;font-weight:700;font-size:14px;cursor:pointer;';
+
+        btnRow.appendChild(cancelBtn);
+        btnRow.appendChild(okBtn);
+        modal.appendChild(heading);
+        modal.appendChild(wrap);
+        modal.appendChild(btnRow);
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        lucide.createIcons();
+        setTimeout(() => { input.focus(); input.select(); }, 100);
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') okBtn.click(); });
+
+        const close = (val) => { overlay.remove(); resolve(val); };
+        cancelBtn.onclick = () => close(null);
+        okBtn.onclick = () => close(input.value.trim());
+        overlay.addEventListener('click', e => { if (e.target === overlay) close(null); });
+    });
+}
+
+
+
+async function editAccountEmail() {
+    const current = currentUser.identifier || '';
+    const val = await showCloudPrompt('Enter your new login email:', current, false);
+    if (val === null) return;
+    const newEmail = val.trim();
+    if (!newEmail || !newEmail.includes('@')) { showToast('error', 'Invalid', 'Enter a valid email'); return; }
+    if (newEmail === current) { showToast('info', 'No change', 'Email is the same'); return; }
+    showToast('info', 'Updating...', 'Changing your login email');
+    try {
+        // 1. Firestore — keep the same doc id so all data stays linked
+        await db.collection('users').doc(currentUser.id).update({ identifier: newEmail, email: newEmail });
+        // 2. Firebase Auth — update the auth email too
+        const fbUser = auth.currentUser;
+        if (fbUser && fbUser.email) {
+            try { await fbUser.updateEmail(newEmail); } catch(e) { console.log('Auth email update:', e.message); }
+        }
+        // 3. Local state + UI
+        currentUser.identifier = newEmail;
+        currentUser.email = newEmail;
+        localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
+        document.getElementById('profileAccountEmail').textContent = newEmail;
+        document.getElementById('profileIdentifier').textContent = newEmail;
+        document.getElementById('profileEmail').textContent = newEmail;
+        showToast('success', 'Email Changed!', 'Use your new email to log in next time');
+    } catch(e) {
+        showToast('error', 'Error', e.message);
+    }
+}
+
+async function editAccountPassword() {
+    const val = await showCloudPrompt('Enter your new password (6+ chars):', '', true);
+    if (val === null) return;
+    const newPw = val.trim();
+    if (newPw.length < 6) { showToast('error', 'Too short', 'Password must be 6+ chars'); return; }
+    showToast('info', 'Updating...', 'Changing your password');
+    try {
+        await db.collection('users').doc(currentUser.id).update({ password: newPw });
+        const fbUser = auth.currentUser;
+        if (fbUser && fbUser.email) {
+            try { await fbUser.updatePassword(newPw); } catch(e) { console.log('Auth pw update:', e.message); }
+        }
+        currentUser.password = newPw;
+        localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
+        const el = document.getElementById('profilePasswordDisplay');
+        if (el && el.dataset.visible === 'true') el.textContent = newPw;
+        showToast('success', 'Password Changed!', 'Use your new password to log in next time');
+    } catch(e) {
+        showToast('error', 'Error', e.message);
+    }
 }
 
 
@@ -7901,6 +8103,18 @@ document.getElementById('profileBtn').addEventListener('click', () => {
     document.getElementById('profilePhone').textContent = currentUser.phone || 'Not set';
     document.getElementById('profileWebsite').textContent = currentUser.website || 'Not set';
     document.getElementById('profileEmail').textContent = currentUser.email || currentUser.identifier || 'Not set';
+    document.getElementById('profileAccountEmail').textContent = currentUser.identifier || 'Not set';
+    const pwDisp = document.getElementById('profilePasswordDisplay');
+    if (pwDisp) { pwDisp.textContent = '••••••'; pwDisp.dataset.visible = 'false'; }
+    const pwToggleIcon = document.querySelector('#toggleProfilePwBtn svg, #toggleProfilePwBtn i[data-lucide]');
+    if (pwToggleIcon) {
+        const ni = document.createElement('i');
+        ni.setAttribute('data-lucide', 'eye');
+        ni.style.width = '16px';
+        ni.style.height = '16px';
+        ni.style.color = '#94a3b8';
+        pwToggleIcon.replaceWith(ni);
+    }
     
     
     
@@ -8681,6 +8895,30 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
     modal.style.display = 'flex';
     lucide.createIcons();
     document.getElementById('logoutStay').onclick = () => { modal.style.display = 'none'; };
+
+    // Real logout — sign out, clear session, return to auth screen
+    document.getElementById('logoutConfirm').onclick = async () => {
+        modal.style.display = 'none';
+        document.getElementById('profileModal').classList.remove('active');
+        document.getElementById('app').classList.remove('active');
+        showLoadingScreen();
+        if (currentUser) {
+            try { await db.collection('users').doc(currentUser.id).update({ online: false }); } catch(e) {}
+        }
+        localStorage.removeItem('sxchatUser');
+        currentUser = null;
+        try { await auth.signOut(); } catch(e) {}
+        setTimeout(() => {
+            window._loadingDone?.();
+            document.getElementById('authScreen').style.display = 'flex';
+            showLogin();
+            setTimeout(() => {
+                const ls = document.getElementById('loadingScreen');
+                ls.classList.add('hide');
+                setTimeout(() => { ls.style.display = 'none'; }, 600);
+            }, 500);
+        }, 1200);
+    };
 
     // Continue as Guest — show loading briefly, then open app as guest
     document.getElementById('logoutGuest').onclick = async () => {
