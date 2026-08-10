@@ -178,9 +178,7 @@
     0% { background-position: -468px 0; }
     100% { background-position: 468px 0; }
 }
-#postsSkeleton > div > div,
-#postsSkeleton > div > div > div,
-#postsSkeleton > div > div > div > div {
+#postsSkeleton .sk-box {
     background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%) !important;
     background-size: 936px 100% !important;
     animation: shimmer 1.4s ease-in-out infinite !important;
@@ -3412,10 +3410,10 @@ form input[type="text"] {
             
             <!-- VIEW TOGGLE: Feed vs Grid — always visible on Posts tab -->
 <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin:10px 20px 6px;background:#f1f5f9;border-radius:14px;padding:4px;">
-    <button id="viewModeFeed" onclick="setPostViewMode('feed')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;border:none;border-radius:10px;background:transparent;color:#64748b;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.2s;">
+        <button id="viewModeFeed" onclick="setPostViewMode('feed')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;border:none;border-radius:10px;background:#000;color:white;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.2s;">
         <i data-lucide="list" style="width:16px;height:16px;"></i> Feed
     </button>
-    <button id="viewModeGrid" onclick="setPostViewMode('grid')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;border:none;border-radius:10px;background:#000;color:white;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.2s;">
+    <button id="viewModeGrid" onclick="setPostViewMode('grid')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;border:none;border-radius:10px;background:transparent;color:#64748b;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.2s;">
         <i data-lucide="grid-3x3" style="width:16px;height:16px;"></i> Grid
     </button>
 </div>
@@ -3442,28 +3440,89 @@ form input[type="text"] {
             
             
             <div id="newPostsBtn" onclick="this.style.display='none';loadPosts();" style="display:none;position:sticky;top:0;z-index:100;background:#ef4444;color:white;border:none;border-radius:12px;padding:10px;font-weight:700;text-align:center;cursor:pointer;margin:4px;display:none;align-items:center;justify-content:center;gap:6px;"><i data-lucide="bell-ring" style="width:16px;height:16px;"></i> New Posts - Tap to refresh</div>
-      <div id="postsList" style="display:none;">
+            <div id="postsList" style="display:block;">
                 <!-- Dynamic posts will load here (FEED VIEW) -->
             </div>
 
 
          
             
-<!-- SKELETON LOADER — 3-COLUMN GRID (matches grid view) -->
-            <div id="postsSkeleton" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:3px;padding:4px;">
-                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-            </div>
+<!-- SKELETON LOADER — FEED VIEW (vertical post cards) -->
+<div id="postsSkeleton" style="display:none;flex-direction:column;">
+  <div style="background:#fff;padding:16px;display:flex;flex-direction:column;gap:12px;border-bottom:8px solid #f1f5f9;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="sk-box" style="width:48px;height:48px;border-radius:50%;flex-shrink:0;"></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+        <div class="sk-box" style="height:14px;width:40%;border-radius:6px;"></div>
+        <div class="sk-box" style="height:11px;width:25%;border-radius:6px;"></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="sk-box" style="height:13px;width:90%;border-radius:6px;"></div>
+      <div class="sk-box" style="height:13px;width:70%;border-radius:6px;"></div>
+    </div>
+    <div class="sk-box" style="width:calc(100% + 32px);margin-left:-16px;height:220px;"></div>
+    <div style="display:flex;gap:8px;">
+      <div class="sk-box" style="flex:1;height:36px;border-radius:8px;"></div>
+      <div class="sk-box" style="flex:1;height:36px;border-radius:8px;"></div>
+      <div class="sk-box" style="flex:1;height:36px;border-radius:8px;"></div>
+    </div>
+  </div>
+  <div style="background:#fff;padding:16px;display:flex;flex-direction:column;gap:12px;border-bottom:8px solid #f1f5f9;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="sk-box" style="width:48px;height:48px;border-radius:50%;flex-shrink:0;"></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+        <div class="sk-box" style="height:14px;width:35%;border-radius:6px;"></div>
+        <div class="sk-box" style="height:11px;width:20%;border-radius:6px;"></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="sk-box" style="height:13px;width:85%;border-radius:6px;"></div>
+      <div class="sk-box" style="height:13px;width:55%;border-radius:6px;"></div>
+    </div>
+    <div class="sk-box" style="width:calc(100% + 32px);margin-left:-16px;height:180px;"></div>
+    <div style="display:flex;gap:8px;">
+      <div class="sk-box" style="flex:1;height:36px;border-radius:8px;"></div>
+      <div class="sk-box" style="flex:1;height:36px;border-radius:8px;"></div>
+      <div class="sk-box" style="flex:1;height:36px;border-radius:8px;"></div>
+    </div>
+  </div>
+  <div style="background:#fff;padding:16px;display:flex;flex-direction:column;gap:12px;border-bottom:8px solid #f1f5f9;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="sk-box" style="width:48px;height:48px;border-radius:50%;flex-shrink:0;"></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+        <div class="sk-box" style="height:14px;width:45%;border-radius:6px;"></div>
+        <div class="sk-box" style="height:11px;width:30%;border-radius:6px;"></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="sk-box" style="height:13px;width:95%;border-radius:6px;"></div>
+      <div class="sk-box" style="height:13px;width:80%;border-radius:6px;"></div>
+    </div>
+    <div class="sk-box" style="width:calc(100% + 32px);margin-left:-16px;height:240px;"></div>
+    <div style="display:flex;gap:8px;">
+      <div class="sk-box" style="flex:1;height:36px;border-radius:8px;"></div>
+      <div class="sk-box" style="flex:1;height:36px;border-radius:8px;"></div>
+      <div class="sk-box" style="flex:1;height:36px;border-radius:8px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SKELETON LOADER — GRID VIEW (3-column square tiles) -->
+<div id="postsGridSkeleton" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:3px;padding:4px;">
+  <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+  <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+  <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+  <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+  <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+  <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+  <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+  <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+  <div style="aspect-ratio:1;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
+</div>
             
             
-            <div id="postsGrid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;padding:4px;">
+            <div id="postsGrid" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:3px;padding:4px;">
                 <!-- Dynamic posts will load here (GRID VIEW) -->
             </div>
 
@@ -4597,19 +4656,22 @@ function closeAuthScreen() {
 // SKELETON LOADERS (YouTube-style shimmer)
 // ============================================================
 function showPostsSkeleton() {
-    const sk = document.getElementById('postsSkeleton');
+    const feedSk = document.getElementById('postsSkeleton');
+    const gridSk = document.getElementById('postsGridSkeleton');
     const list = document.getElementById('postsList');
     const grid = document.getElementById('postsGrid');
-    // Always render as a 3-column grid skeleton (matches the default view).
-    // Never reference currentViewMode here — it's declared lower in the file
-    // and this runs inside openAppInstantly before that line executes.
-    if (sk) sk.style.display = 'grid';
+    // Startup default is always Feed — show the feed skeleton.
+    // (currentViewMode is declared lower in the file and not yet initialized here.)
+    if (feedSk) feedSk.style.display = 'flex';
+    if (gridSk) gridSk.style.display = 'none';
     if (list) list.style.display = 'none';
     if (grid) grid.style.display = 'none';
 }
 function hidePostsSkeleton() {
-    const sk = document.getElementById('postsSkeleton');
-    if (sk) sk.style.display = 'none';
+    const feedSk = document.getElementById('postsSkeleton');
+    const gridSk = document.getElementById('postsGridSkeleton');
+    if (feedSk) feedSk.style.display = 'none';
+    if (gridSk) gridSk.style.display = 'none';
 }
 
 function hideChatsSkeleton() {
@@ -4772,10 +4834,18 @@ window.finishLoading = function() {
     if (rp) rp.textContent = '100%';
     if (ipb) ipb.style.width = '100%';
     if (ipt) ipt.textContent = 'Ready!';
-    const ls = document.getElementById('loadingScreen');
-    if (ls) { ls.classList.add('hide'); ls.style.display = 'none'; }
+    // Wait for the app to actually paint its content before fading the loader
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            const ls = document.getElementById('loadingScreen');
+            if (ls) {
+                ls.classList.add('hide');
+                setTimeout(() => { ls.style.display = 'none'; }, 600);
+            }
+        });
+    });
 };
-window._loadingDone = window.finishLoading
+window._loadingDone = window.finishLoading;
 
 
 
@@ -6673,8 +6743,10 @@ async function loadAllPosts() {
 
 
 if (!alreadyLoaded) {
-        const skel = document.getElementById('postsSkeleton');
-        if (skel) skel.style.display = 'block';
+        const feedSk = document.getElementById('postsSkeleton');
+        const gridSk = document.getElementById('postsGridSkeleton');
+        if (currentViewMode === 'grid') { if (gridSk) gridSk.style.display = 'grid'; if (feedSk) feedSk.style.display = 'none'; }
+        else { if (feedSk) feedSk.style.display = 'flex'; if (gridSk) gridSk.style.display = 'none'; }
         pl.innerHTML = '';
     }
 
@@ -6699,8 +6771,7 @@ async function loadMorePosts() {
         }
 
 // Hide skeleton
-        const skel = document.getElementById('postsSkeleton');
-        if (skel) skel.style.display = 'none';
+        hidePostsSkeleton();
         // Reveal the correct container for the active view mode
         if (currentViewMode === 'grid') {
             document.getElementById('postsGrid').style.display = 'grid';
@@ -6745,7 +6816,7 @@ async function loadMorePosts() {
 // ============================================================
 // VIEW MODE TOGGLE: FEED vs GRID
 // ============================================================
-let currentViewMode = 'grid';
+let currentViewMode = 'feed';
 
 function setPostViewMode(mode) {
     currentViewMode = mode;
@@ -6774,6 +6845,14 @@ function setPostViewMode(mode) {
         gridContainer.style.gap = '3px';
         if (loadMoreBtn) loadMoreBtn.style.display = _postsHasMore ? 'flex' : 'none';
         buildGridView();
+    }
+    // If a skeleton is still loading, swap to the one matching the new mode
+    const _feedSk = document.getElementById('postsSkeleton');
+    const _gridSk = document.getElementById('postsGridSkeleton');
+    const _skLoading = (_feedSk && _feedSk.style.display !== 'none') || (_gridSk && _gridSk.style.display !== 'none');
+    if (_skLoading) {
+        if (mode === 'grid') { if (_gridSk) _gridSk.style.display = 'grid'; if (_feedSk) _feedSk.style.display = 'none'; }
+        else { if (_feedSk) _feedSk.style.display = 'flex'; if (_gridSk) _gridSk.style.display = 'none'; }
     }
     lucide.createIcons();
 }
@@ -7629,19 +7708,23 @@ document.getElementById('createPostForm').addEventListener('submit', async e => 
         likesEnabled: allowLikes,
         expiresAt: Date.now() + (30  * 24 * 60 * 60 * 1000)
     };
+    try {
         const docRef = await db.collection('posts').add(newPostData);
-    showToast('success', 'Posted!', 'Live now');
-    document.getElementById('createPostModal').classList.remove('active');
-    document.getElementById('postText').value = '';
-    selectedPostImages = [];
-    document.getElementById('postImagesPreview').innerHTML = '';
-    // Insert new post at the top without reloading everything
-    const newPost = { id: docRef.id, ...newPostData };
-    const pl = document.getElementById('postsList');
-    const el = await createPostElement(newPost);
-    if (el && el.tagName) {
-        pl.insertBefore(el, pl.firstChild);
-        lucide.createIcons();
+        showToast('success', 'Posted!', 'Live now');
+        document.getElementById('createPostModal').classList.remove('active');
+        document.getElementById('postText').value = '';
+        selectedPostImages = [];
+        document.getElementById('postImagesPreview').innerHTML = '';
+        const newPost = { id: docRef.id, ...newPostData };
+        const pl = document.getElementById('postsList');
+        const el = await createPostElement(newPost);
+        if (el && el.tagName) {
+            pl.insertBefore(el, pl.firstChild);
+            lucide.createIcons();
+        }
+    } catch(err) {
+        showToast('error', 'Post failed', err.message || 'Check your connection and try again');
+        return;
     }
 
     // 🔔 Push "new post published" alert to ALL other users (oneSignalId saved on their doc)
@@ -7735,14 +7818,25 @@ document.getElementById('closeChatBtn').addEventListener('click', () => {
 async function loadMessages() {
     const chatId = currentChatId;
     if (msgUnsub) { msgUnsub(); msgUnsub = null; }
+    const mc = document.getElementById('messagesContainer');
+    // 1. Render cached messages INSTANTLY so the chat appears in <0.01s
+    const cached = getMsgs(chatId);
+    if (cached.length) {
+        renderMessages(cached);
+        mc.scrollTop = mc.scrollHeight;
+    }
+    // 2. Subscribe to Firestore for live updates
+    let _firstSnap = true;
     const unsub = db.collection('chats').doc(chatId).collection('messages').orderBy('timestamp', 'asc').onSnapshot(snap => {
         if (currentChatId !== chatId) return;
         const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        const mc = document.getElementById('messagesContainer');
-        const wasAtBottom = mc.scrollHeight - mc.scrollTop - mc.clientHeight < 50;
-        renderMessages(msgs);
-        if (wasAtBottom) {
-            mc.scrollTop = mc.scrollHeight;
+        saveMsgs(chatId, msgs);
+        if (_firstSnap) {
+            renderMessages(msgs);
+            mc.scrollTop = mc.scrollHeight;   // always land at the very bottom on open
+            _firstSnap = false;
+        } else {
+            renderMessages(msgs);              // renderMessages auto-scrolls if user was at bottom
         }
     });
     msgUnsub = unsub;
@@ -8802,7 +8896,6 @@ document.getElementById('accountSwitcherBtn').addEventListener('click', () => {
     document.getElementById('realLoadingPct').textContent = '0%';
     document.getElementById('innerPhoneBar').style.width = '0%';
     document.getElementById('innerPhonePct').textContent = 'Loading...';
-    // Restart the progress bar animation
     let _swPct = 0;
     const _swInterval = setInterval(() => {
         if (_swPct < 90) _swPct += Math.random() * 6;
@@ -8814,47 +8907,59 @@ document.getElementById('accountSwitcherBtn').addEventListener('click', () => {
         document.getElementById('innerPhonePct').textContent = 'Loading ' + v + '%';
     }, 200);
 
+    // 1. Kill ALL old listeners + close any open chat FIRST
+    unsubscribes.forEach(u => u());
+    unsubscribes = [];
+    if (msgUnsub) { msgUnsub(); msgUnsub = null; }
+    if (currentChatId) {
+        currentChatId = null; currentChatUser = null;
+        document.getElementById('chatView').classList.remove('active');
+    }
+
+    // 2. Mark old user offline
     await db.collection('users').doc(currentUser.id).update({ online: false });
-                
-                
-                const ud = await db.collection('users').doc(acc.id).get();
-                currentUser = { id: acc.id, ...ud.data() };
-                localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
-                let accs2 = JSON.parse(localStorage.getItem('sxchatAccounts')||'[]');
-                const ai2 = accs2.findIndex(a=>a.id===currentUser.id);
-                if (ai2>=0) { accs2[ai2].profilePic=currentUser.profilePic; localStorage.setItem('sxchatAccounts',JSON.stringify(accs2)); }
-                updateProfileButton();
-                loadNotifications();
-                
-                await db.collection('users').doc(acc.id).update({ online: true });
-                showToast('success', 'Switched!', currentUser.name);
-                document.getElementById('accountSwitcherModal').classList.remove('active');
-                updateProfileButton();
-                loadNotifications();
-                
-                
-                
-                unsubscribes.forEach(u => u());
-                unsubscribes = [];
-                if (currentChatId) document.getElementById('closeChatBtn').click();
-                allUsers = {};
-                
-                
-                await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
-                // HIDE LOADING SCREEN
-                clearInterval(_swInterval);
-                document.getElementById('realLoadingBar').style.width = '100%';
-                document.getElementById('realLoadingPct').textContent = '100%';
-                document.getElementById('innerPhoneBar').style.width = '100%';
-                document.getElementById('innerPhonePct').textContent = 'Ready!';
-                window.finishLoading();
-                // Re-bind the OneSignal player id to the NEW account (pushes arrive even after switching)
-                if (typeof window.saveOneSignalId === 'function') window.saveOneSignalId();
-                // Fire a REAL OneSignal push to this device announcing the switch
-                if (currentUser?.oneSignalId) {
-                    sendPushNotification(currentUser.oneSignalId, 'BeelzeChat', '🔄 Switched to ' + (currentUser.name || '') + ' — alerts are on.');
-                }
-            });
+
+    // 3. Clear ALL old DOM so the new account never shows the old account's data
+    allUsers = {};
+    document.getElementById('postsList').innerHTML = '';
+    document.getElementById('postsGrid').innerHTML = '';
+    document.getElementById('chatsList').innerHTML = '';
+    document.getElementById('groupsList').innerHTML = '';
+    document.getElementById('usersList').innerHTML = '';
+    _postsLastDoc = null; _postsLoading = false; _postsHasMore = true;
+    _usersLastDoc = null; _usersLoading = false; _usersHasMore = true; _loadedUserIds = new Set();
+
+    // 4. NOW load the new currentUser
+    const ud = await db.collection('users').doc(acc.id).get();
+    currentUser = { id: acc.id, ...ud.data() };
+    localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
+    let accs2 = JSON.parse(localStorage.getItem('sxchatAccounts')||'[]');
+    const ai2 = accs2.findIndex(a=>a.id===currentUser.id);
+    if (ai2>=0) { accs2[ai2].profilePic=currentUser.profilePic; localStorage.setItem('sxchatAccounts',JSON.stringify(accs2)); }
+
+    // 5. Update profile button + notifications for the NEW account
+    updateProfileButton();
+    loadNotifications();
+
+    await db.collection('users').doc(acc.id).update({ online: true });
+    showToast('success', 'Switched!', currentUser.name);
+    document.getElementById('accountSwitcherModal').classList.remove('active');
+
+    // 6. Reload everything for the NEW account
+    await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
+
+    clearInterval(_swInterval);
+    document.getElementById('realLoadingBar').style.width = '100%';
+    document.getElementById('realLoadingPct').textContent = '100%';
+    document.getElementById('innerPhoneBar').style.width = '100%';
+    document.getElementById('innerPhonePct').textContent = 'Ready!';
+    window.finishLoading();
+    if (typeof window.saveOneSignalId === 'function') window.saveOneSignalId();
+    if (currentUser?.oneSignalId) {
+        sendPushNotification(currentUser.oneSignalId, 'BeelzeChat', '🔄 Switched to ' + (currentUser.name || '') + ' — alerts are on.');
+    }
+});
+
             list.appendChild(div);
             
             
@@ -10192,11 +10297,16 @@ history.pushState(null, '', window.location.href);
         const vv = window.visualViewport;
         if (vv) {
             cv.style.height = vv.height + 'px';
+            cv.style.bottom = 'auto';
             const inp = document.getElementById('messageInput');
             if (inp && document.activeElement === inp) {
                 const mc = document.getElementById('messagesContainer');
                 if (mc) mc.scrollTop = mc.scrollHeight;
+                const ic = document.querySelector('.message-input-container');
+                if (ic) ic.scrollIntoView({ block: 'end', behavior: 'instant' });
             }
+        } else {
+            cv.style.height = window.innerHeight + 'px';
         }
     }
     if (window.visualViewport) {
@@ -10204,7 +10314,14 @@ history.pushState(null, '', window.location.href);
         window.visualViewport.addEventListener('scroll', fixKeyboard);
     }
     window.addEventListener('resize', fixKeyboard);
+    // Wrapped apps often don't fire visualViewport — catch focus/blur too
+    const msgInput = document.getElementById('messageInput');
+    if (msgInput) {
+        msgInput.addEventListener('focus', () => { setTimeout(fixKeyboard, 300); setTimeout(fixKeyboard, 700); });
+        msgInput.addEventListener('blur',  () => setTimeout(fixKeyboard, 300));
+    }
 })();
+
 
 
 </script>
