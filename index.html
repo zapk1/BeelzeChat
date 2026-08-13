@@ -3298,8 +3298,8 @@ form input[type="text"] {
             </button>
         </div>
         <!-- CENTERED APP NAME WITH LOGO (smaller to prevent overlap) -->
-        <h1 class="header-title" id="headerTitle" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;font-size:24px;">
-    <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698a063d7a95f71fa9ac96d7/5b4f163f7_1000287857.png" style="width:34px;height:34px;border-radius:8px;">
+        <h1 class="header-title" id="headerTitle" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;font-size:24px;white-space:nowrap;">
+    <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698a063d7a95f71fa9ac96d7/5b4f163f7_1000287857.png" style="width:42px;height:42px;border-radius:8px;position:absolute;left:-50px;top:50%;transform:translateY(-50%);">
     BeelzeChat
 </h1>
         <!-- RIGHT SIDE ICONS: bell + profile -->
@@ -8304,10 +8304,7 @@ async function sendMessage() {
     selectedFiles = [];
     renderUploadPreview();
 
-    // OPTIMISTIC: append just the ONE new message — no full rebuild
-    renderMessages([{ ...msg, id: 'tmp_' + Date.now() }], false);
-    const _mc = document.getElementById('messagesContainer');
-    _mc.scrollTop = _mc.scrollHeight;
+
 
     // Fire the OUTSIDE alert (push + in-app notification) INSTANTLY — do NOT wait for Firestore
     if (currentChatUser?.isGroup) {
