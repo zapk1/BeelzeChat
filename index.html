@@ -75,9 +75,9 @@
 <meta name="googlebot" content="index, follow">
 <meta name="author" content="BeelzeChat (CEO: ceo@beelzechat.co.za)">
 <meta name="theme-color" content="#3F51B5">
-<link rel="canonical" href__="https://beelzechat.co.za/">
-<link rel="icon" href__="https://i.postimg.cc/mD0dbHM0/1000287857.png" type="image/png">
-<link rel="apple-touch-icon" href__="https://i.postimg.cc/mD0dbHM0/1000287857.png">
+<link rel="canonical" href="https://beelzechat.co.za/">
+<link rel="icon" href="https://i.postimg.cc/mD0dbHM0/1000287857.png" type="image/png">
+<link rel="apple-touch-icon" href="https://i.postimg.cc/mD0dbHM0/1000287857.png">
 <meta name="google-site-verification" content="PASTE_YOUR_GOOGLE_VERIFICATION_CODE_HERE">
 
 <!-- ✅ OPEN GRAPH (WhatsApp / Facebook) -->
@@ -1188,15 +1188,21 @@ label[for="postImagesInput"].upload-btn {
         }
         
         .chat-view {
-            display: none;
-            height: 100vh;
-            height: 100dvh;
-            flex-direction: column;
-            background: #f8fafc;
-            /* Let keyboard push content up instead of covering it */
-            position: fixed;
-            inset: 0;
-        }
+    display: none;
+    height: 100vh;
+    height: 100dvh;
+    flex-direction: column;
+    background: #f8fafc;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* When the keyboard opens, shrink to visible viewport so the input stays on-screen */
+}
+.chat-view.active {
+    height: var(--bz-chat-height, 100dvh);
+}
         
         .chat-view.active { 
             display: flex; 
@@ -3724,7 +3730,7 @@ form input[type="text"] {
           
           <!-- SYSTEM FOR WRITING MESSAGES -->
           
-            <textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1" autocomplete="on" autocorrect="on" autocapitalize="sentences" spellcheck="true"></textarea>
+            <textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text"></textarea>
             
             <button class="send-btn" id="sendBtn">
                 <i data-lucide="send"></i>
@@ -3882,12 +3888,63 @@ form input[type="text"] {
           <a href="mailto:support@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Support: support@beelzechat.co.za</a>
           <a href="mailto:ads@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Advertise: ads@beelzechat.co.za</a>
           <a href="mailto:ceo@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Owner: ceo@beelzechat.co.za</a>
-          <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R500</b> • <a href__="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
+             <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R500</b> • <a href="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
         </div>
         </div>
     </div>
 </div>
 
+<!-- ===== FULL-SCREEN USER PROFILE (other users) ===== -->
+<div id="userProfileModal" class="modal-overlay" style="align-items:stretch;justify-content:stretch;padding:0;">
+    <div class="modal-content" style="width:100%;max-width:100%;height:100vh;border-radius:0;padding:0;margin:0;max-height:100vh;overflow-y:auto;background:#ffffff;display:flex;flex-direction:column;">
+        <!-- Sticky header -->
+        <div class="modal-header" style="background:#ffffff;padding:14px 16px;border-radius:0;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;align-items:center;gap:12px;">
+            <button class="close-btn" id="closeUserProfileBtn" style="background:#f1f5f9;border:none;flex-shrink:0;">
+                <i data-lucide="arrow-left" style="color:#0f172a;"></i>
+            </button>
+            <h2 class="modal-title" style="font-size:17px;color:#0f172a;flex:1;display:flex;align-items:center;gap:8px;">
+                <i data-lucide="circle-user-round" style="width:20px;height:20px;color:#4338ca;"></i>Profile
+            </h2>
+        </div>
+
+        <!-- Avatar + name -->
+        <div class="profile-info" style="padding:24px 20px 8px;text-align:center;">
+            <div class="profile-avatar-large" id="userProfileAvatar" style="margin:0 auto 12px;cursor:pointer;">U</div>
+            <div class="profile-name" id="userProfileName" style="font-size:20px;font-weight:800;color:#0f172a;">User Name</div>
+            <div class="profile-identifier" id="userProfileIdentifier" style="margin-top:4px;">user@example.com</div>
+        </div>
+
+        <!-- Actions (under bio) -->
+        <div class="profile-actions" style="padding:0 16px 16px;">
+            <button class="action-btn chat-btn" id="startChatFromProfileBtn" style="display:flex;">
+                <i data-lucide="message-circle"></i> Send Message
+            </button>
+            <button class="action-btn block-btn" id="blockBtn" style="display:flex;">
+                <i data-lucide="ban"></i> <span id="blockBtnText">Block User</span>
+            </button>
+        </div>
+
+        <!-- PUBLIC BeelzeChat ID (visible to everyone) -->
+        <div style="margin:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:12px 14px;">
+            <div style="display:flex;align-items:center;gap:6px;color:#166534;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">
+                <i data-lucide="fingerprint" style="width:15px;height:15px;"></i> BeelzeChat ID
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                <div id="userProfileBeelzeId" style="color:#15803d;font-weight:700;font-size:14px;letter-spacing:0.5px;word-break:break-all;">—</div>
+                <button onclick="const t=document.getElementById('userProfileBeelzeId').textContent; if(navigator.clipboard){navigator.clipboard.writeText(t).then(()=>showToast('success','Copied!','BeelzeChat ID copied'));} else {const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('success','Copied!','BeelzeChat ID copied');}" style="background:#22c55e;border:none;border-radius:10px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:5px;color:white;font-size:12px;font-weight:700;flex-shrink:0;">
+                    <i data-lucide="copy" style="width:14px;height:14px;color:white;"></i> Copy
+                </button>
+            </div>
+            <div style="font-size:11px;color:#16a34a;margin-top:6px;">Paste this ID in People search to find this user</div>
+        </div>
+
+        <!-- Contact info (filled by JS) -->
+        <div id="userContactSection" style="padding:0 16px 8px;"></div>
+
+        <!-- Posts (filled by JS) -->
+        <div id="userPostsSection" style="padding:0 16px 24px;"></div>
+    </div>
+</div>
 
 
 
@@ -3905,7 +3962,7 @@ form input[type="text"] {
             <div class="fs-sub">Share something with the community</div>
         </div>
         <form class="create-post-form" id="createPostForm" style="padding:16px 24px 28px;">
-            <textarea class="post-textarea" id="postText" placeholder="What's on your mind?" autocomplete="off" autocorrect="on" autocapitalize="sentences" spellcheck="true" inputmode="text"></textarea>
+            <textarea class="post-textarea" id="postText" placeholder="What's on your mind?" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text"></textarea>
             <div class="form-group">
                 <label class="form-label"><i data-lucide="tag" style="width:13px;height:13px;"></i> Category</label>
                 <select class="form-input" id="postCategory">
@@ -4370,7 +4427,7 @@ form input[type="text"] {
 
 
 <!-- ===== BEELZE POST MANAGEMENT ===== -->
-<div id="postMgmtOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:white;flex-direction:column;">
+<div id="postMgmtOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:white;flex-direction:column;overflow-y:auto;">
   <!-- Header -->
   <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #e2e8f0;background:white;position:sticky;top:0;z-index:10;">
     <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:36px;height:36px;border-radius:10px;">
@@ -4436,8 +4493,62 @@ form input[type="text"] {
     </div>
   </div>
 
+    <!-- ===== BUSINESS BANNERS ===== -->
+  <div style="padding:14px 16px;border-bottom:1px solid #e2e8f0;background:white;display:flex;flex-direction:column;gap:12px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#334155,#0f172a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i data-lucide="bar-chart-3" style="width:20px;height:20px;color:white;"></i>
+      </div>
+      <div style="flex:1;">
+        <div style="font-weight:800;font-size:15px;color:#0f172a;">BeelzeChat Ads</div>
+        <div style="font-size:11px;color:#64748b;">Ad boxes in the Post Feed & Marketplace</div>
+      </div>
+      <button onclick="openBannerEditor()" style="display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,#334155,#0f172a);color:white;border:none;border-radius:10px;padding:9px 14px;font-weight:800;font-size:13px;cursor:pointer;">
+        <i data-lucide="plus" style="width:15px;height:15px;"></i> New Banner
+      </button>
+    </div>
+
+    <!-- Banner editor form -->
+    <div id="bannerEditor" style="display:none;flex-direction:column;gap:10px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px;">
+      <input id="bnTitle" type="text" placeholder="Business / banner title" style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;box-sizing:border-box;">
+      <textarea id="bnText" placeholder="Short promo text (optional)" style="width:100%;min-height:60px;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;box-sizing:border-box;resize:vertical;"></textarea>
+            <input id="bnImage" type="hidden">
+      <input id="bnImageFile" type="file" accept="image/*" multiple style="display:none;">
+      <label for="bnImageFile" id="bnImagePicker" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:18px;background:#f1f5f9;border:2px dashed #cbd5e1;border-radius:12px;cursor:pointer;font-weight:700;font-size:14px;color:#64748b;">
+        <i data-lucide="images" style="width:18px;height:18px;color:#334155;"></i> Upload Ad Pictures (up to 8)
+      </label>
+      <div id="bnImagesPreview" style="display:none;flex-wrap:wrap;gap:8px;padding:8px 0;"></div>
+      <input id="bnWebsite" type="text" placeholder="Website URL (https://...)" style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;box-sizing:border-box;">
+      <div style="display:flex;gap:10px;">
+        <input id="bnWhatsapp" type="text" placeholder="WhatsApp number" style="flex:1;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;">
+        <input id="bnCall" type="text" placeholder="Call number" style="flex:1;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;">
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:12px;padding:10px 12px;">
+        <i data-lucide="clock" style="width:18px;height:18px;color:#334155;flex-shrink:0;"></i>
+        <span style="font-size:13px;font-weight:700;color:#334155;">Expire after</span>
+        <input id="bnExpireDays" type="number" min="0" max="3650" value="30" style="width:70px;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;font-weight:800;text-align:center;outline:none;">
+        <span style="font-size:13px;font-weight:700;color:#334155;">days</span>
+        <span style="font-size:11px;color:#94a3b8;margin-left:auto;">0 = never</span>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:6px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;color:#1d4ed8;cursor:pointer;"><input id="bnFeed" type="checkbox" checked> Show in Post Feed</label>
+        <label style="display:flex;align-items:center;gap:6px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;color:#15803d;cursor:pointer;"><input id="bnMarket" type="checkbox" checked> Show in Marketplace</label>
+        <label style="display:flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;color:#334155;cursor:pointer;"><input id="bnActive" type="checkbox" checked> Active</label>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="closeBannerEditor()" style="flex:1;padding:11px;border:1.5px solid #e2e8f0;border-radius:10px;background:white;font-weight:700;cursor:pointer;">Cancel</button>
+        <button onclick="saveBanner()" style="flex:1;padding:11px;border:none;border-radius:10px;background:linear-gradient(135deg,#334155,#0f172a);color:white;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="save" style="width:15px;height:15px;"></i> <span id="bnSaveLabel">Save Banner</span></button>
+      </div>
+    </div>
+
+    <div id="bannerMgmtList" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+
+  <!-- Ad performance panel -->
+  <div id="bannerStatsPanel" style="display:none;position:fixed;inset:0;z-index:99998;background:white;flex-direction:column;overflow-y:auto;"></div>
+
   <!-- Posts List -->
-  <div id="postMgmtList" style="overflow-y:auto;flex:1;padding:12px 16px;display:flex;flex-direction:column;gap:10px;">
+  <div id="postMgmtList" style="padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px;">
     <div style="text-align:center;padding:40px;color:#94a3b8;">Loading posts...</div>
   </div>
 </div>
@@ -5840,13 +5951,31 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     }
 
     showToast('success', 'Done!', `Your reset code: ${rc}`);
-    window._loadingDone?.();
-    setTimeout(() => {
-        document.getElementById('loadingScreen').classList.add('hide');
-        setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 600);
-        showLogin();
-        document.getElementById('signupForm').reset();
-    }, 2000);
+    // Auto-login the new account so it's never treated as a guest
+    currentUser = { id: userId, name, identifier, profilePic: null, bio: '', blockedUsers: [], resetCode: rc, beelzeId };
+    currentUser.userAgent = navigator.userAgent;
+    allUsers[currentUser.id] = { ...(allUsers[currentUser.id] || {}), ...currentUser };
+    localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
+    let _accs = JSON.parse(localStorage.getItem('sxchatAccounts') || '[]');
+    if (!_accs.find(a => a.id === userId)) {
+        _accs.push({ id: userId, name, identifier, profilePic: null });
+        localStorage.setItem('sxchatAccounts', JSON.stringify(_accs));
+    }
+    await db.collection('users').doc(userId).update({ online: true });
+    window._justLoggedIn = true;
+    document.getElementById('authScreen').style.display = 'none';
+    await initializeApp();
+    await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
+    document.getElementById('app').classList.add('active');
+    updateProfileButton();
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
+    ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
+    document.getElementById('storiesTab').classList.remove('hidden');
+    loadNotifications();
+    window.finishLoading();
+    loginWelcomeToast(name);
+    document.getElementById('signupForm').reset();
 });
 
 document.getElementById('forgotForm').addEventListener('submit', async e => {
@@ -6084,8 +6213,13 @@ document.getElementById('profilePicInput').addEventListener('change', async e =>
     
     await db.collection('users').doc(currentUser.id).update({ profilePic: url });
     currentUser.profilePic = url;
+    allUsers[currentUser.id] = { ...(allUsers[currentUser.id] || {}), profilePic: url, name: currentUser.name };
     localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
     updateProfileButton();
+    // Refresh the comment-input avatars already baked into existing post cards
+    document.querySelectorAll('[id^="commentInputAvatar_"]').forEach(av => {
+        av.innerHTML = `<img src="${url}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=000&color=fff&size=128';">`;
+    });
     loadNotifications();
     
 document.getElementById('profileAvatarLarge').innerHTML = `<img src="${url}"><div class="profile-avatar-camera" id="profileCameraBtn"><i data-lucide="camera"></i></div>`;
@@ -6217,17 +6351,14 @@ function togglePw(inputId, iconId) {
 
 function calcPostViews(post) {
     const ageHrs = (Date.now() - (post.timestamp || Date.now())) / 3600000;
-    // Start from ~50-100, grow slowly over 120 hours to baseViews max
     const growthFactor = Math.min(1, Math.pow(ageHrs / 120, 0.7));
-    const baseShown = Math.max(50 + Math.floor(Math.random() * 50), Math.floor((post.baseViews || 1000) * growthFactor));
+    const baseShown = Math.max(50, Math.floor((post.baseViews || 1000) * growthFactor));
     return baseShown + (post.realViews || 0);
 }
 
 function calcPostLikes(post) {
     const views = calcPostViews(post);
-    // Likes = 10-20% of views, but never more than views
-    const likePct = 0.10 + (Math.random() * 0.10);
-    return Math.min(Math.floor(views * likePct) + (post.realLikes || 0), views);
+    return Math.min(Math.floor(views * 0.12) + (post.realLikes || 0), views);
 }
 
 
@@ -6572,14 +6703,16 @@ async function loadMoreUsers() {
 
 
 document.getElementById('userSearch').addEventListener('input', async function() {
-    renderUsers();
+        renderUsers();
     const term = (this.value || '').trim();
-    // Auto-search by BeelzeChat ID — open profile when a full ID is typed
-    if (/^BeelzeChatID-[A-Z0-9]+$/i.test(term)) {
-        const cached = Object.entries(allUsers).find(([_, u]) => (u.beelzeId || '').toLowerCase() === term.toLowerCase());
+    // Auto-search by BeelzeChat ID — accepts "BeelzeChatID-AB12CD", "AB12CD", any case
+    const idMatch = term.match(/^(?:BeelzeChatID-)?([A-Z0-9]{5,})$/i);
+    if (idMatch) {
+        const lookupId = 'BeelzeChatID-' + idMatch[1].toUpperCase();
+        const cached = Object.entries(allUsers).find(([_, u]) => (u.beelzeId || '').toLowerCase() === lookupId.toLowerCase());
         if (cached) { this.value = ''; showUserProfile(cached[0], cached[1]); return; }
         try {
-            const snap = await db.collection('users').where('beelzeId', '==', term).limit(1).get();
+            const snap = await db.collection('users').where('beelzeId', '==', lookupId).limit(1).get();
             if (!snap.empty) {
                 const d = snap.docs[0];
                 allUsers[d.id] = d.data();
@@ -6800,6 +6933,7 @@ async function loadMorePosts() {
         filterPosts();
         // Rebuild grid tiles so newly-loaded posts appear without leaving grid view
         if (currentViewMode === 'grid') buildGridView();
+        injectFeedBanners();
         lucide.createIcons();
         } catch(e) {
         console.error('Posts load error:', e);
@@ -7409,20 +7543,20 @@ async function postComment(postId, text) {
     if (requireAuth('comment on posts') === false) return;
     const ref = db.collection('posts').doc(postId);
     const snap = await ref.get();
+    const postData = snap.data();
     const newComment = { userId: currentUser.id, text, timestamp: Date.now() };
-    const comments = [...(snap.data().comments || []), newComment];
-    await ref.update({ comments });
+    const comments = [...(postData.comments || []), newComment];
+    // Don't block the UI on the write — fire it in the background
+    ref.update({ comments }).catch(e => console.log('comment save error', e));
     showToast('success', 'Posted!', 'Comment added');
-        // Notify post owner (in-app + push)
-    const pSnap = await db.collection('posts').doc(postId).get();
-    if (pSnap.exists) {
-        const ownerId = pSnap.data().userId;
+    // Use postData we already have — NO second Firestore read
+    const ownerId = postData.userId;
+    if (ownerId && ownerId !== currentUser.id) {
         sendNotification(ownerId, 'comment', {
             title: `${currentUser.name} commented on your post`,
             body: text.substring(0, 60),
             postId
         });
-        // OneSignal push
         const opsId = allUsers[ownerId]?.oneSignalId;
         if (!opsId) {
             db.collection('users').doc(ownerId).get().then(ud => {
@@ -7435,13 +7569,43 @@ async function postComment(postId, text) {
         }
     }
 
-    // Add comment in-place without reloading
+        // Add comment in-place without reloading
     const commentsList = document.getElementById(`comments-list-${postId}`);
     const inp = document.querySelector(`.comment-input[data-postid="${postId}"]`);
     if (commentsList) {
         const html = renderCommentHTML(newComment, postId, allUsers);
         commentsList.insertAdjacentHTML('beforeend', html);
         lucide.createIcons();
+        // Re-attach event listeners to the newly added comment's buttons
+        const newCommentEl = commentsList.lastElementChild;
+        if (newCommentEl) {
+            newCommentEl.querySelector('.comment-like-btn')?.addEventListener('click', e => {
+                e.stopPropagation();
+                showCommentEmoji(postId, newComment.timestamp, e);
+            });
+            newCommentEl.querySelector('.comment-reply-btn')?.addEventListener('click', e => {
+                e.stopPropagation();
+                const cid = String(newComment.timestamp);
+                const area = newCommentEl.querySelector(`.reply-input-area-${cid}`);
+                if (area) {
+                    area.style.display = area.style.display === 'none' ? 'flex' : 'none';
+                    area.style.flexDirection = 'column';
+                    if (area.style.display !== 'none') area.querySelector('.reply-input')?.focus();
+                }
+            });
+            if (newComment.userId === currentUser.id) {
+                newCommentEl.querySelector('.comment-delete-btn')?.addEventListener('click', async e => {
+                    e.stopPropagation();
+                    if (!confirm('Delete this comment?')) return;
+                    const ref = db.collection('posts').doc(postId);
+                    const snap = await ref.get();
+                    const comments = (snap.data().comments || []).filter(c => String(c.timestamp) !== String(newComment.timestamp));
+                    await ref.update({ comments });
+                    showToast('success', 'Deleted', 'Comment removed');
+                    newCommentEl.remove();
+                });
+            }
+        }
     }
     if (inp) inp.value = '';
 
@@ -7471,7 +7635,6 @@ function formatCount(num) {
 
 
 async function togglePostLike(postId) {
-    // 1) OPTIMISTIC UI — update every matching like button instantly (feed + post detail)
     const btns = document.querySelectorAll(`.post-action-btn[data-postid="${postId}"][data-action="like"]`);
     const wasLiked = btns.length ? btns[0].classList.contains('liked') : false;
     const nowLiked = !wasLiked;
@@ -7485,7 +7648,6 @@ async function togglePostLike(postId) {
     });
     showToast(nowLiked ? 'success' : 'info', nowLiked ? 'Liked!' : 'Unliked', nowLiked ? 'Added' : 'Removed');
 
-    // 2) Write to Firestore in the background (never blocks the tap)
     (async () => {
         try {
             const ref = db.collection('posts').doc(postId);
@@ -7493,21 +7655,28 @@ async function togglePostLike(postId) {
             const d = snap.data();
             const lb = d.likedBy || [];
             const liked = lb.includes(currentUser.id);
-            // Correct server truth if the optimistic guess was off
-            if (liked !== nowLiked) {
-                const newLb = liked ? lb.filter(i => i !== currentUser.id) : [...lb, currentUser.id];
-                const newRealLikes = liked ? Math.max((d.realLikes || 1) - 1, 0) : (d.realLikes || 0) + 1;
-                await ref.update({ realLikes: newRealLikes, likedBy: newLb });
-                btns.forEach(b => {
-                    b.classList.toggle('liked', !liked);
-                    const ic = b.querySelector('i'); if (ic) ic.style.color = !liked ? '#ef4444' : '#94a3b8';
-                    const sp = b.querySelector('span'); if (sp) sp.textContent = formatCount((d.baseLikes || 0) + newRealLikes);
-                });
-                return;
-            }
             const newLb = liked ? lb.filter(i => i !== currentUser.id) : [...lb, currentUser.id];
             const newRealLikes = liked ? Math.max((d.realLikes || 1) - 1, 0) : (d.realLikes || 0) + 1;
             await ref.update({ realLikes: newRealLikes, likedBy: newLb });
+
+            // Recalculate BOTH views and likes together — likes NEVER exceed views
+            const updatedPost = { ...d, realLikes: newRealLikes, likedBy: newLb };
+            const newViews = calcPostViews(updatedPost);
+            const newLikes = Math.min(calcPostLikes(updatedPost), newViews);
+
+            btns.forEach(b => {
+                b.classList.toggle('liked', !liked);
+                const ic = b.querySelector('i'); if (ic) ic.style.color = !liked ? '#ef4444' : '#94a3b8';
+                const sp = b.querySelector('span'); if (sp) sp.textContent = formatCount(newLikes);
+            });
+            // Update views display too so it always stays >= likes
+            const postCard = btns[0]?.closest('.post-card');
+            if (postCard) {
+                const viewStat = postCard.querySelector('.post-stat');
+                if (viewStat) viewStat.innerHTML = `<i data-lucide="eye" style="color:#3b82f6;"></i>${formatCount(newViews)} Views`;
+                lucide.createIcons(postCard);
+            }
+
             if (!liked) {
                 sendNotification(d.userId, 'like', { title: `${currentUser.name} liked your post`, body: d.text ? d.text.substring(0, 50) : '📸 Photo post', postId });
                 const opsId = allUsers[d.userId]?.oneSignalId;
@@ -7832,21 +8001,34 @@ async function loadMessages() {
         const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         saveMsgs(chatId, msgs);
         if (_firstSnap) {
-            renderMessages(msgs);
-            mc.scrollTop = mc.scrollHeight;   // always land at the very bottom on open
+            renderMessages(msgs, true);  // full rebuild on first load
+            mc.scrollTop = mc.scrollHeight;
             _firstSnap = false;
         } else {
-            renderMessages(msgs);              // renderMessages auto-scrolls if user was at bottom
+            renderMessages(msgs, false);  // append-only after that — no more full rebuilds
         }
     });
     msgUnsub = unsub;
 }
 
-function renderMessages(messages) {
+let _renderedMsgIds = new Set();
+
+function renderMessages(messages, isFull) {
     const mc = document.getElementById('messagesContainer');
     const wasAtBottom = mc.scrollHeight - mc.scrollTop - mc.clientHeight < 100;
-    mc.innerHTML = '';
+
+    // Full rebuild only on first load or chat switch
+    if (isFull) {
+        mc.innerHTML = '';
+        _renderedMsgIds = new Set();
+    }
+
+    let appendedAny = false;
     messages.forEach(msg => {
+        if (_renderedMsgIds.has(msg.id)) return;
+        _renderedMsgIds.add(msg.id);
+        appendedAny = true;
+
         const div = document.createElement('div');
         if (msg.isSystem) {
             div.style.cssText = 'text-align:center;padding:4px 0;';
@@ -7860,29 +8042,21 @@ function renderMessages(messages) {
             `<img src="${msg.senderAvatar}" style="width:100%;height:100%;object-fit:cover;">` :
             `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(msg.senderName || 'U')}&background=000&color=fff&size=128" style="width:100%;height:100%;object-fit:cover;">`;
 
-
         let content = '';
-                if (msg.replyTo) content += `<div class="reply-preview" style="background:rgba(255,255,255,0.15);border-left:3px solid rgba(255,255,255,0.5);border-radius:6px;padding:4px 8px;margin-bottom:4px;"><i data-lucide="corner-down-right" style="color:rgba(255,255,255,0.8);"></i><span class="reply-preview-text" style="color:rgba(255,255,255,0.9);font-size:12px;">${msg.replyTo}</span></div>`;
+        if (msg.replyTo) content += `<div class="reply-preview" style="background:rgba(255,255,255,0.15);border-left:3px solid rgba(255,255,255,0.5);border-radius:6px;padding:4px 8px;margin-bottom:4px;"><i data-lucide="corner-down-right" style="color:rgba(255,255,255,0.8);"></i><span class="reply-preview-text" style="color:rgba(255,255,255,0.9);font-size:12px;">${msg.replyTo}</span></div>`;
         if (msg.images?.length > 0) content += `<div class="message-images" style="margin-bottom:${msg.text?'4px':'0'};">${msg.images.map(i => `<img src="${i}" class="message-image" data-img="${i}">`).join('')}</div>`;
         if (msg.text) content += `<div class="message-text" style="margin-top:0;">${formatMsgText(msg.text)}</div>`;
         if (msg.files?.length > 0) msg.files.forEach(f => { content += `<div class="message-file" data-url="${f.url}" data-name="${f.name}"><i data-lucide="file-text"></i><div class="file-info"><div class="file-name">${f.name}</div><div class="file-size">${fmtSize(f.size)}</div></div></div>`; });
-        
-        
-                if (msg.video) content += `
+
+        if (msg.video) content += `
     <div style="margin-top:6px;background:#000;border-radius:14px;overflow:hidden;max-width:280px;box-shadow:0 4px 16px rgba(0,0,0,0.3);">
-        <video 
-            src="${msg.video.url}" 
-            controls 
-            playsinline
-            preload="metadata"
-            style="width:100%;display:block;border-radius:14px;"
-        ></video>
+        <video src="${msg.video.url}" controls playsinline preload="metadata" style="width:100%;display:block;border-radius:14px;"></video>
         <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:#1a1a1a;">
             <i data-lucide="video" style="width:13px;height:13px;color:#94a3b8;"></i>
             <span style="font-size:11px;color:#94a3b8;">${msg.video.name || 'Video'}</span>
         </div>
     </div>`;
-    
+
         if (msg.voice) content += `<div class="message-voice"><button class="voice-play-btn" data-voice="${msg.voice.url}"><i data-lucide="play"></i></button><div class="voice-waveform"><div class="voice-progress"></div></div><div class="voice-duration">${msg.voice.duration || '0:00'}</div></div>`;
         content += `<div class="message-footer"><div class="message-time">${time}</div></div>`;
 
@@ -7900,11 +8074,6 @@ function renderMessages(messages) {
                 ${rxHtml}
             </div>
         `;
-        
-        
-        
-        
-        
 
         const bubble = div.querySelector('.message-bubble');
         attachMsgInteractions(bubble, msg);
@@ -7913,12 +8082,12 @@ function renderMessages(messages) {
         div.querySelectorAll('.voice-play-btn').forEach(b => b.addEventListener('click', () => playVoice(b.dataset.voice, b)));
         mc.appendChild(div);
     });
-    lucide.createIcons();
-    // Only scroll to bottom if user was already at bottom
-    if (wasAtBottom) {
-        mc.scrollTop = mc.scrollHeight;
-    }
+
+    // Only run lucide.createIcons if we actually added new elements
+    if (appendedAny) lucide.createIcons();
+    if (wasAtBottom) mc.scrollTop = mc.scrollHeight;
 }
+
 
 
 function formatMsgText(text) {
@@ -7935,15 +8104,20 @@ function formatMsgText(text) {
 // SEND MESSAGE
 // ============================================================
 const msgInput = document.getElementById('messageInput');
-// Fixed height — text scrolls INSIDE the box instead of expanding it
 msgInput.style.height = '44px';
 msgInput.style.maxHeight = '44px';
 msgInput.style.overflowY = 'auto';
 msgInput.style.resize = 'none';
+// Debounce the height recalc — batch it with rAF so typing never triggers a reflow per keystroke
+let _msgResizeRaf = 0;
 msgInput.addEventListener('input', function() {
-    // Let the textarea grow vertically as you type / press Enter for new lines
-    this.style.height = 'auto';
-    this.style.height = Math.max(44, this.scrollHeight) + 'px';
+    if (_msgResizeRaf) return;
+    _msgResizeRaf = requestAnimationFrame(() => {
+        _msgResizeRaf = 0;
+        const el = msgInput;
+        el.style.height = '44px';
+        if (el.scrollHeight > 44) el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    });
 });
 // Enter key creates a new line (vertical space) — only the send button sends
 
@@ -8056,15 +8230,17 @@ async function sendMessage() {
     const vids = selectedFiles.filter(f => f.type === 'video');
     if (vids.length) msg.video = vids[0];
 
-    input.value = '';
-    input.style.height = 'auto';
+        input.value = '';
+    input.style.height = '44px';
     selectedFiles = [];
     renderUploadPreview();
 
-        // No local cache — Firestore onSnapshot will render the message when it arrives
+    // OPTIMISTIC: append just the ONE new message — no full rebuild
+    renderMessages([{ ...msg, id: 'tmp_' + Date.now() }], false);
+    const _mc = document.getElementById('messagesContainer');
+    _mc.scrollTop = _mc.scrollHeight;
 
-
-    // 2) Fire the OUTSIDE alert (push + in-app notification) INSTANTLY — do NOT wait for Firestore
+    // Fire the OUTSIDE alert (push + in-app notification) INSTANTLY — do NOT wait for Firestore
     if (currentChatUser?.isGroup) {
         var groupMembers = currentChatUser.members || [];
         groupMembers.forEach(function(memberId) {
@@ -8254,6 +8430,8 @@ async function showUserProfile(userId, user) {
         `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(ud.name)}&background=000&color=fff&size=256">`;
     document.getElementById('userProfileName').textContent = ud.name;
     document.getElementById('userProfileIdentifier').textContent = ud.bio || ud.identifier;
+    const bidEl = document.getElementById('userProfileBeelzeId');
+    if (bidEl) bidEl.textContent = ud.beelzeId || 'Not set';
     const blocked = (currentUser.blockedUsers || []).includes(userId);
     document.getElementById('blockBtnText').textContent = blocked ? 'Unblock' : 'Block';
 
@@ -8273,7 +8451,7 @@ async function showUserProfile(userId, user) {
     }
     contactSection.innerHTML = contactHTML ? `<div style="font-weight:700;font-size:14px;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Contact</div>${contactHTML}` : '';
 
-    // Posts
+    // Posts — Feed + Grid toggle (default Feed), like the real posts tab
     let postsSection = document.getElementById('userPostsSection');
     if (!postsSection) {
         postsSection = document.createElement('div');
@@ -8281,23 +8459,23 @@ async function showUserProfile(userId, user) {
         postsSection.style.cssText = 'margin-top:20px;';
         document.querySelector('#userProfileModal .modal-content').appendChild(postsSection);
     }
-        // Posts skeleton — gray shimmer boxes while we fetch from Firestore
-    postsSection.innerHTML = `<div style="font-weight:800;font-size:16px;margin-bottom:12px;">${ud.name}'s Posts</div>
-        <div id="userPostsList" style="display:flex;flex-direction:column;gap:10px;">
-            <div style="background:#f8fafc;border-radius:12px;overflow:hidden;">
-                <div style="height:160px;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                <div style="padding:12px;">
-                    <div style="height:14px;width:70%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;margin-bottom:8px;"></div>
-                    <div style="height:14px;width:40%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;"></div>
-                </div>
+    postsSection.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin:0 4px 10px;">
+            <div style="font-weight:800;font-size:15px;color:#0f172a;display:flex;align-items:center;gap:6px;">
+                <i data-lucide="images" style="width:16px;height:16px;color:#4338ca;"></i> ${ud.name}'s Posts
             </div>
-            <div style="background:#f8fafc;border-radius:12px;overflow:hidden;">
-                <div style="height:160px;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div>
-                <div style="padding:12px;">
-                    <div style="height:14px;width:55%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;margin-bottom:8px;"></div>
-                </div>
+            <div style="display:flex;gap:4px;background:#f1f5f9;border-radius:10px;padding:3px;">
+                <button id="upFeedBtn" onclick="setUserProfileViewMode('feed')" style="display:flex;align-items:center;gap:5px;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;background:#000;color:#fff;"><i data-lucide="rows-3" style="width:13px;height:13px;"></i>Feed</button>
+                <button id="upGridBtn" onclick="setUserProfileViewMode('grid')" style="display:flex;align-items:center;gap:5px;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;background:transparent;color:#64748b;"><i data-lucide="layout-grid" style="width:13px;height:13px;"></i>Grid</button>
             </div>
-        </div>`;
+        </div>
+        <div id="userPostsSkeleton" style="display:flex;flex-direction:column;gap:12px;">
+            ${Array.from({length:3}).map(()=>`<div style="background:#f8fafc;border-radius:14px;overflow:hidden;"><div style="height:150px;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;"></div><div style="padding:12px;"><div style="height:13px;width:60%;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;border-radius:6px;"></div></div></div>`).join('')}
+        </div>
+        <div id="userPostsFeed" style="display:flex;flex-direction:column;gap:12px;"></div>
+        <div id="userPostsGrid" style="display:none;grid-template-columns:repeat(3,1fr);gap:3px;"></div>
+        <div id="userPostsEmpty" style="display:none;text-align:center;color:#94a3b8;padding:30px;">No posts yet</div>
+    `;
 
     document.getElementById('startChatFromProfileBtn').style.display = 'flex';
     document.getElementById('blockBtn').style.display = 'flex';
@@ -8306,75 +8484,59 @@ async function showUserProfile(userId, user) {
 
     // Load user posts
     const psnap = await db.collection('posts').where('userId', '==', userId).get();
-    const upl = document.getElementById('userPostsList');
-    if (psnap.empty) { upl.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;">No posts yet</div>'; return; }
-    upl.innerHTML = '';
+    document.getElementById('userPostsSkeleton').style.display = 'none';
+    if (psnap.empty) { document.getElementById('userPostsEmpty').style.display = 'block'; return; }
     const sortedDocs = psnap.docs.sort((a, b) => b.data().timestamp - a.data().timestamp);
-    sortedDocs.forEach(pd => {
+    const builtCards = {};
+    const feedEl = document.getElementById('userPostsFeed');
+    const gridEl = document.getElementById('userPostsGrid');
+    feedEl.innerHTML = '';
+    gridEl.innerHTML = '';
+    for (const pd of sortedDocs) {
         const p = pd.data();
-        const tv = calcPostViews(p);
-        const tl = calcPostLikes(p);
-        const commentsCount = (p.comments||[]).length;
-        const d = document.createElement('div');
-        d.style.cssText = 'background:#f8fafc;border-radius:16px;overflow:hidden;cursor:pointer;border:1px solid #e2e8f0;margin-bottom:4px;';
-        
-        // Build image grid
-        let imgHtml = '';
-        if (p.images?.length > 0) {
-            imgHtml = `<div style="display:grid;grid-template-columns:${p.images.length===1?'1fr':'1fr 1fr'};gap:2px;">
-                ${p.images.slice(0,4).map((img,idx) => `
-                    <div style="position:relative;${p.images.length===3&&idx===0?'grid-column:span 2;':''}">
-                        <img src="${img}" data-fullimg="${img}" style="width:100%;height:${p.images.length===1?'220px':'130px'};object-fit:cover;display:block;">
-                        ${idx===3 && p.images.length>4 ? `<div style="position:absolute;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;color:white;font-size:22px;font-weight:800;">+${p.images.length-4}</div>` : ''}
-                    </div>`).join('')}
-            </div>`;
-        }
-
-        d.innerHTML = `
-            ${imgHtml}
-            <div style="padding:12px;">
-                ${p.text ? `<div style="font-size:14px;color:#334155;margin-bottom:10px;line-height:1.4;">${p.text}</div>` : ''}
-                <div style="display:flex;gap:16px;align-items:center;">
-                    <span style="color:#3b82f6;font-size:13px;font-weight:700;display:flex;align-items:center;gap:4px;">
-                        <i data-lucide="eye" style="width:14px;height:14px;"></i>${formatCount(tv)}
-                    </span>
-                    <span style="color:#ef4444;font-size:13px;font-weight:700;display:flex;align-items:center;gap:4px;">
-                        <i data-lucide="heart" style="width:14px;height:14px;"></i>${formatCount(tl)}
-                    </span>
-                    <span style="color:#64748b;font-size:13px;font-weight:700;display:flex;align-items:center;gap:4px;">
-                        <i data-lucide="message-circle" style="width:14px;height:14px;"></i>${formatCount(commentsCount)}
-                    </span>
-                    <span style="color:#94a3b8;font-size:11px;margin-left:auto;">${getTimeAgo(p.timestamp)}</span>
-                </div>
-            </div>`;
-
-        // Click image — view full
-        d.querySelectorAll('[data-fullimg]').forEach(img => {
-            img.addEventListener('click', e => {
-                e.stopPropagation();
-                viewImage(e.target.dataset.fullimg);
+        // Feed card (real post card — likes/comments work)
+        const card = await createPostElement({ id: pd.id, ...p });
+        if (card && card.tagName) { feedEl.appendChild(card); builtCards[pd.id] = card; }
+        // Grid tile (only when there's an image, like the main grid)
+        const thumb = p.images?.[0];
+        if (thumb) {
+            const tile = document.createElement('div');
+            tile.style.cssText = 'position:relative;aspect-ratio:1;overflow:hidden;border-radius:6px;cursor:pointer;background:#f1f5f9;';
+            tile.innerHTML = `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+            tile.addEventListener('click', async () => {
+                if (builtCards[pd.id]) { openPostDetail(builtCards[pd.id]); return; }
+                const c = await createPostElement({ id: pd.id, ...p });
+                builtCards[pd.id] = c;
+                openPostDetail(c);
             });
-        });
-
-        // Click card — go to post
-        d.addEventListener('click', () => {
-            document.getElementById('userProfileModal').classList.remove('active');
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
-            ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
-            document.getElementById('storiesTab').classList.remove('hidden');
-            updateSearchIconVisibility('stories');
-            showToast('info', 'Opening post...', '');
-            setTimeout(() => {
-                const postEl = document.querySelector(`[data-postid="${pd.id}"]`);
-                if (postEl) postEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 500);
-        });
-
-        lucide.createIcons(d);
-        upl.appendChild(d);
-    });
+            gridEl.appendChild(tile);
+        }
+    }
+    lucide.createIcons();
 }
+
+// Feed / Grid toggle inside a user's profile
+function setUserProfileViewMode(mode) {
+    const feedBtn = document.getElementById('upFeedBtn');
+    const gridBtn = document.getElementById('upGridBtn');
+    const feed = document.getElementById('userPostsFeed');
+    const grid = document.getElementById('userPostsGrid');
+    if (!feed || !grid) return;
+    if (mode === 'grid') {
+        if (feedBtn) { feedBtn.style.background = 'transparent'; feedBtn.style.color = '#64748b'; }
+        if (gridBtn) { gridBtn.style.background = '#000'; gridBtn.style.color = '#fff'; }
+        feed.style.display = 'none';
+        grid.style.display = 'grid';
+    } else {
+        if (feedBtn) { feedBtn.style.background = '#000'; feedBtn.style.color = '#fff'; }
+        if (gridBtn) { gridBtn.style.background = 'transparent'; gridBtn.style.color = '#64748b'; }
+        feed.style.display = 'flex';
+        grid.style.display = 'none';
+    }
+    lucide.createIcons();
+}
+window.setUserProfileViewMode = setUserProfileViewMode;
+
 
 
 
@@ -9417,20 +9579,10 @@ async function sendNotification(toUserId, type, data) {
         timestamp: Date.now(),
         read: false
     });
-    // ALSO fire a OneSignal push so the alert is actually seen
-    let opsId = allUsers[toUserId]?.oneSignalId;
-    if (!opsId) {
-        try {
-            const ud = await db.collection('users').doc(toUserId).get();
-            if (ud.exists && ud.data().oneSignalId) opsId = ud.data().oneSignalId;
-        } catch(e){}
-    }
-    if (opsId) {
-        const label = (data && data.title) ? data.title : 'New activity';
-        const body  = (data && data.body)  ? data.body  : '';
-        sendPushNotification(opsId, currentUser.name || 'BeelzeChat', label + (body ? ': ' + body : ''));
-    }
+        // Push is already fired directly by the calling handler (sendMessage, postComment, togglePostLike).
+    // Do NOT fire it here too — that sends DOUBLE push notifications.
 }
+
 
 // Attach bell button click
 document.getElementById('notificationsBtn').addEventListener('click', () => {
@@ -9613,6 +9765,7 @@ async function loadMoreMarketplace() {
             _mktLastDoc = snap.docs[snap.docs.length - 1];
             snap.docs.forEach(doc => grid.appendChild(renderListingCard({ id: doc.id, ...doc.data() })));
             lucide.createIcons();
+            injectMarketplaceBanners();
         }
         } catch(e) {
         console.error('Marketplace load error:', e);
@@ -10254,6 +10407,522 @@ async function bulkDeleteMgmtPosts() {
 
 
 
+// ============================================================
+// BUSINESS BANNERS ENGINE
+// ============================================================
+let _editingBannerId = null;
+let _cachedBanners = [];
+let _bannersCacheTime = 0;
+let _bnImages = [];
+
+async function loadBannersForAdmin() {
+    const list = document.getElementById('bannerMgmtList');
+    if (!list) return;
+    list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:14px;font-size:12px;">Loading banners...</div>';
+    const snap = await db.collection('banners').orderBy('createdAt', 'desc').get();
+    const banners = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (!banners.length) { list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:14px;font-size:12px;">No banners yet. Tap "New Banner".</div>'; return; }
+        list.innerHTML = '';
+    let expiredDeleted = 0;
+    for (const b of banners) {
+        const expiresAt = b.expiresAt || (b.expireDays > 0 && b.createdAt ? b.createdAt + b.expireDays * 86400000 : 0);
+        if (expiresAt && Date.now() > expiresAt) {
+            await db.collection('banners').doc(b.id).delete().catch(()=>{});
+            expiredDeleted++;
+            continue;
+        }
+        const row = document.createElement('div');
+        row.style.cssText = 'background:white;border:1.5px solid #e2e8f0;border-radius:12px;padding:10px;display:flex;gap:10px;align-items:center;';
+        const active = b.active !== false;
+        const bImg = (b.images && b.images[0]) || b.image;
+        const img = bImg ? `<img src="${bImg}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0;">` : `<div style="width:48px;height:48px;border-radius:8px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="megaphone" style="width:20px;height:20px;color:#94a3b8;"></i></div>`;
+        const daysLeft = expiresAt ? Math.ceil((expiresAt - Date.now())/86400000) : 0;
+        row.innerHTML = `
+            <div onclick="openBannerStats('${b.id}')" style="display:flex;gap:10px;align-items:center;flex:1;min-width:0;cursor:pointer;">
+            ${img}
+            <div style="flex:1;min-width:0;">
+                <div style="font-weight:800;font-size:13px;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.title || 'Untitled'}</div>
+                <div style="font-size:11px;color:#64748b;display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;align-items:center;">
+                    ${b.showInFeed!==false?'<span style="color:#1d4ed8;">Feed</span>':''}
+                    ${b.showInMarketplace!==false?'<span style="color:#15803d;">Market</span>':''}
+                    ${!active?'<span style="color:#dc2626;">Paused</span>':''}
+                    ${expiresAt?`<span style="color:${daysLeft<=3?'#dc2626':'#94a3b8'};display:flex;align-items:center;gap:2px;"><i data-lucide="clock" style="width:10px;height:10px;"></i>${daysLeft}d left</span>`:'<span style="color:#94a3b8;">No expiry</span>'}
+                </div>
+            </div>
+            </div>
+            <button onclick="openBannerStats('${b.id}')" title="Stats" style="background:#f1f5f9;border:none;border-radius:8px;padding:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="bar-chart-3" style="width:15px;height:15px;color:#334155;"></i></button>
+            <button onclick="toggleBannerActive('${b.id}')" title="Pause / resume" style="background:${active?'#f0fdf4':'#f8fafc'};border:1px solid ${active?'#bbf7d0':'#e2e8f0'};border-radius:8px;padding:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="${active?'pause':'play'}" style="width:15px;height:15px;color:${active?'#15803d':'#94a3b8'};"></i></button>
+            <button onclick="editBanner('${b.id}')" title="Edit" style="background:#eff6ff;border:none;border-radius:8px;padding:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="pencil" style="width:15px;height:15px;color:#3b82f6;"></i></button>
+            <button onclick="deleteBanner('${b.id}')" title="Delete" style="background:#fef2f2;border:none;border-radius:8px;padding:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="trash-2" style="width:15px;height:15px;color:#dc2626;"></i></button>
+        `;
+        list.appendChild(row);
+    }
+    if (expiredDeleted) showToast('info', 'Auto-cleaned', `${expiredDeleted} expired banner(s) removed`);
+    lucide.createIcons();
+}
+
+function openBannerEditor(banner) {
+    _editingBannerId = banner?.id || null;
+    document.getElementById('bnTitle').value = banner?.title || '';
+    document.getElementById('bnText').value = banner?.text || '';
+    _bnImages = (banner?.images && banner.images.length) ? [...banner.images] : (banner?.image ? [banner.image] : []);
+    document.getElementById('bnWebsite').value = banner?.website || '';
+    document.getElementById('bnWhatsapp').value = banner?.whatsapp || '';
+    document.getElementById('bnCall').value = banner?.call || '';
+    document.getElementById('bnFeed').checked = banner ? banner.showInFeed !== false : true;
+    document.getElementById('bnMarket').checked = banner ? banner.showInMarketplace !== false : true;
+    document.getElementById('bnActive').checked = banner ? banner.active !== false : true;
+    document.getElementById('bnExpireDays').value = banner?.expireDays != null ? banner.expireDays : 30;
+    document.getElementById('bnSaveLabel').textContent = banner ? 'Update Banner' : 'Save Banner';
+    renderBannerImagesPreview();
+    document.getElementById('bannerEditor').style.display = 'flex';
+    lucide.createIcons();
+}
+function closeBannerEditor() { document.getElementById('bannerEditor').style.display = 'none'; _editingBannerId = null; }
+
+function renderBannerImagesPreview() {
+    const box = document.getElementById('bnImagesPreview');
+    if (!box) return;
+    box.innerHTML = '';
+    if (!_bnImages.length) { box.style.display = 'none'; return; }
+    box.style.display = 'flex';
+    _bnImages.forEach((url, i) => {
+        const w = document.createElement('div');
+        w.style.cssText = 'position:relative;width:72px;height:72px;border-radius:10px;overflow:hidden;flex-shrink:0;border:1.5px solid #e2e8f0;';
+        w.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;display:block;"><button type="button" data-i="${i}" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.7);color:white;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:12px;height:12px;color:white;"></i></button>`;
+        w.querySelector('button').addEventListener('click', () => { _bnImages.splice(i, 1); renderBannerImagesPreview(); });
+        box.appendChild(w);
+    });
+    lucide.createIcons(box);
+}
+
+async function editBanner(id) {
+    const snap = await db.collection('banners').doc(id).get();
+    if (!snap.exists) return;
+    openBannerEditor({ id: snap.id, ...snap.data() });
+    document.getElementById('bannerEditor').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function saveBanner() {
+    const title = document.getElementById('bnTitle').value.trim();
+    if (!title) { showToast('error', 'Title required', 'Enter a banner title'); return; }
+    const data = {
+        title,
+        text: document.getElementById('bnText').value.trim(),
+        images: [..._bnImages],
+        image: _bnImages[0] || '',
+        website: document.getElementById('bnWebsite').value.trim(),
+        whatsapp: document.getElementById('bnWhatsapp').value.trim(),
+        call: document.getElementById('bnCall').value.trim(),
+        showInFeed: document.getElementById('bnFeed').checked,
+        showInMarketplace: document.getElementById('bnMarket').checked,
+        active: document.getElementById('bnActive').checked,
+        expireDays: parseInt(document.getElementById('bnExpireDays').value) || 0,
+        updatedAt: Date.now()
+    };
+    if (!data.images.length) { showToast('error', 'Picture required', 'Add at least 1 ad picture'); return; }
+    try {
+        if (_editingBannerId) {
+            const createdSnap = await db.collection('banners').doc(_editingBannerId).get();
+            const created = createdSnap.exists ? (createdSnap.data().createdAt || Date.now()) : Date.now();
+            data.expiresAt = data.expireDays > 0 ? created + data.expireDays * 86400000 : 0;
+            await db.collection('banners').doc(_editingBannerId).update(data);
+            showToast('success', 'Updated', 'Banner updated');
+        } else {
+            data.createdAt = Date.now();
+            data.createdBy = currentUser?.id || 'admin';
+            data.baseViews = 1000;
+            data.realViews = 0;
+            data.expiresAt = data.expireDays > 0 ? data.createdAt + data.expireDays * 86400000 : 0;
+            await db.collection('banners').add(data);
+            showToast('success', 'Saved', 'Banner created');
+        }
+
+        closeBannerEditor();
+        await loadBannersForAdmin();
+        await refreshBannerPlacements();
+    } catch (e) { showToast('error', 'Error', e.message); }
+}
+
+async function toggleBannerActive(id) {
+    const ref = db.collection('banners').doc(id);
+    const snap = await ref.get();
+    if (!snap.exists) return;
+    const nowActive = snap.data().active === false;
+    await ref.update({ active: nowActive });
+    showToast('success', nowActive ? 'Active' : 'Paused', nowActive ? 'Banner is live' : 'Banner paused');
+    await loadBannersForAdmin();
+    await refreshBannerPlacements();
+}
+
+async function deleteBanner(id) {
+    if (!confirm('Delete this banner permanently?')) return;
+    await db.collection('banners').doc(id).delete();
+    showToast('success', 'Deleted', 'Banner removed');
+    await loadBannersForAdmin();
+    await refreshBannerPlacements();
+}
+
+document.getElementById('bnImageFile')?.addEventListener('change', async e => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    if (_bnImages.length + files.length > 8) { showToast('error', 'Max 8', 'Up to 8 ad pictures allowed'); e.target.value = ''; return; }
+    const picker = document.getElementById('bnImagePicker');
+        const origLabel = `<i data-lucide="images" style="width:18px;height:18px;color:#334155;"></i> Upload Ad Pictures (up to 8)`;
+    if (picker) picker.innerHTML = `<div style="width:20px;height:20px;border:3px solid #334155;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;"></div> Uploading ${files.length}...`;
+    lucide.createIcons();
+    for (const file of files) {
+        const url = await uploadToImgBB(file);
+        if (url) _bnImages.push(url);
+    }
+    renderBannerImagesPreview();
+    showToast(_bnImages.length ? 'success' : 'error', _bnImages.length ? 'Uploaded' : 'Upload failed', _bnImages.length ? _bnImages.length + ' ad picture(s) ready' : 'Try again');
+    if (picker) picker.innerHTML = origLabel;
+    lucide.createIcons();
+    e.target.value = '';
+});
+
+
+async function getActiveBanners() {
+    if (_cachedBanners.length && Date.now() - _bannersCacheTime < 15000) return _cachedBanners;
+    const snap = await db.collection('banners').where('active', '==', true).get();
+    const now = Date.now();
+    _cachedBanners = snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(b => {
+            const exp = b.expiresAt || (b.expireDays > 0 && b.createdAt ? b.createdAt + b.expireDays * 86400000 : 0);
+            return !exp || now <= exp;   // 0 / no expiry = never expires
+        });
+    _bannersCacheTime = Date.now();
+    return _cachedBanners;
+}
+
+function buildBannerCard(b) {
+    const div = document.createElement('div');
+    div.className = 'banner-ad-card';
+    const site = b.website ? (b.website.startsWith('http') ? b.website : 'https://' + b.website) : '';
+    const call = (b.call || '').replace(/[^0-9+]/g, '');
+    const action = site || (call ? 'tel:' + call : '');
+    const label = site ? 'Visit the website' : (call ? 'Call now' : (b.title || 'Advertisement'));
+    const icon = site ? 'globe' : (call ? 'phone' : 'megaphone');
+    const imgs = (b.images && b.images.length) ? b.images : (b.image ? [b.image] : []);
+    div.style.cssText = 'position:relative;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.12);border:3px solid #334155;margin:0;cursor:pointer;background:#0f172a;';
+
+
+    if (!imgs.length) {
+        div.innerHTML = `<div style="padding:48px 20px;text-align:center;color:white;font-weight:800;font-size:16px;">${b.title || 'Advertisement'}</div>`;
+    } else {
+        const slider = document.createElement('div');
+        slider.style.cssText = 'display:flex;width:100%;transition:transform 0.5s ease;';
+        imgs.forEach(src => {
+            const im = document.createElement('img');
+            im.src = src;
+            im.style.cssText = 'width:100%;height:auto;max-height:440px;object-fit:cover;display:block;flex-shrink:0;';
+            slider.appendChild(im);
+        });
+        div.appendChild(slider);
+
+        // Text overlay on top of the picture
+                // Top-left: BeelzeChatAds
+        const tl = document.createElement('div');
+        tl.style.cssText = 'position:absolute;top:10px;left:12px;font-size:10px;font-weight:800;color:white;text-shadow:0 1px 3px rgba(0,0,0,0.85);letter-spacing:0.3px;pointer-events:none;';
+        tl.textContent = 'BeelzeChatAds';
+        div.appendChild(tl);
+
+        // Top-right: Sponsored
+        const tr = document.createElement('div');
+        tr.style.cssText = 'position:absolute;top:10px;right:12px;font-size:10px;font-weight:800;color:white;text-shadow:0 1px 3px rgba(0,0,0,0.85);letter-spacing:0.3px;pointer-events:none;';
+        tr.textContent = 'Sponsored';
+        div.appendChild(tr);
+
+        // Bottom: ad info (left) + Visit the website (right)
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:absolute;left:0;right:0;bottom:0;padding:14px 14px 13px;background:linear-gradient(to top, rgba(0,0,0,0.78), rgba(0,0,0,0));color:white;pointer-events:none;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;';
+        overlay.innerHTML = `
+            <div style="flex:1;min-width:0;">
+                ${b.title ? `<div style="font-weight:700;font-size:12px;margin-bottom:2px;text-shadow:0 1px 4px rgba(0,0,0,0.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.title}</div>` : ''}
+                ${b.text ? `<div style="font-size:10px;color:rgba(255,255,255,0.92);text-shadow:0 1px 3px rgba(0,0,0,0.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.text}</div>` : ''}
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,0.7);flex-shrink:0;">
+                <i data-lucide="${icon}" style="width:12px;height:12px;color:white;"></i> ${label}
+            </div>
+        `;
+        div.appendChild(overlay);
+
+        // Auto-rotating carousel dots (top-center, clear of the corner labels)
+        if (imgs.length > 1) {
+            const dots = document.createElement('div');
+            dots.style.cssText = 'position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;pointer-events:none;';
+            imgs.forEach((_, i) => {
+                const d = document.createElement('div');
+                d.style.cssText = `width:7px;height:7px;border-radius:50%;background:${i===0?'white':'rgba(255,255,255,0.45)'};transition:background 0.3s;`;
+                dots.appendChild(d);
+            });
+            div.appendChild(dots);
+            let cur = 0;
+            const dotEls = dots.querySelectorAll('div');
+            const timer = setInterval(() => {
+                if (!document.body.contains(div)) { clearInterval(timer); return; }
+                cur = (cur + 1) % imgs.length;
+                slider.style.transform = `translateX(-${cur * 100}%)`;
+                dotEls.forEach((d, i) => d.style.background = i === cur ? 'white' : 'rgba(255,255,255,0.45)');
+            }, 3500);
+        }
+    }
+
+        div.addEventListener('click', () => {
+        if (!action) return;
+        recordBannerClick(b.id);
+        if (action.startsWith('tel:')) window.location.href = action;
+        else window.open(action, '_blank');
+    });
+
+    bumpBannerViews(b);
+    lucide.createIcons(div);
+    return div;
+}
+
+
+function buildBannerMarketTile(b) {
+    const div = document.createElement('div');
+    div.className = 'banner-ad-tile';
+    const site = b.website ? (b.website.startsWith('http') ? b.website : 'https://' + b.website) : '';
+    const call = (b.call || '').replace(/[^0-9+]/g, '');
+    const action = site || (call ? 'tel:' + call : '');
+    const label = site ? 'Visit website' : (call ? 'Call now' : (b.title || 'Ad'));
+    const icon = site ? 'globe' : (call ? 'phone' : 'megaphone');
+    const imgs = (b.images && b.images.length) ? b.images : (b.image ? [b.image] : []);
+     div.style.cssText = 'position:relative;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.12);border:3px solid #334155;cursor:pointer;display:flex;flex-direction:column;min-width:0;background:#0f172a;';
+
+
+    if (!imgs.length) {
+        div.innerHTML = `<div style="padding:30px 12px;text-align:center;color:white;font-weight:800;font-size:13px;">${b.title || 'Advertisement'}</div>`;
+    } else {
+        const slider = document.createElement('div');
+        slider.style.cssText = 'display:flex;width:100%;transition:transform 0.5s ease;';
+        imgs.forEach(src => {
+            const im = document.createElement('img');
+            im.src = src;
+            im.style.cssText = 'width:100%;height:160px;object-fit:cover;display:block;flex-shrink:0;';
+            slider.appendChild(im);
+        });
+        div.appendChild(slider);
+
+        // Top-left: BeelzeChatAds
+        const tl = document.createElement('div');
+        tl.style.cssText = 'position:absolute;top:7px;left:8px;font-size:8px;font-weight:800;color:white;text-shadow:0 1px 3px rgba(0,0,0,0.85);letter-spacing:0.2px;pointer-events:none;';
+        tl.textContent = 'BeelzeChatAds';
+        div.appendChild(tl);
+
+        // Top-right: Sponsored
+        const tr = document.createElement('div');
+        tr.style.cssText = 'position:absolute;top:7px;right:8px;font-size:8px;font-weight:800;color:white;text-shadow:0 1px 3px rgba(0,0,0,0.85);letter-spacing:0.2px;pointer-events:none;';
+        tr.textContent = 'Sponsored';
+        div.appendChild(tr);
+
+        // Bottom: ad info (left) + visit (right)
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:absolute;left:0;right:0;bottom:0;padding:9px 9px 7px;background:linear-gradient(to top, rgba(0,0,0,0.78), rgba(0,0,0,0));color:white;pointer-events:none;display:flex;justify-content:space-between;align-items:flex-end;gap:6px;';
+        overlay.innerHTML = `
+            <div style="flex:1;min-width:0;">
+                ${b.title ? `<div style="font-weight:700;font-size:10px;text-shadow:0 1px 3px rgba(0,0,0,0.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.title}</div>` : ''}
+            </div>
+            <div style="display:flex;align-items:center;gap:3px;font-size:9px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,0.7);flex-shrink:0;">
+                <i data-lucide="${icon}" style="width:10px;height:10px;color:white;"></i> ${label}
+            </div>
+        `;
+        div.appendChild(overlay);
+
+        if (imgs.length > 1) {
+            const dots = document.createElement('div');
+            dots.style.cssText = 'position:absolute;top:7px;left:50%;transform:translateX(-50%);display:flex;gap:4px;pointer-events:none;';
+            imgs.forEach((_, i) => {
+                const d = document.createElement('div');
+                d.style.cssText = `width:6px;height:6px;border-radius:50%;background:${i===0?'white':'rgba(255,255,255,0.45)'};transition:background 0.3s;`;
+                dots.appendChild(d);
+            });
+            div.appendChild(dots);
+            let cur = 0;
+            const dotEls = dots.querySelectorAll('div');
+            const timer = setInterval(() => {
+                if (!document.body.contains(div)) { clearInterval(timer); return; }
+                cur = (cur + 1) % imgs.length;
+                slider.style.transform = `translateX(-${cur * 100}%)`;
+                dotEls.forEach((d, i) => d.style.background = i === cur ? 'white' : 'rgba(255,255,255,0.45)');
+            }, 3500);
+        }
+    }
+
+    div.addEventListener('click', () => {
+        if (!action) return;
+        recordBannerClick(b.id);
+        if (action.startsWith('tel:')) window.location.href = action;
+        else window.open(action, '_blank');
+    });
+
+    bumpBannerViews(b);
+    lucide.createIcons(div);
+    return div;
+}
+
+// ----- Real click recording (stored in Firestore, no fakes) -----
+function recordBannerClick(id) {
+    if (!id) return;
+    try { db.collection('banners').doc(id).get().then(s => {
+        if (!s.exists) return;
+        db.collection('banners').doc(id).update({ realClicks: (s.data().realClicks || 0) + 1, lastClickAt: Date.now() });
+    }); } catch(e) {}
+}
+
+// ----- Fake views: slow daily climb 100-1244, grows each day -----
+const _bannerViewBuf = {};
+function bumpBannerViews(b) {
+    if (!b.id) return;
+    const today = new Date().toISOString().slice(0,10);
+    if (_bannerViewBuf[b.id] === today) return;   // one bump per banner per session per day
+    _bannerViewBuf[b.id] = today;
+    try { db.collection('banners').doc(b.id).get().then(s => {
+        if (!s.exists) return;
+        const d = s.data();
+        const vDate = d.viewDate;
+        let baseViews = d.baseViews || 1000;
+        let dailyTarget = d.dailyTarget || 0;
+        if (vDate !== today) {
+            dailyTarget = Math.floor(Math.random() * (1244 - 100) + 100);
+            baseViews += dailyTarget;
+        } else {
+            const soFar = d.viewsToday || 0;
+            if (soFar < dailyTarget) baseViews += Math.min(dailyTarget - soFar, Math.floor(Math.random() * 12) + 3);
+        }
+        db.collection('banners').doc(b.id).update({
+            baseViews,
+            dailyTarget,
+            viewsToday: vDate === today ? (d.viewsToday || 0) + (baseViews - (d.baseViews || 0)) : 0,
+            viewDate: today
+        });
+    }); } catch(e) {}
+}
+
+// ----- Ad performance section (views + real clicks + graphs) -----
+async function openBannerStats(id) {
+    const panel = document.getElementById('bannerStatsPanel');
+    if (!panel) return;
+    panel.style.display = 'flex';
+    panel.innerHTML = `<div style="text-align:center;color:#94a3b8;padding:30px;font-size:13px;">Loading stats...</div>`;
+    const s = await db.collection('banners').doc(id).get();
+    if (!s.exists) { panel.innerHTML = '<div style="color:#dc2626;padding:20px;">Banner not found.</div>'; return; }
+    const b = { id: s.id, ...s.data() };
+    const views = b.baseViews || 0;
+    const clicks = b.realClicks || 0;
+    const days = [];
+    let v = Math.max(100, views - 7 * 200);
+    for (let i = 6; i >= 0; i--) {
+        v += Math.floor(Math.random() * 180) + 60;
+        if (i === 0) v = views;
+        days.push({ v, c: Math.max(0, Math.floor((clicks / Math.max(1, views)) * v) + Math.floor(Math.random()*3)) });
+    }
+    const maxV = Math.max(...days.map(d => d.v), 1);
+    const maxC = Math.max(...days.map(d => d.c), 1);
+    const bars = days.map((d, i) => {
+        const h = Math.round((d.v / maxV) * 100);
+        const hc = Math.max(4, Math.round((d.c / maxC) * 100));
+        return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+            <div style="display:flex;align-items:flex-end;gap:2px;height:90px;">
+                <div style="width:10px;height:${h}%;background:#334155;border-radius:3px 3px 0 0;"></div>
+                <div style="width:10px;height:${hc}%;background:#94a3b8;border-radius:3px 3px 0 0;"></div>
+            </div>
+            <div style="font-size:9px;color:#94a3b8;">${i===6?'7d':i===0?'now':''}</div>
+        </div>`;
+    }).join('');
+    panel.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;background:white;z-index:2;">
+            <button onclick="document.getElementById('bannerStatsPanel').style.display='none'" style="background:#f1f5f9;border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="arrow-left" style="width:18px;height:18px;color:#334155;"></i></button>
+            <div style="font-weight:800;font-size:15px;color:#0f172a;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.title || 'Ad'} — Performance</div>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;gap:10px;">
+                <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;">
+                    <div style="width:34px;height:34px;border-radius:9px;background:#334155;display:flex;align-items:center;justify-content:center;"><i data-lucide="eye" style="width:17px;height:17px;color:white;"></i></div>
+                    <div><div style="font-size:10px;color:#64748b;font-weight:700;">Views (rolling)</div><div id="statViews" style="font-weight:800;font-size:18px;color:#0f172a;">0</div></div>
+                </div>
+                <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;">
+                    <div style="width:34px;height:34px;border-radius:9px;background:#0f172a;display:flex;align-items:center;justify-content:center;"><i data-lucide="mouse-pointer-click" style="width:17px;height:17px;color:white;"></i></div>
+                    <div><div style="font-size:10px;color:#64748b;font-weight:700;">Clicks (real)</div><div style="font-weight:800;font-size:18px;color:#0f172a;display:flex;align-items:center;gap:6px;"><span id="clicksHidden">•••</span><button onclick="document.getElementById('clicksHidden').textContent='${clicks.toLocaleString()}';this.style.display='none'" style="background:none;border:none;cursor:pointer;padding:0;display:flex;"><i data-lucide="eye-off" style="width:15px;height:15px;color:#94a3b8;"></i></button></div></div>
+                </div>
+            </div>
+            <div style="background:white;border:1px solid #e2e8f0;border-radius:12px;padding:14px;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;"><i data-lucide="trending-up" style="width:14px;height:14px;color:#334155;"></i><span style="font-size:11px;font-weight:700;color:#334155;">7-day growth</span><span style="margin-left:auto;display:flex;gap:10px;font-size:9px;color:#64748b;"><span style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:#334155;border-radius:2px;"></span>Views</span><span style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:#94a3b8;border-radius:2px;"></span>Clicks</span></span></div>
+                <div style="display:flex;align-items:flex-end;gap:4px;height:100px;">${bars}</div>
+            </div>
+            <div style="display:flex;gap:14px;font-size:10px;color:#64748b;flex-wrap:wrap;">
+                <span style="display:flex;align-items:center;gap:4px;"><i data-lucide="calendar" style="width:11px;height:11px;"></i> Daily target: ${(b.dailyTarget||0).toLocaleString()}</span>
+                <span style="display:flex;align-items:center;gap:4px;"><i data-lucide="mouse-pointer-click" style="width:11px;height:11px;"></i> CTR: ${views?((clicks/views)*100).toFixed(2):0}%</span>
+                <span style="display:flex;align-items:center;gap:4px;"><i data-lucide="clock" style="width:11px;height:11px;"></i> Last click: ${b.lastClickAt?new Date(b.lastClickAt).toLocaleString():'—'}</span>
+            </div>
+        </div>
+    `;
+    const vEl = document.getElementById('statViews');
+    if (vEl && views > 0) {
+        let cur = 0; const step = Math.max(1, Math.floor(views / 120));
+        const t = setInterval(() => { cur += step; if (cur >= views) { cur = views; clearInterval(t); } vEl.textContent = cur.toLocaleString(); }, 30);
+    }
+    lucide.createIcons(panel);
+}
+
+// ----- Inject banners into the POST FEED (between post boxes) -----
+async function injectFeedBanners() {
+    const pl = document.getElementById('postsList');
+    if (!pl) return;
+    pl.querySelectorAll('.banner-ad-card').forEach(el => el.remove());
+    const banners = (await getActiveBanners()).filter(b => b.showInFeed !== false);
+    if (!banners.length) return;
+    const cards = Array.from(pl.querySelectorAll('.post-card'));
+    if (!cards.length) return;
+    let bi = 0;
+    cards.forEach((card, i) => {
+        if ((i + 1) % 3 === 0 && banners.length) {
+            card.after(buildBannerCard(banners[bi % banners.length]));
+            bi++;
+        }
+    });
+    lucide.createIcons();
+}
+
+// ----- Inject banners into the MARKETPLACE grid (between listing boxes) -----
+async function injectMarketplaceBanners() {
+    const grid = document.getElementById('marketplaceGrid');
+    if (!grid) return;
+    grid.querySelectorAll('.banner-ad-tile').forEach(el => el.remove());
+    const banners = (await getActiveBanners()).filter(b => b.showInMarketplace !== false);
+    if (!banners.length) return;
+    const tiles = Array.from(grid.children).filter(c => !c.classList.contains('banner-ad-tile') && !c.getAttribute('style')?.includes('text-align'));
+    if (!tiles.length) return;
+    let bi = 0;
+    tiles.forEach((tile, i) => {
+        if ((i + 1) % 4 === 0 && banners.length) {
+            tile.after(buildBannerMarketTile(banners[bi % banners.length]));
+            bi++;
+        }
+    });
+    lucide.createIcons();
+}
+
+async function refreshBannerPlacements() {
+    _bannersCacheTime = 0;
+    await injectFeedBanners();
+    if (document.getElementById('marketplaceView')?.classList.contains('active')) await injectMarketplaceBanners();
+}
+
+// Load banner list whenever the admin panel opens
+const _origOpenPostMgmt = openPostMgmt;
+openPostMgmt = async function() {
+    await _origOpenPostMgmt();
+    loadBannersForAdmin();
+};
+
+// Pre-fetch banners instantly on app open so they render the moment posts appear
+getActiveBanners().then(() => { injectFeedBanners(); }).catch(()=>{});
+
 // Android back button handler
 window.addEventListener('popstate', (e) => {
     e.preventDefault();
@@ -10289,37 +10958,26 @@ window.addEventListener('popstate', (e) => {
 history.pushState(null, '', window.location.href);
 
 
-// ===== Keep the typing bar visible above the soft keyboard (webview wrapper fix) =====
-(function () {
-    function fixKeyboard() {
-        const cv = document.getElementById('chatView');
-        if (!cv || !cv.classList.contains('active')) return;
-        const vv = window.visualViewport;
-        if (vv) {
-            cv.style.height = vv.height + 'px';
-            cv.style.bottom = 'auto';
-            const inp = document.getElementById('messageInput');
-            if (inp && document.activeElement === inp) {
-                const mc = document.getElementById('messagesContainer');
-                if (mc) mc.scrollTop = mc.scrollHeight;
-                const ic = document.querySelector('.message-input-container');
-                if (ic) ic.scrollIntoView({ block: 'end', behavior: 'instant' });
-            }
-        } else {
-            cv.style.height = window.innerHeight + 'px';
-        }
+// Single keyboard handler — instant height sync, no transitions, no jank
+(function(){
+    function syncChatHeight(){
+        var vv = window.visualViewport;
+        var chatView = document.getElementById('chatView');
+        if (!chatView || !chatView.classList.contains('active')) return;
+        var h = vv ? vv.height : window.innerHeight;
+        chatView.style.setProperty('--bz-chat-height', h + 'px');
+        chatView.style.height = h + 'px';
     }
     if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', fixKeyboard);
-        window.visualViewport.addEventListener('scroll', fixKeyboard);
+        window.visualViewport.addEventListener('resize', syncChatHeight);
     }
-    window.addEventListener('resize', fixKeyboard);
-    // Wrapped apps often don't fire visualViewport — catch focus/blur too
-    const msgInput = document.getElementById('messageInput');
-    if (msgInput) {
-        msgInput.addEventListener('focus', () => { setTimeout(fixKeyboard, 300); setTimeout(fixKeyboard, 700); });
-        msgInput.addEventListener('blur',  () => setTimeout(fixKeyboard, 300));
-    }
+    window.addEventListener('resize', syncChatHeight);
+    window.addEventListener('orientationchange', syncChatHeight);
+    document.addEventListener('click', function(e){
+        if (e.target.closest('.chat-item, [onclick*="openChat"], [onclick*="openGroupChat"]')) {
+            requestAnimationFrame(syncChatHeight);
+        }
+    });
 })();
 
 
