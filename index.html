@@ -3884,15 +3884,84 @@ form input[type="text"] {
             </button>
         </div>
         <div style="margin-top:18px;background:#f8fafc;border-radius:14px;padding:14px;border:1px solid #e2e8f0;">
-          <div style="font-weight:800;color:#0f172a;margin-bottom:8px;">BeelzeChat Business</div>
-          <a href="mailto:support@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Support: support@beelzechat.co.za</a>
-          <a href="mailto:ads@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Advertise: ads@beelzechat.co.za</a>
-          <a href="mailto:ceo@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Owner: ceo@beelzechat.co.za</a>
-             <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R500</b> • <a href="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
-        </div>
+  <div style="font-weight:800;color:#0f172a;margin-bottom:8px;">BeelzeChat Business</div>
+  <a href="mailto:support@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Support: support@beelzechat.co.za</a>
+  <a href="mailto:ads@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Advertise: ads@beelzechat.co.za</a>
+  <a href="mailto:ceo@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Owner: ceo@beelzechat.co.za</a>
+     <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R500</b> • <a href="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
+  <!-- TERMS & POLICIES BUTTON -->
+  <button onclick="document.getElementById('termsModal').classList.add('active');lucide.createIcons();" style="width:100%;margin-top:10px;display:flex;align-items:center;gap:8px;padding:12px 14px;background:#0f172a;color:white;border:none;border-radius:12px;cursor:pointer;font-weight:700;font-size:13px;">
+      <i data-lucide="file-text" style="width:18px;height:18px;"></i> Terms &amp; Policies
+  </button>
+</div>
         </div>
     </div>
 </div>
+
+
+<!-- ===== FULL-SCREEN TERMS & POLICIES ===== -->
+<div id="termsModal" class="modal-overlay" style="align-items:stretch;justify-content:stretch;padding:0;">
+    <div class="modal-content" style="width:100%;max-width:100%;height:100vh;border-radius:0;padding:0;margin:0;max-height:100vh;overflow-y:auto;background:#ffffff;display:flex;flex-direction:column;">
+        <!-- Sticky header -->
+        <div class="modal-header" style="background:#ffffff;padding:14px 16px;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;align-items:center;gap:12px;">
+            <button class="close-btn" onclick="document.getElementById('termsModal').classList.remove('active');" style="background:#f1f5f9;border:none;flex-shrink:0;">
+                <i data-lucide="arrow-left" style="color:#0f172a;"></i>
+            </button>
+            <h2 class="modal-title" style="font-size:17px;color:#0f172a;flex:1;display:flex;align-items:center;gap:8px;">
+                <i data-lucide="file-text" style="width:20px;height:20px;color:#4338ca;"></i> Terms &amp; Policies
+            </h2>
+        </div>
+
+        <div style="padding:20px 18px 40px;">
+            <div style="font-size:12px;color:#94a3b8;margin-bottom:16px;">Last updated: 13 August 2026</div>
+
+            <!-- SERVICE DESCRIPTION -->
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:16px;margin-bottom:16px;">
+                <div style="font-weight:800;color:#1e40af;font-size:15px;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i data-lucide="info" style="width:18px;height:18px;"></i> Service Description</div>
+                <p style="font-size:13px;color:#1e293b;line-height:1.6;">BeelzeChat (beelzechat.co.za) is a South African social media platform offering two digital services: <b>Permanent Photo &amp; Memory Storage</b> via monthly subscription (R50/month), and <b>Banner Advertising</b> (R1,000 per 30-day campaign). BeelzeChat is entirely a digital/software service — no physical goods are sold.</p>
+            </div>
+
+            <!-- TERMS -->
+            <div style="background:#f8fafc;border-radius:14px;padding:16px;margin-bottom:16px;">
+                <div style="font-weight:800;color:#0f172a;font-size:15px;margin-bottom:10px;">1. Terms &amp; Conditions</div>
+                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>1.1 Permanent Storage Subscription — R50.00/month:</b> The subscription grants the user permanent storage of uploaded photos for the duration of their active subscription. Payment is monthly in advance via PayFast or EFT. The subscription does not auto-renew — users must manually renew each month.</p>
+                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>1.2 Banner Advertising — R1,000.00/30 days:</b> Advertisers pay upfront for a banner displayed on the platform for 30 consecutive days. The ad is activated within 24 hours of confirmed payment. BeelzeChat reserves the right to reject illegal, offensive, or misleading content.</p>
+                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>1.3 User Accounts:</b> Users must be 13 years or older. Users are responsible for their uploaded content. BeelzeChat does not claim ownership of user content.</p>
+                <p style="font-size:13px;color:#334155;line-height:1.6;"><b>1.4 Acceptable Use:</b> Users agree not to upload illegal, copyrighted (without permission), or harmful content. BeelzeChat reserves the right to suspend accounts that violate these terms.</p>
+            </div>
+
+            <!-- REFUND -->
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:14px;padding:16px;margin-bottom:16px;">
+                <div style="font-weight:800;color:#dc2626;font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i data-lucide="rotate-ccw" style="width:18px;height:18px;"></i> 2. Refund Policy</div>
+                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>2.1 Subscription (R50/month):</b> As the service is delivered immediately upon payment, refunds are not provided once the subscription period has begun. Exception: if the platform is completely inaccessible for the entire period due to a BeelzeChat technical failure, a full refund or credit will be issued upon request.</p>
+                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>2.2 Banner Advertising (R1,000):</b> If the ad was not displayed at all due to a BeelzeChat error, a full refund will be issued. If the advertiser cancels mid-campaign, no refund is provided as the ad slot was reserved and partially delivered.</p>
+                <p style="font-size:13px;color:#334155;line-height:1.6;"><b>2.3 How to request:</b> Email support@beelzechat.co.za with your payment reference. Refunds are processed within 7–14 business days via the original payment method.</p>
+            </div>
+
+            <!-- CANCELLATION -->
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:16px;margin-bottom:16px;">
+                <div style="font-weight:800;color:#b45309;font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i data-lucide="x-circle" style="width:18px;height:18px;"></i> 3. Cancellation Policy</div>
+                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>3.1 Subscription:</b> The R50/month subscription does not auto-renew. To cancel, simply do not make the next payment — no further action required. Cancellation takes effect at the end of the current paid period. No early-cancellation fees apply.</p>
+                <p style="font-size:13px;color:#334155;line-height:1.6;"><b>3.2 Banner Advertising:</b> Advertisers may cancel before the ad goes live (within the 24-hour activation window) for a full refund. Once the ad is live, cancellation does not qualify for a refund.</p>
+            </div>
+
+            <!-- DELIVERY -->
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:16px;margin-bottom:16px;">
+                <div style="font-weight:800;color:#166534;font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i data-lucide="download" style="width:18px;height:18px;"></i> 4. Delivery Policy</div>
+                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;">BeelzeChat provides <b>digital services only</b>. No physical goods are delivered.</p>
+                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>4.1 Subscription:</b> The service is activated immediately upon confirmation of payment. The user's photos are marked for permanent storage instantly.</p>
+                <p style="font-size:13px;color:#334155;line-height:1.6;"><b>4.2 Banner Advertising:</b> The ad is activated and displayed within 24 hours of confirmed payment. No shipping address is required for any service.</p>
+            </div>
+
+            <!-- CONTACT -->
+            <div style="background:#0f172a;border-radius:14px;padding:16px;text-align:center;">
+                <div style="font-weight:800;color:white;font-size:14px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="mail" style="width:16px;height:16px;"></i> Questions?</div>
+                <a href="mailto:support@beelzechat.co.za" style="font-size:13px;color:#60a5fa;">support@beelzechat.co.za</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- ===== FULL-SCREEN USER PROFILE (other users) ===== -->
 <div id="userProfileModal" class="modal-overlay" style="align-items:stretch;justify-content:stretch;padding:0;">
