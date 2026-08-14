@@ -1757,8 +1757,8 @@ label[for="postImagesInput"].upload-btn {
         
         .input-row { 
             display: flex; 
-            gap: 8px; 
-            align-items: flex-end; 
+            gap: 6px; 
+            align-items: center; 
         }
         
         .attachment-menu { 
@@ -1766,22 +1766,22 @@ label[for="postImagesInput"].upload-btn {
             flex-shrink: 0; 
         }
         
-        .attachment-btn { 
-            width: 44px; 
-            height: 44px; 
+                .attachment-btn { 
+            width: 40px; 
+            height: 40px; 
             border-radius: 50%; 
             border: none; 
-            background: #f1f5f9; 
+            background: transparent; 
             cursor: pointer; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-        }
-        
+        } 
+         
         .attachment-btn i { 
-            width: 20px; 
-            height: 20px; 
-            color: #64748b; 
+            width: 22px; 
+            height: 22px; 
+            color: #2563eb; 
         }
         
         .attachment-options { 
@@ -1824,58 +1824,73 @@ label[for="postImagesInput"].upload-btn {
             color: #000; 
         }
         
-        .message-input { 
+                .message-input { 
             flex: 1; 
-            padding: 12px 18px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 24px; 
-            font-size: 15px; 
-            background: #f8fafc; 
+            padding: 13px 20px; 
+            border: none; 
+            border-radius: 18px; 
+            font-size: 16px; 
+            background: #ffffff; 
             transition: all 0.3s; 
             resize: none; 
             max-height: 120px; 
             overflow-y: auto; 
             font-family: inherit; 
             line-height: 1.5; 
-        }
-        
+            color: #1e293b; 
+            box-shadow: 0 6px 18px rgba(59,130,246,0.12), 0 2px 6px rgba(15,23,42,0.06); 
+        } 
+         
         .message-input:focus { 
             outline: none; 
-            border-color: #000; 
             background: white; 
+            box-shadow: 0 8px 22px rgba(59,130,246,0.20), 0 2px 6px rgba(15,23,42,0.06); 
         }
         
         .send-btn { 
-            width: 44px; 
-            height: 44px; 
+            width: 40px; 
+            height: 40px; 
             border-radius: 50%; 
             border: none; 
-            background: #000; 
-            color: white; 
+            background: transparent; 
             cursor: pointer; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             flex-shrink: 0; 
-        }
-        
+        } 
+         
         .send-btn i { 
-            width: 20px; 
-            height: 20px; 
+            width: 22px; 
+            height: 22px; 
+            color: #2563eb; 
         }
         
         .voice-record-btn { 
-            width: 44px; 
-            height: 44px; 
+            width: 40px; 
+            height: 40px; 
             border-radius: 50%; 
             border: none; 
-            background: #ef4444; 
-            color: white; 
+            background: transparent; 
             cursor: pointer; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             flex-shrink: 0; 
+        } 
+         
+        .voice-record-btn i { 
+            width: 22px; 
+            height: 22px; 
+            color: #2563eb; 
+        } 
+         
+        .voice-record-btn.recording { 
+            background: #ef4444; 
+        } 
+         
+        .voice-record-btn.recording i { 
+            color: #ffffff; 
         }
         
         .voice-record-btn.recording { 
@@ -3788,7 +3803,7 @@ form input[type="text"] {
         </div>
         
                 <div class="input-row">
-            <button class="attachment-btn" id="kbLiftBtn" type="button" title="Lift keyboard / jump to latest" style="background:#f1f5f9;">
+            <button class="attachment-btn" id="kbLiftBtn" type="button" title="Lift keyboard / jump to latest" style="background:transparent;">
                 <i data-lucide="keyboard"></i>
             </button>
             <div class="attachment-menu">
