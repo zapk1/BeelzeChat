@@ -2529,8 +2529,8 @@ label[for="postImagesInput"].upload-btn {
         }
         
         .toggle-switch.active { 
-            background: #000; 
-        }
+    background: linear-gradient(135deg, #4338ca, #3b82f6);
+}
         
         .toggle-switch::after { 
             content: ''; 
@@ -4122,20 +4122,31 @@ form input[type="text"] {
 <!-- SYSTEM TO CREATE POSTS -->
 
 <div id="createPostModal" class="modal-overlay">
-    <div class="modal-content">
-        <div style="position:relative;padding:28px 24px 8px;text-align:center;">
-            <button class="close-btn" id="closeCreatePostBtn" style="position:absolute;top:16px;right:16px;">
-                <i data-lucide="x"></i>
+    <div class="modal-content" style="max-width:480px;">
+        <!-- Header -->
+        <div style="position:relative;padding:24px 20px 6px;text-align:center;background:linear-gradient(135deg,#f8fafc,#eef2ff);border-radius:20px 20px 0 0;">
+            <button class="close-btn" id="closeCreatePostBtn" style="position:absolute;top:14px;right:14px;background:#fff;box-shadow:0 2px 8px rgba(15,23,42,0.08);">
+                <i data-lucide="x" style="color:#64748b;"></i>
             </button>
-            <div class="fs-logo"></div>
-            <div class="fs-heading">Create Post</div>
+            <div style="width:52px;height:52px;margin:0 auto 10px;background:linear-gradient(135deg,#fff,#e2e8f0);border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(15,23,42,0.10);">
+                <i data-lucide="feather" style="width:26px;height:26px;color:#4338ca;"></i>
+            </div>
+            <div class="fs-heading" style="font-size:20px;">Create Post</div>
             <div class="fs-sub">Share something with the community</div>
         </div>
-        <form class="create-post-form" id="createPostForm" style="padding:16px 24px 28px;">
-            <textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1" autocomplete="on" autocorrect="on" autocapitalize="sentences" spellcheck="true" inputmode="text"></textarea>
-            <div class="form-group">
-                <label class="form-label"><i data-lucide="tag" style="width:13px;height:13px;"></i> Category</label>
-                <select class="form-input" id="postCategory">
+
+        <form class="create-post-form" id="createPostForm" style="padding:16px 20px 24px;display:flex;flex-direction:column;gap:14px;">
+
+            <!-- BIG typing area -->
+            <textarea id="postText" class="post-textarea" placeholder="What's on your mind?" rows="6" style="width:100%;min-height:170px;background:#f1f5f9;border:1.5px solid #cbd5e1;border-radius:18px;padding:16px;outline:none;resize:vertical;font-size:16px;line-height:1.6;font-family:inherit;color:#0f172a;box-sizing:border-box;"></textarea>
+
+
+            <!-- Category -->
+            <div class="form-group" style="margin:0;">
+                <label class="form-label" style="display:flex;align-items:center;gap:6px;font-size:13px;color:#64748b;font-weight:700;">
+                    <i data-lucide="tag" style="width:14px;height:14px;color:#94a3b8;"></i> Category
+                </label>
+                <select class="form-input" id="postCategory" style="margin-top:6px;">
                     <option value="entertainment">Entertainment</option>
                     <option value="music">Music</option>
                     <option value="fun">Fun</option>
@@ -4146,39 +4157,67 @@ form input[type="text"] {
                     <option value="other">Other</option>
                 </select>
             </div>
+
+            <!-- Image preview -->
             <div id="postImagesPreview" class="post-images-preview"></div>
-            <input type="file" id="postImagesInput" class="file-input" accept="image/*" multiple>
-            <label for="postImagesInput" class="upload-btn">
-                <i data-lucide="image"></i>
-                Add Photos (Max 10)
-            </label>
-            <button type="button" id="addVideoBtn" class="upload-btn">
-                <i data-lucide="camera"></i>
-                Add Video
-            </button>
-            <div id="videoUploadOptions" style="display:none;">
-                <button type="button" id="videoByUrlBtn">
-                    <i data-lucide="link"></i> Paste Video URL
+            <input type="file" id="postImagesInput" class="file-input" accept="image/*" multiple style="display:none;">
+
+            <!-- Media buttons row -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <label for="postImagesInput" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;background:linear-gradient(135deg,#fff,#f1f5f9);border:1.5px solid #e2e8f0;border-radius:14px;cursor:pointer;font-weight:700;font-size:14px;color:#475569;">
+                    <i data-lucide="image" style="width:18px;height:18px;color:#3b82f6;"></i> Photos
+                </label>
+                <button type="button" id="addVideoBtn" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;background:linear-gradient(135deg,#fff,#f1f5f9);border:1.5px solid #e2e8f0;border-radius:14px;cursor:pointer;font-weight:700;font-size:14px;color:#475569;">
+                    <i data-lucide="video" style="width:18px;height:18px;color:#8b5cf6;"></i> Video
                 </button>
-                <div id="videoUrlInputArea" style="display:none;margin-top:8px;">
-                    <input type="text" id="videoUrlInput" class="form-input" placeholder="https://res.cloudinary.com/...">
+            </div>
+
+            <!-- Video upload options -->
+            <div id="videoUploadOptions" style="display:none;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:12px;">
+                <button type="button" id="videoByUrlBtn" style="display:flex;align-items:center;gap:8px;width:100%;padding:11px;background:#fff;border:1px solid #cbd5e1;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px;color:#475569;">
+                    <i data-lucide="link" style="width:16px;height:16px;color:#3b82f6;"></i> Paste Video URL
+                </button>
+                <div id="videoUrlInputArea" style="display:none;margin-top:10px;">
+                    <input type="text" id="videoUrlInput" class="form-input" placeholder="https://res.cloudinary.com/..." style="margin:0;">
                     <button type="button" id="confirmVideoUrl" class="btn btn-primary" style="margin-top:8px;width:100%;"><i data-lucide="check"></i> Add Video</button>
                 </div>
-                <button id="videoFileUploadBtn" type="button" style="width:100%;padding:14px 16px;background:white;border:2px solid #4338ca;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:12px;font-weight:700;font-size:15px;color:#4338ca;margin-top:8px;">
-                    <i data-lucide="upload-cloud" style="width:24px;height:24px;flex-shrink:0;"></i> Upload Video
+                <button id="videoFileUploadBtn" type="button" style="width:100%;padding:13px;background:#fff;border:1.5px solid #4338ca;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:14px;color:#4338ca;margin-top:10px;">
+                    <i data-lucide="upload-cloud" style="width:20px;height:20px;"></i> Upload Video File
                 </button>
                 <input type="file" id="postVideoFileInput" accept="video/*" style="display:none;">
-                <div style="font-size:11px;color:#64748b;margin-top:10px;text-align:center;">Powered by BeelzeChat Cloud</div>
+                <div style="font-size:11px;color:#94a3b8;margin-top:10px;text-align:center;">Powered by BeelzeChat Cloud</div>
             </div>
-            <div class="comments-toggle">
-                <label>Allow Comments</label>
-                <div class="toggle-switch active" id="commentsToggle"></div>
+
+            <!-- Toggles: Comments + Likes (new pill design) -->
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:12px 14px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:36px;height:36px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;">
+                            <i data-lucide="message-circle" style="width:18px;height:18px;color:#3b82f6;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:14px;font-weight:700;color:#0f172a;">Allow Comments</div>
+                            <div style="font-size:11px;color:#94a3b8;">People can reply</div>
+                        </div>
+                    </div>
+                    <div class="toggle-switch active" id="commentsToggle"></div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:12px 14px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:36px;height:36px;border-radius:10px;background:#fef2f2;display:flex;align-items:center;justify-content:center;">
+                            <i data-lucide="heart" style="width:18px;height:18px;color:#ef4444;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:14px;font-weight:700;color:#0f172a;">Allow Likes</div>
+                            <div style="font-size:11px;color:#94a3b8;">People can like</div>
+                        </div>
+                    </div>
+                    <div class="toggle-switch active" id="likesToggle"></div>
+                </div>
             </div>
-            <div class="comments-toggle">
-                <label>Allow Likes</label>
-                <div class="toggle-switch active" id="likesToggle"></div>
-            </div>
-            <button type="submit" style="width:100%;padding:14px;border:none;border-radius:14px;color:white;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;">
+
+            <!-- Submit -->
+            <button type="submit" style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#4338ca,#3b82f6);color:white;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;box-shadow:0 8px 20px rgba(67,56,202,0.25);">
                 <i data-lucide="send" style="width:18px;height:18px;"></i>
                 Post
             </button>
@@ -4186,8 +4225,8 @@ form input[type="text"] {
     </div>
 </div>
 
-
 <!-- END SYSTEM TO CREATE POSTS -->
+
 
 
 
