@@ -94,12 +94,12 @@
 
   function coverBroken(img) {
     if (!img || img.dataset.bzCovered === '1') return;
-    // Only cover real <img> tags that aren't already our fallback
     if (img.tagName !== 'IMG') return;
+    // Never touch the full-screen viewer images — they load on demand
+    if (img.id === 'viewerImage' || img.id === 'imgViewerImg') return;
     img.dataset.bzCovered = '1';
-    const w = (img.naturalWidth || img.width || 0);
-    // If it genuinely failed (no natural dimensions) → swap for black box
-    if (w === 0 || img.complete === false) {
+    // Only cover if the image ACTUALLY failed — give it a moment to load first
+    if (img.complete && img.naturalWidth === 0) {
       img.outerHTML =
         '<div class="bz-img-failed">' + FAILED_SVG +
         '<span class="bz-fail-title">Failed to load</span>' +
