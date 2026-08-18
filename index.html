@@ -1092,28 +1092,33 @@ label[for="postImagesInput"].upload-btn {
             height: 18px; 
         }
         
-        .post-actions { 
-            padding: 12px 16px; 
-            display: flex; 
-            gap: 8px; 
-            border-top: 1px solid #f1f5f9; 
+                .post-actions {
+            padding: 10px 16px;
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            background: #f8fafc;
+            border-top: 1px solid #f1f5f9;
+            border-radius: 999px;
+            margin: 8px 12px 12px;
+            box-shadow: 0 4px 14px rgba(15,23,42,0.06);
         }
         
-        .post-action-btn { 
-            flex: 1; 
-            padding: 10px; 
-            border: none; 
-            background: #f8fafc; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px; 
-            font-size: 14px; 
-            font-weight: 600; 
-            color: #475569; 
-            transition: all 0.2s; 
+.post-action-btn {
+            flex: unset;
+            padding: 10px 18px;
+            border: none;
+            background: transparent;
+            border-radius: 999px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.2s;
         }
         
         .post-action-btn:hover { 
@@ -1838,8 +1843,8 @@ label[for="postImagesInput"].upload-btn {
             font-family: inherit; 
             line-height: 1.5; 
             color: #1e293b; 
-            box-shadow: 0 6px 18px rgba(59,130,246,0.12), 0 2px 6px rgba(15,23,42,0.06); 
-        } 
+            box-shadow: 0 1px 3px rgba(15,23,42,0.06);
+        }
          
         .message-input:focus { 
             outline: none; 
@@ -2341,9 +2346,9 @@ label[for="postImagesInput"].upload-btn {
 #createPostModal .remove-image-btn { border-radius: 50% !important; }
 #profileModal .profile-info { text-align: center !important; padding: 8px 0 20px !important; }
 #profileModal .profile-avatar-large {
-    width: 96px !important;
-    height: 96px !important;
-    border-radius: 28px !important;
+    width: 110px !important;
+    height: 110px !important;
+    border-radius: 50% !important;
     margin: 0 auto 14px !important;
     background: linear-gradient(135deg, #4338ca, #6366f1) !important;
     color: #ffffff !important;
@@ -2351,7 +2356,7 @@ label[for="postImagesInput"].upload-btn {
     font-weight: 800 !important;
     animation: avatarGlow 3600s ease infinite !important;
 }
-#profileModal .profile-avatar-large img { border-radius: 28px !important; object-fit: cover !important; }
+#profileModal .profile-avatar-large img { border-radius: 50% !important; object-fit: cover !important; }
 #profileModal .profile-avatar-camera {
     background: #4338ca !important;
     border: 3px solid #ffffff !important;
@@ -3537,9 +3542,6 @@ form input[type="text"] {
 </div>
             
      
-<!-- ADSTERRA NATIVE BANNER 1:1 — POSTS TOP -->       
- <script async="async" data-cfasync="false" src="https://pl30707691.effectivecpmnetwork.com/bfa816e41ee47a741496e0b4efc9b55e/invoke.js"></script>
-<div id="container-bfa816e41ee47a741496e0b4efc9b55e"></div>
 
             
             
@@ -4560,17 +4562,7 @@ form input[type="text"] {
         <button class="profile-btn" id="mktProfileBtn" style="flex-shrink:0;">U</button>
     </div>
     
-    <!-- ADSTERRA 728x90 BANNER — MARKETPLACE -->
-    <script>
-  atOptions = {
-    'key' : 'c20f3a6306ae83ed2355cb5805166662',
-    'format' : 'iframe',
-    'height' : 90,
-    'width' : 728,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/c20f3a6306ae83ed2355cb5805166662/invoke.js"></script>
+    
 
     <div style="padding:12px 12px 0;">
         <div class="search-wrapper">
@@ -6881,7 +6873,7 @@ async function loadMoreUsers() {
                     </div>
                     <div class="user-info">
                         <div class="user-name">${user.name}</div>
-                        <div class="user-bio">${user.bio || (user.online ? 'Online' : 'Offline')}</div>
+                          <div class="user-bio" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw;">${user.bio || (user.online ? 'Online' : 'Offline')}</div>
                     </div>
                     <button class="message-icon-user" style="background:transparent;color:#000;border:2px solid #e2e8f0;"><i data-lucide="message-circle"></i></button>
                 `;
@@ -6956,36 +6948,8 @@ if (appContent) {
 
 
 
-document.addEventListener('error', e => {
-    if (e.target.tagName === 'IMG') {
-        const img = e.target;
-        // Prevent infinite loop if the placeholder itself fails
-        if (img.dataset.broken === '1') return;
-        img.dataset.broken = '1';
-        img.style.background = '#000000';
-        img.style.minHeight = '180px';
-        img.style.minWidth = '180px';
-        img.style.display = 'flex';
-        img.style.alignItems = 'center';
-        img.style.justifyContent = 'center';
-        img.style.objectFit = 'contain';
-        // Use a transparent pixel so the alt text + styling shows
-        img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><rect width="100%" height="100%" fill="black"/></svg>';
-        img.alt = 'Failed to load';
-        // Build a black placeholder with icon + text over the broken image
-        const parent = img.parentElement;
-        if (parent && !parent.querySelector('.bz-fail-wrap')) {
-            const wrap = document.createElement('div');
-            wrap.className = 'bz-fail-wrap';
-            wrap.style.cssText = 'position:absolute;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:180px;text-align:center;padding:16px;';
-            wrap.innerHTML = '<i data-lucide="image-off" style="width:36px;height:36px;color:#ef4444;"></i><div style="color:#ffffff;font-size:13px;font-weight:700;">Failed to load</div><div style="color:#94a3b8;font-size:11px;">Try again later</div>';
-            // Make sure the parent can hold an absolute overlay
-            if (getComputedStyle(parent).position === 'static') parent.style.position = 'relative';
-            parent.appendChild(wrap);
-            if (window.lucide) lucide.createIcons();
-        }
-    }
-}, true);
+/* (removed duplicate capture error handler — the global one near the top already covers broken images) */
+
 
 
 function renderUsers() {
@@ -8618,12 +8582,46 @@ document.getElementById('profileBtn').addEventListener('click', () => {
     
     
     
-    db.collection('posts').where('userId','==',currentUser.id).get().then(snap => {
-        const posts = snap.docs.map(d=>d.data());
+    db.collection('posts').where('userId','==',currentUser.id).get().then(async snap => {
+        const docs = snap.docs.sort((a,b)=>b.data().timestamp-a.data().timestamp);
+        const posts = docs.map(d=>d.data());
         const views = posts.reduce((s,p)=>s+calcPostViews(p),0);
         let el = document.getElementById('myProfileStats');
         if (!el) { el = document.createElement('div'); el.id='myProfileStats'; el.style.cssText='display:flex;gap:20px;justify-content:center;margin:10px 0;padding:10px;background:#f8fafc;border-radius:12px;'; document.querySelector('#profileModal .profile-code-box').before(el); }
         el.innerHTML=`<div style="text-align:center;"><div style="font-weight:800;font-size:18px;display:flex;align-items:center;gap:4px;justify-content:center;"><i data-lucide="image" style="width:16px;height:16px;color:#3b82f6;"></i>${posts.length}</div><div style="font-size:11px;color:#64748b;">Posts</div></div><div style="text-align:center;"><div style="font-weight:800;font-size:18px;display:flex;align-items:center;gap:4px;justify-content:center;"><i data-lucide="eye" style="width:16px;height:16px;color:#3b82f6;"></i>${formatCount(views)}</div><div style="font-size:11px;color:#64748b;">Views</div></div>`;
+        lucide.createIcons();
+
+        // Build a feed+grid section exactly like the other-user profile
+        let sec = document.getElementById('myPostsSection');
+        if (!sec) { sec = document.createElement('div'); sec.id='myPostsSection'; sec.style.cssText='margin-top:14px;'; document.querySelector('#profileModal .profile-actions').before(sec); }
+        sec.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:space-between;margin:0 4px 10px;">
+                <div style="font-weight:800;font-size:15px;color:#0f172a;display:flex;align-items:center;gap:6px;"><i data-lucide="images" style="width:16px;height:16px;color:#4338ca;"></i> My Posts</div>
+                <div style="display:flex;gap:4px;background:#f1f5f9;border-radius:10px;padding:3px;">
+                    <button onclick="setMyPostsView('feed')" style="border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;background:#000;color:#fff;">Feed</button>
+                    <button onclick="setMyPostsView('grid')" style="border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;background:transparent;color:#64748b;">Grid</button>
+                </div>
+            </div>
+            <div id="myPostsFeed" style="display:flex;flex-direction:column;gap:12px;"></div>
+            <div id="myPostsGrid" style="display:none;grid-template-columns:repeat(3,1fr);gap:3px;"></div>
+            <div id="myPostsEmpty" style="display:none;text-align:center;color:#94a3b8;padding:30px;">No posts yet</div>`;
+        const feedEl = document.getElementById('myPostsFeed');
+        const gridEl = document.getElementById('myPostsGrid');
+        if (!docs.length) { document.getElementById('myPostsEmpty').style.display='block'; lucide.createIcons(); return; }
+        const cards = {};
+        for (const pd of docs) {
+            const p = pd.data();
+            const card = await createPostElement({ id: pd.id, ...p });
+            if (card && card.tagName) { feedEl.appendChild(card); cards[pd.id] = card; }
+            const thumb = p.images?.[0];
+            if (thumb) {
+                const tile = document.createElement('div');
+                tile.style.cssText = 'position:relative;aspect-ratio:1;overflow:hidden;border-radius:6px;cursor:pointer;background:#f1f5f9;';
+                tile.innerHTML = `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+                tile.addEventListener('click', () => { if (cards[pd.id]) openPostDetail(cards[pd.id]); });
+                gridEl.appendChild(tile);
+            }
+        }
         lucide.createIcons();
     });
         document.getElementById('profileModal').classList.add('active');
@@ -8807,7 +8805,12 @@ document.getElementById('blockBtn')?.addEventListener('click', async () => {
 
 
 
-
+function setMyPostsView(mode){
+    const f=document.getElementById('myPostsFeed'), g=document.getElementById('myPostsGrid');
+    if(!f||!g) return;
+    if(mode==='grid'){ f.style.display='none'; g.style.display='grid'; }
+    else { f.style.display='flex'; g.style.display='none'; }
+}
 
 
 
@@ -9721,7 +9724,9 @@ async function editName() {
 async function loadNotifications() {
     if (!currentUser) return;
     // Re-bind this account's OneSignal player id (covers login + account switching)
-    if (window.saveOneSignalId) { try { window.saveOneSignalId(); } catch(e){} }
+        if (window.saveOneSignalId) { try { window.saveOneSignalId(); } catch(e){} }
+    // Re-opt-in push every time an account loads so the device stays subscribed
+    if (window.bzOptInPush) { try { window.bzOptInPush(); } catch(e){} }    
     if (notifUnsub) { notifUnsub(); notifUnsub = null; }
     const fiveDaysAgo = Date.now() - (5 * 24 * 60 * 60 * 1000);
 
