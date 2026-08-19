@@ -8,6 +8,7 @@
     <link rel="icon" href="https://i.postimg.cc/mD0dbHM0/1000287857.png" type="image/png">
     <meta name="apple-mobile-web-app-capable" content="yes">
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6BJ44F7KSN"></script>
 <script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);} gtag('js', new Date());gtag('config', 'G-6BJ44F7KSN');</script>
 
@@ -278,6 +279,11 @@
     -webkit-backdrop-filter: blur(4px);
     pointer-events: all;
     z-index: 999999;
+}
+
+.g-recaptcha > div {
+    border-radius: 14px !important;
+    overflow: hidden;
 }
 
 .loading-screen.hide {
@@ -3293,6 +3299,11 @@ form input[type="text"] {
           </button>
         </div>
       </div>
+      
+  
+      
+      <div class="g-recaptcha" data-sitekey="6LfYH40tAAAAAMlU_jZm94JNZ821uD7vMLWDxYgm" style="margin:12px 0;transform:scale(0.9);transform-origin:left;"></div>
+
 
       <!-- Primary purple CTA -->
       <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);">
@@ -5961,14 +5972,18 @@ document.getElementById('googleSignInBtn').addEventListener('click', async () =>
     try {
         window._justLoggedIn = true;
         showToast('info', 'Signing In', 'Please wait...');
-        // Show loading immediately
         const ls = document.getElementById('loadingScreen');
         ls.style.display = 'flex';
         ls.classList.remove('hide');
         showLoadingScreen();
         document.getElementById('authScreen').style.display = 'none';
-        await auth.signInWithPopup(googleProvider);
-        // onAuthStateChanged handles the rest
+        // Mobile / in-app browsers block popups — use redirect there
+        const isMobile = /Android|iPhone|iPad|iPod|Mobile|Instagram|FBAN|FBAV|TikTok/i.test(navigator.userAgent);
+        if (isMobile) {
+            await auth.signInWithRedirect(googleProvider);
+        } else {
+            await auth.signInWithPopup(googleProvider);
+        }
     } catch (err) {
         // If error, bring auth screen back
         document.getElementById('loadingScreen').classList.add('hide');
@@ -5977,6 +5992,18 @@ document.getElementById('googleSignInBtn').addEventListener('click', async () =>
         showToast('error', 'Error', err.message);
     }
 });
+
+// Catch the redirect result when the page reloads after Google sign-in on mobile
+if (auth) {
+    auth.getRedirectResult().catch(err => {
+        console.log('Google redirect error:', err.message);
+        const ls = document.getElementById('loadingScreen');
+        if (ls) { ls.classList.add('hide'); setTimeout(() => ls.style.display = 'none', 600); }
+        const as = document.getElementById('authScreen');
+        if (as) as.style.display = 'flex';
+        showToast('error', 'Google sign-in failed', err.message);
+    });
+}
 
 // ============================================================
 // INITIALIZE DEFAULT DATA
@@ -6016,6 +6043,8 @@ function restoreAuthScreen() {
 
 document.getElementById('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
+    const recaptchaResponse = grecaptcha.getResponse();
+    if (!recaptchaResponse) { showToast('error', 'Verify', 'Please complete the CAPTCHA'); return; }
     const identifier = document.getElementById('loginIdentifier').value.trim();
     const password = document.getElementById('loginPassword').value;
     if (!identifier || !password) { showToast('error', 'Error', 'Fill all fields'); return; }
@@ -9046,7 +9075,7 @@ document.getElementById('confirmAddMembersBtn').addEventListener('click', async 
     const snap = await db.collection('chats').doc(currentChatId).get();
     const updatedMembers = [...(snap.data().members || []), ...ids];
 await db.collection('chats').doc(currentChatId).update({ members: updatedMembers });
-// Notify each added member via Firestore
+// Notify each added member via Firestore + OneSignal push
 const groupSnap = await db.collection('chats').doc(currentChatId).get();
 for (const uid of ids) {
     await db.collection('users').doc(uid).collection('notifications').add({
@@ -9057,6 +9086,17 @@ for (const uid of ids) {
         timestamp: Date.now(),
         read: false
     });
+    // 🔔 Fire the SAME OneSignal push that message alerts use
+    const opsId = allUsers[uid]?.oneSignalId;
+    if (!opsId) {
+        db.collection('users').doc(uid).get().then(ud => {
+            if (ud.exists && ud.data().oneSignalId) {
+                sendPushNotification(ud.data().oneSignalId, groupSnap.data().name, '➕ You were added to the group');
+            }
+        });
+    } else {
+        sendPushNotification(opsId, groupSnap.data().name, '➕ You were added to the group');
+    }
 }
 
 
