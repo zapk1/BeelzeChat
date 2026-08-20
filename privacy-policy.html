@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy & Content Policy — BeelzeChat</title>
+<meta name="description" content="BeelzeChat Privacy Policy and Content Policy. How we collect, store, and protect your personal information in compliance with POPIA (South Africa).">
+<link rel="icon" href="https://i.postimg.cc/mD0dbHM0/1000287857.png" type="image/png">
+<link rel="apple-touch-icon" href="https://i.postimg.cc/mD0dbHM0/1000287857.png">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #ffffff;
+    color: #0f172a;
+    line-height: 1.7;
+    padding-bottom: 60px;
+  }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #3F51B5; border-radius: 4px; }
+
+  /* TOP BAR */
+  .top-bar {
+    background: #3F51B5;
+    padding: 12px 16px;
+    text-align: center;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .top-bar a { color: #fff; text-decoration: underline; }
+  .top-bar i { width: 16px; height: 16px; }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 48px 20px 32px;
+    background: linear-gradient(180deg, #eef2ff 0%, #ffffff 100%);
+  }
+  .logo-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .logo-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(63, 81, 181, 0.25);
+  }
+  .logo-name {
+    font-size: 28px;
+    font-weight: 800;
+    color: #3F51B5;
+    letter-spacing: -0.5px;
+  }
+  .logo-sub {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+  }
+  .hero-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  .hero-sub {
+    font-size: 15px;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .last-updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    background: #f1f5f9;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+  }
+  .last-updated i { width: 14px; height: 14px; }
+
+  /* CONTAINER */
+  .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+  /* QUICK NAV */
+  .quick-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 20px 0;
+    margin: 0 -20px;
+    padding-left: 20px;
+    scrollbar-width: none;
+  }
+  .quick-nav::-webkit-scrollbar { display: none; }
+  .quick-nav a {
+    white-space: nowrap;
+    padding: 8px 16px;
+    background: #f1f5f9;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .quick-nav a:hover { background: #3F51B5; color: white; }
+  .quick-nav a i { width: 14px; height: 14px; display: inline; vertical-align: middle; margin-right: 4px; }
+
+  /* SECTION */
+  .section-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .section-card.featured { border-left: 4px solid #3F51B5; }
+  .section-card h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-card h2 i { width: 24px; height: 24px; color: #3F51B5; flex-shrink: 0; }
+  .section-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 18px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-card h3 i { width: 18px; height: 18px; color: #3F51B5; }
+  .section-card p {
+    font-size: 14px;
+    color: #475569;
+    margin-bottom: 10px;
+    line-height: 1.8;
+  }
+  .section-card p b { color: #0f172a; }
+  .section-card ul { list-style: none; margin: 8px 0 12px; }
+  .section-card ul li {
+    font-size: 14px;
+    color: #475569;
+    padding: 6px 0 6px 28px;
+    position: relative;
+    line-height: 1.7;
+  }
+  .section-card ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 18px;
+    height: 18px;
+    background: #eff6ff;
+    border-radius: 50%;
+  }
+  .section-card ul li b { color: #0f172a; }
+
+  /* ALLOWED / NOT ALLOWED */
+  .allowed-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
+    padding: 16px;
+    margin: 12px 0;
+  }
+  .allowed-box h4 {
+    font-size: 14px;
+    font-weight: 800;
+    color: #166534;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .allowed-box h4 i { width: 20px; height: 20px; }
+  .allowed-box ul li {
+    color: #166534;
+    padding-left: 28px;
+  }
+  .allowed-box ul li::before { background: #bbf7d0; }
+
+  .denied-box {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 14px;
+    padding: 16px;
+    margin: 12px 0;
+  }
+  .denied-box h4 {
+    font-size: 14px;
+    font-weight: 800;
+    color: #dc2626;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .denied-box h4 i { width: 20px; height: 20px; }
+  .denied-box ul li {
+    color: #dc2626;
+    padding-left: 28px;
+  }
+  .denied-box ul li::before { background: #fecaca; }
+
+  /* TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .data-table th {
+    background: #3F51B5;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 700;
+  }
+  .data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #475569;
+  }
+  .data-table tr:nth-child(even) td { background: #f8fafc; }
+  .data-table td:first-child { font-weight: 600; color: #1e293b; }
+
+  /* CONTACT BOX */
+  .contact-box {
+    background: linear-gradient(135deg, #3F51B5, #5c6bc0);
+    border-radius: 20px;
+    padding: 28px;
+    text-align: center;
+    color: white;
+    margin-top: 24px;
+  }
+  .contact-box h2 {
+    color: white;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .contact-box h2 i { color: white; }
+  .contact-box p { color: rgba(255,255,255,0.9); margin-bottom: 16px; }
+  .contact emails { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .contact-box a {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .contact-box a i { width: 16px; height: 16px; }
+
+  /* BADGE */
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    justify-content: center;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #f1f5f9;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+  }
+  .badge i { width: 14px; height: 14px; color: #3F51B5; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 32px 20px;
+    color: #94a3b8;
+    font-size: 13px;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 40px;
+  }
+  .footer a { color: #3F51B5; text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .hero-title { font-size: 24px; }
+    .section-card { padding: 18px; }
+    .data-table { font-size: 12px; }
+    .data-table th, .data-table td { padding: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <i data-lucide="shield-check"></i>
+  POPIA Compliant · <a href="https://beelzechat.co.za">Back to BeelzeChat</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="logo-wrap">
+    <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" alt="BeelzeChat" class="logo-img">
+    <div>
+      <div class="logo-name">BeelzeChat</div>
+      <div class="logo-sub">beelzechat.co.za</div>
+    </div>
+  </div>
+  <h1 class="hero-title">Privacy & Content Policy</h1>
+  <p class="hero-sub">How we collect, store, and protect your personal information — in compliance with the Protection of Personal Information Act (POPIA), South Africa.</p>
+  <div class="last-updated">
+    <i data-lucide="calendar"></i>
+    Last Updated: 20 August 2026
+  </div>
+  <div class="badge-row">
+    <span class="badge"><i data-lucide="shield-check"></i> POPIA Compliant</span>
+    <span class="badge"><i data-lucide="lock"></i> Encrypted Data</span>
+    <span class="badge"><i data-lucide="credit-card"></i> PayFast Secured</span>
+    <span class="badge"><i data-lucide="server"></i> Firebase Hosted</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- QUICK NAV -->
+  <div class="quick-nav">
+    <a href="#introduction"><i data-lucide="info"></i>Introduction</a>
+    <a href="#data-collected"><i data-lucide="database"></i>Data We Collect</a>
+    <a href="#how-used"><i data-lucide="settings"></i>How We Use Data</a>
+    <a href="#storage"><i data-lucide="server"></i>Data Storage</a>
+    <a href="#rights"><i data-lucide="user-check"></i>Your Rights</a>
+    <a href="#content-policy"><i data-lucide="file-text"></i>Content Policy</a>
+    <a href="#contact"><i data-lucide="mail"></i>Contact</a>
+  </div>
+
+  <!-- INTRODUCTION -->
+  <div class="section-card featured" id="introduction">
+    <h2><i data-lucide="info"></i>1. Introduction</h2>
+    <p>BeelzeChat ("we", "us", "our") operates <b>beelzechat.co.za</b> — a South African social media and messaging platform. This Privacy & Content Policy explains how we collect, use, store, and protect your personal information in compliance with the <b>Protection of Personal Information Act (POPIA)</b>, South Africa.</p>
+    <p>By creating an account on BeelzeChat, you consent to the collection and processing of your personal information as described in this policy.</p>
+  </div>
+
+  <!-- DATA COLLECTED -->
+  <div class="section-card" id="data-collected">
+    <h2><i data-lucide="database"></i>2. Personal Information We Collect</h2>
+    <p>We collect only the personal information necessary to provide our services:</p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Data Type</th><th>Example</th><th>Why Collected</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Full name</td><td>"John Doe"</td><td>Account identification</td></tr>
+        <tr><td>Email or phone</td><td>john@email.com</td><td>Login & communication</td></tr>
+        <tr><td>Password</td><td>(encrypted)</td><td>Account security</td></tr>
+        <tr><td>Profile picture</td><td>Image file</td><td>User identification</td></tr>
+        <tr><td>Bio / About</td><td>"Business owner"</td><td>User profile</td></tr>
+        <tr><td>Messages</td><td>Text, images, video</td><td>Chat service</td></tr>
+        <tr><td>Posts</td><td>Text, images, video</td><td>Social feed</td></tr>
+        <tr><td>Payment reference</td><td>PayFast ref #</td><td>Subscriptions & ads</td></tr>
+        <tr><td>Push notification ID</td><td>OneSignal ID</td><td>Sending notifications</td></tr>
+        <tr><td>Device info</td><td>Browser, OS</td><td>Security & analytics</td></tr>
+      </tbody>
+    </table>
+    <p><b>Note:</b> We do <b>NOT</b> collect or store credit card numbers, CVV codes, or banking details. All payment data is handled exclusively by PayFast (PCI-DSS Level 1 compliant).</p>
+  </div>
+
+  <!-- HOW WE USE DATA -->
+  <div class="section-card" id="how-used">
+    <h2><i data-lucide="settings"></i>3. How We Use Your Information</h2>
+    <p>We use your personal information to:</p>
+    <ul>
+      <li><i data-lucide="message-square" style="display:none"></i><b>Provide the service</b> — messaging, posts, groups, marketplace</li>
+      <li><b>Create and manage your account</b></li>
+      <li><b>Send push notifications</b> for messages, likes, and comments</li>
+      <li><b>Process payments</b> for subscriptions (R50/month) and banner ads (R1,000)</li>
+      <li><b>Improve our services</b> and fix technical issues</li>
+      <li><b>Prevent fraud</b>, spam, and abuse</li>
+      <li><b>Comply with legal obligations</b> (SARS — keep payment records for 5 years)</li>
+    </ul>
+  </div>
+
+  <!-- STORAGE -->
+  <div class="section-card" id="storage">
+    <h2><i data-lucide="server"></i>4. Where Data Is Stored & Protected</h2>
+    <h3><i data-lucide="lock"></i>User Data & Messages — Firebase Firestore</h3>
+    <p>Stored in Firebase Firestore (Google Cloud), encrypted in transit (HTTPS/SSL) and at rest. Only authorized BeelzeChat administrators can access. Firebase is POPIA and GDPR compliant.</p>
+    <h3><i data-lucide="image"></i>Images & Videos — Cloud Storage</h3>
+    <p>Stored in encrypted cloud storage (Cloudinary / Supabase). Files are only accessible via secure URLs. Backed up automatically.</p>
+    <h3><i data-lucide="credit-card"></i>Payment Data — PayFast</h3>
+    <p>All payments processed through PayFast (PCI-DSS Level 1 compliant). BeelzeChat stores only the payment reference number — never credit card or banking details.</p>
+    <h3><i data-lucide="bell"></i>Push Notifications — OneSignal</h3>
+    <p>Stores device notification IDs for sending push notifications. Does not store message content. Users can opt out anytime.</p>
+    <h3><i data-lucide="shield"></i>Security Measures</h3>
+    <ul>
+      <li><b>HTTPS/SSL encryption</b> on all data transmission</li>
+      <li><b>Password hashing</b> — passwords are never stored as plain text</li>
+      <li><b>Firebase Security Rules</b> — restrict database access to authorized users</li>
+      <li><b>Access control</b> — only the CEO/admin can access user data</li>
+      <li><b>Regular automated backups</b> by Firebase</li>
+    </ul>
+  </div>
+
+  <!-- DATA RETENTION -->
+  <div class="section-card">
+    <h2><i data-lucide="clock"></i>5. Data Retention</h2>
+    <p>We keep your data only as long as necessary:</p>
+    <ul>
+      <li><b>Active accounts:</b> Data kept as long as the account is active</li>
+      <li><b>Deleted accounts:</b> All data permanently deleted within 30 days</li>
+      <li><b>Messages:</b> Kept until user deletes the conversation</li>
+      <li><b>Posts:</b> Kept for 3 months (unless subscribed to permanent storage)</li>
+      <li><b>Payment records:</b> Kept for 5 years (SARS legal requirement)</li>
+      <li><b>Analytics data:</b> Kept for 13 months</li>
+    </ul>
+  </div>
+
+  <!-- YOUR RIGHTS -->
+  <div class="section-card" id="rights">
+    <h2><i data-lucide="user-check"></i>6. Your Rights Under POPIA</h2>
+    <p>As a BeelzeChat user, you have the right to:</p>
+    <ul>
+      <li><b>Access</b> your personal data — view what we have about you</li>
+      <li><b>Correct</b> inaccurate data — edit your profile anytime</li>
+      <li><b>Delete</b> your account and all associated data — via Delete Account button</li>
+      <li><b>Object</b> to certain data processing</li>
+      <li><b>Withdraw consent</b> at any time</li>
+      <li><b>Complain</b> to the Information Regulator of South Africa</li>
+    </ul>
+    <p>To exercise any of these rights, email our Information Officer at <b>ceo@beelzechat.co.za</b>.</p>
+  </div>
+
+  <!-- THIRD PARTIES -->
+  <div class="section-card">
+    <h2><i data-lucide="share-2"></i>7. Third-Party Services</h2>
+    <p>We use the following POPIA/GDPR-compliant third-party services:</p>
+    <table class="data-table">
+      <thead><tr><th>Service</th><th>Purpose</th><th>Compliance</th></tr></thead>
+      <tbody>
+        <tr><td>Firebase (Google Cloud)</td><td>Data storage</td><td>POPIA + GDPR</td></tr>
+        <tr><td>PayFast</td><td>Payment processing</td><td>PCI-DSS Level 1</td></tr>
+        <tr><td>OneSignal</td><td>Push notifications</td><td>GDPR compliant</td></tr>
+        <tr><td>Google Analytics</td><td>Usage analytics</td><td>Anonymized data</td></tr>
+      </tbody>
+    </table>
+    <p><b>We do NOT sell, rent, or trade</b> your personal information to any third party.</p>
+  </div>
+
+  <!-- DATA BREACH -->
+  <div class="section-card">
+    <h2><i data-lucide="alert-triangle"></i>8. Data Breach Procedure</h2>
+    <p>In the event of a data breach, we will:</p>
+    <ul>
+      <li><b>Notify affected users</b> within 72 hours</li>
+      <li><b>Report the breach</b> to the Information Regulator of South Africa</li>
+      <li><b>Take immediate steps</b> to secure the data</li>
+      <li><b>Provide guidance</b> on how to protect yourself</li>
+    </ul>
+  </div>
+
+  <!-- CHILDREN -->
+  <div class="section-card">
+    <h2><i data-lucide="baby"></i>9. Children's Privacy</h2>
+    <p>BeelzeChat is intended for users aged <b>18 years or older</b>. If we learn we have collected data from a child under 13, we will delete it immediately. Parents who believe their child has provided information can contact us at <b>ceo@beelzechat.co.za</b>.</p>
+  </div>
+
+  <!-- CONTENT POLICY -->
+  <div class="section-card" id="content-policy" style="border-left: 4px solid #ef4444;">
+    <h2><i data-lucide="file-text" style="color:#ef4444"></i>10. Content Policy (Community Guidelines)</h2>
+    <p>This section explains what content is allowed and not allowed on BeelzeChat.</p>
+
+    <h3 style="color:#166534"><i data-lucide="check-circle" style="color:#22c55e"></i>✅ Allowed Content</h3>
+    <div class="allowed-box">
+      <h4><i data-lucide="check-circle"></i>You CAN post:</h4>
+      <ul>
+        <li>Business discussions and professional networking</li>
+        <li>Friendly conversations and social interaction</li>
+        <li>Photos and videos you own or have permission to share</li>
+        <li>Buying and selling legal items in the marketplace</li>
+        <li>Educational, entertainment, music, and lifestyle content</li>
+        <li>Breaking news (from reputable sources)</li>
+        <li>Respectful opinions and discussions</li>
+      </ul>
+    </div>
+
+    <h3 style="color:#dc2626"><i data-lucide="x-circle" style="color:#ef4444"></i>❌ Not Allowed Content</h3>
+    <div class="denied-box">
+      <h4><i data-lucide="x-circle"></i>You CANNOT post:</h4>
+      <ul>
+        <li>Hate speech or discrimination based on race, gender, religion, or sexuality</li>
+        <li>Harassment, bullying, or threats of violence</li>
+        <li>Adult or pornographic content</li>
+        <li>Illegal goods (drugs, weapons, stolen items)</li>
+        <li>Spam, scams, or fraudulent content</li>
+        <li>Copyright infringement (posting others' content without permission)</li>
+        <li>Impersonation (pretending to be someone else)</li>
+        <li>Child exploitation — ANY content involving minors inappropriately</li>
+        <li>Malware, viruses, or harmful links</li>
+        <li>Content that promotes self-harm or suicide</li>
+      </ul>
+    </div>
+
+    <h3><i data-lucide="gavel"></i>Consequences of Violations</h3>
+    <ul>
+      <li><b>1st offense:</b> Warning + content removal</li>
+      <li><b>2nd offense:</b> Temporary suspension (7 days)</li>
+      <li><b>3rd offense:</b> Permanent account ban</li>
+      <li><b>Illegal content:</b> Reported to the South African Police Service (SAPS)</li>
+      <li><b>Child exploitation:</b> Reported to authorities immediately — zero tolerance</li>
+    </ul>
+  </div>
+
+  <!-- CONTENT REMOVAL -->
+  <div class="section-card">
+    <h2><i data-lucide="flag"></i>11. Reporting Content</h2>
+    <p>If you see content that violates this policy, you can report it by:</p>
+    <ul>
+      <li>Emailing <b>support@beelzechat.co.za</b> with a screenshot and details</li>
+      <li>Using the in-app report button on posts</li>
+      <li>Contacting our team via the app's profile section</li>
+    </ul>
+    <p>Our team reviews all reports within <b>24-48 hours</b> and takes appropriate action.</p>
+  </div>
+
+  <!-- INFORMATION OFFICER -->
+  <div class="section-card">
+    <h2><i data-lucide="user-cog"></i>12. Information Officer (POPIA)</h2>
+    <p>Our designated Information Officer for data protection matters:</p>
+    <ul>
+      <li><b>Name:</b> CEO, BeelzeChat</li>
+      <li><b>Email:</b> ceo@beelzechat.co.za</li>
+      <li><b>Support:</b> support@beelzechat.co.za</li>
+      <li><b>Advertising:</b> ads@beelzechat.co.za</li>
+      <li><b>Website:</b> beelzechat.co.za</li>
+    </ul>
+    <p>To lodge a complaint with the Information Regulator:</p>
+    <ul>
+      <li><b>Website:</b> inforegulator.org.za</li>
+      <li><b>Email:</b> complaints@inforegulator.org.za</li>
+      <li><b>Phone:</b> 012 406 7923</li>
+    </ul>
+  </div>
+
+  <!-- CHANGES -->
+  <div class="section-card">
+    <h2><i data-lucide="edit"></i>13. Changes to This Policy</h2>
+    <p>We may update this Privacy & Content Policy from time to time. We will notify users of significant changes via the app or email. The "Last Updated" date at the top of this page indicates when the policy was last revised.</p>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact-box" id="contact">
+    <h2><i data-lucide="mail"></i>Questions?</h2>
+    <p>If you have any questions about this Privacy & Content Policy, or your personal data, please contact us:</p>
+    <div class="contact emails">
+      <a href="mailto:ceo@beelzechat.co.za"><i data-lucide="mail"></i> ceo@beelzechat.co.za</a>
+      <a href="mailto:support@beelzechat.co.za"><i data-lucide="headphones"></i> support@beelzechat.co.za</a>
+      <a href="mailto:ads@beelzechat.co.za"><i data-lucide="megaphone"></i> ads@beelzechat.co.za</a>
+      <a href="https://beelzechat.co.za"><i data-lucide="globe"></i> beelzechat.co.za</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>© 2026 BeelzeChat. All rights reserved. · <a href="https://beelzechat.co.za">beelzechat.co.za</a></p>
+    <p style="margin-top:6px;">Privacy & Content Policy · POPIA Compliant · South Africa</p>
+  </div>
+
+</div>
+
+<script>
+  lucide.createIcons();
+  // Highlight active quick-nav on scroll
+  const sections = document.querySelectorAll('.section-card[id]');
+  const navLinks = document.querySelectorAll('.quick-nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+    });
+    navLinks.forEach(link => {
+      link.style.background = link.getAttribute('href') === '#' + current ? '#3F51B5' : '';
+      link.style.color = link.getAttribute('href') === '#' + current ? 'white' : '';
+    });
+  });
+</script>
+</body>
+</html>
