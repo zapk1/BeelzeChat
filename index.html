@@ -121,17 +121,28 @@
     });
   });
 
-  // 3. Catch images added later (posts/ads load dynamically)
+  // 3. Catch images added later — DEBOUNCED so typing in inputs never freezes the keyboard
+  let _mutTimer = null;
+  const _mutPending = [];
   const obs = new MutationObserver(function (mutations) {
     mutations.forEach(function (m) {
       m.addedNodes.forEach(function (n) {
         if (n.nodeType !== 1) return;
-        if (n.tagName === 'IMG' && n.complete && n.naturalWidth === 0) coverBroken(n);
-        n.querySelectorAll && n.querySelectorAll('img').forEach(function (img) {
-          if (img.complete && img.naturalWidth === 0) coverBroken(img);
-        });
+        if (n.tagName === 'IMG') _mutPending.push(n);
+        if (n.querySelectorAll) {
+          n.querySelectorAll('img').forEach(function (img) { _mutPending.push(img); });
+        }
       });
     });
+    if (!_mutPending.length) return;
+    if (_mutTimer) return; // already scheduled — batch it so typing stays smooth
+    _mutTimer = setTimeout(function () {
+      _mutTimer = null;
+      const imgs = _mutPending.splice(0);
+      imgs.forEach(function (img) {
+        if (img.isConnected && img.complete && img.naturalWidth === 0) coverBroken(img);
+      });
+    }, 500);
   });
   obs.observe(document.documentElement, { childList: true, subtree: true });
 })();
@@ -5149,7 +5160,7 @@ function showLoadingScreen() {
         if (ipt) ipt.textContent = 'Loading ' + v + '%';
     }, 200);
     clearTimeout(window._loadingSafety);
-    window._loadingSafety = setTimeout(() => window.finishLoading && window.finishLoading(), 15000);
+    window._loadingSafety = setTimeout(() => window.finishLoading && window.finishLoading(), 8000);
 }
 
 window.finishLoading = function() {
@@ -5163,6 +5174,10 @@ window.finishLoading = function() {
     if (rp) rp.textContent = '100%';
     if (ipb) ipb.style.width = '100%';
     if (ipt) ipt.textContent = 'Ready!';
+    // Make sure the app is visible before hiding the loader — kills the white screen
+    const _app = document.getElementById('app');
+    if (_app) _app.classList.add('active');
+    if (currentUser) { const _as = document.getElementById('authScreen'); if (_as) _as.style.display = 'none'; }
     // Wait for the app to actually paint its content before fading the loader
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -5824,13 +5839,15 @@ document.getElementById('cancelReplyBtn').addEventListener('click', () => {
 // ============================================================
 if (auth) {
 auth.onAuthStateChanged(async (firebaseUser) => {
-    if (firebaseUser) {
+        if (firebaseUser) {
     // User is signed in via Firebase Auth
     document.getElementById('authScreen').style.display = 'none';
-
-
-    const userId = firebaseUser.email.replace(/[.#$\[\]@+]/g, '_');
+  try {
+    // Google sign-in sometimes returns null email — use uid as fallback so it never crashes
+    const userEmail = firebaseUser.email || (firebaseUser.providerData && firebaseUser.providerData[0] && firebaseUser.providerData[0].email) || firebaseUser.uid;
+    const userId = userEmail.replace(/[.#$\[\]@+]/g, '_');
      let ud = await db.collection('users').doc(userId).get();
+
 
         if (!ud.exists) {
             const rc = Math.floor(100000 + Math.random() * 900000).toString();
@@ -5902,9 +5919,16 @@ if (window._justLoggedIn) {
         if (currentUser?.oneSignalId) {
             sendPushNotification(currentUser.oneSignalId, 'BeelzeChat', '👋 Welcome back, ' + (currentUser.name || '') + '! Alerts are on.');
         }
-    }, 2500);
-}
+                }, 2500);
+  }
 
+  } catch(e) {
+    console.error('Login load error:', e);
+    // Still show the app even if a load step failed — NO white screen
+    document.getElementById('app').classList.add('active');
+    if (typeof updateProfileButton === 'function') updateProfileButton();
+    window.finishLoading();
+  }
 
     } else {
         const saved = localStorage.getItem('sxchatUser');
@@ -5930,6 +5954,19 @@ if (window._justLoggedIn) {
                     return;
                 }
             } catch(e) {
+                // Phone-number users have no Firebase Auth to fall back on —
+                // keep them logged in from saved data instead of wiping the session
+                // on a transient Firestore error.
+                try {
+                    const savedUser = JSON.parse(saved);
+                    if (savedUser && savedUser.id) {
+                        currentUser = { id: savedUser.id, ...savedUser };
+                        document.getElementById('app').classList.add('active');
+                        if (typeof updateProfileButton === 'function') updateProfileButton();
+                        window.finishLoading();
+                        return;
+                    }
+                } catch(e2) {}
                 localStorage.removeItem('sxchatUser');
             }
         }
@@ -8220,10 +8257,13 @@ async function loadMessages() {
     const chatId = currentChatId;
     if (msgUnsub) { msgUnsub(); msgUnsub = null; }
     const mc = document.getElementById('messagesContainer');
+    // 0. CLEAR the previous chat's messages immediately — no stale messages from another person
+    mc.innerHTML = '';
+    _renderedMsgIds = new Set();
     // 1. Render cached messages INSTANTLY so the chat appears in <0.01s
     const cached = getMsgs(chatId);
     if (cached.length) {
-        renderMessages(cached);
+        renderMessages(cached, true);  // isFull=true so the Set is reset properly
         mc.scrollTop = mc.scrollHeight;
     }
     // 2. Subscribe to Firestore for live updates
@@ -8337,7 +8377,7 @@ function formatMsgText(text) {
 // ============================================================
 const msgInput = document.getElementById('messageInput');
 msgInput.style.height = '44px';
-msgInput.style.maxHeight = '44px';
+msgInput.style.maxHeight = '120px';
 msgInput.style.overflowY = 'auto';
 msgInput.style.resize = 'none';
 // Debounce the height recalc — batch it with rAF so typing never triggers a reflow per keystroke
