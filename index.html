@@ -8405,20 +8405,9 @@ function formatMsgText(text) {
 // ============================================================
 const msgInput = document.getElementById('messageInput');
 msgInput.style.height = '44px';
-msgInput.style.maxHeight = '120px';
+msgInput.style.maxHeight = '44px';
 msgInput.style.overflowY = 'auto';
 msgInput.style.resize = 'none';
-// Debounce the height recalc — batch it with rAF so typing never triggers a reflow per keystroke
-let _msgResizeRaf = 0;
-msgInput.addEventListener('input', function() {
-    if (_msgResizeRaf) return;
-    _msgResizeRaf = requestAnimationFrame(() => {
-        _msgResizeRaf = 0;
-        const el = msgInput;
-        el.style.height = '44px';
-        if (el.scrollHeight > 44) el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-    });
-});
 // Enter key creates a new line (vertical space) — only the send button sends
 
 document.getElementById('attachmentBtn').addEventListener('click', () => document.getElementById('attachmentOptions').classList.toggle('active'));
@@ -8667,9 +8656,14 @@ document.getElementById('profileBtn').addEventListener('click', () => {
     const rcIcon = document.getElementById('resetCodeEyeIcon');
     if (rcIcon) { rcIcon.setAttribute('data-lucide', 'eye'); }
     document.getElementById('beelzeIdDisplay').textContent = currentUser.beelzeId || 'Not assigned yet';
-    document.getElementById('profilePhone').textContent = currentUser.phone || 'Not set';
+    // Phone-number accounts: their number lives in `identifier` (no @).
+    // Show it in the Phone row so they're not treated like a blank/guest account.
+    var _idIsPhone = currentUser.identifier && !currentUser.identifier.includes('@');
+    var _phoneVal = currentUser.phone || (_idIsPhone ? currentUser.identifier : '');
+    var _emailVal = currentUser.email || (_idIsPhone ? '' : currentUser.identifier);
+    document.getElementById('profilePhone').textContent = _phoneVal || 'Not set';
     document.getElementById('profileWebsite').textContent = currentUser.website || 'Not set';
-    document.getElementById('profileEmail').textContent = currentUser.email || currentUser.identifier || 'Not set';
+    document.getElementById('profileEmail').textContent = _emailVal || 'Not set';
     document.getElementById('profileAccountEmail').textContent = currentUser.identifier || 'Not set';
     const pwDisp = document.getElementById('profilePasswordDisplay');
     if (pwDisp) { pwDisp.textContent = '••••••'; pwDisp.dataset.visible = 'false'; }
