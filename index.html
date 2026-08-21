@@ -8,7 +8,7 @@
     <link rel="icon" href="https://i.postimg.cc/mD0dbHM0/1000287857.png" type="image/png">
     <meta name="apple-mobile-web-app-capable" content="yes">
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js?render=explicit&onload=bzRecaptchaOnload" async defer></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6BJ44F7KSN"></script>
 <script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);} gtag('js', new Date());gtag('config', 'G-6BJ44F7KSN');</script>
 
@@ -3285,12 +3285,6 @@ form input[type="text"] {
         <span style="position:absolute;top:-9px;right:10px;background:#3F51B5;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:0.3px;">Last Used</span>
       </button>
 
-      <!-- Guest -->
-      <button type="button" class="btn" id="guestBtn" style="background:#ffffff;color:#111827;border:1.5px solid #D1D1D1;border-radius:10px;padding:13px 16px;font-size:15px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
-        <i data-lucide="user-x" style="width:20px;height:20px;color:#111827;"></i>
-        Continue as Guest
-      </button>
-
       <!-- OR -->
       <div style="display:flex;align-items:center;gap:12px;margin:18px 0 14px;">
         <div style="flex:1;height:1px;background:#E5E7EB;"></div>
@@ -3300,7 +3294,7 @@ form input[type="text"] {
 
       <!-- Inputs -->
       <div class="form-group" style="margin-bottom:12px;">
-        <input type="text" class="form-input" id="loginIdentifier" placeholder="Enter your email or phone" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+                <input type="email" class="form-input" id="loginIdentifier" placeholder="Enter your email" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:14px;">
         <div style="position:relative;">
@@ -3313,7 +3307,7 @@ form input[type="text"] {
       
   
       
-      <div class="g-recaptcha" data-sitekey="6LfYH40tAAAAAMlU_jZm94JNZ821uD7vMLWDxYgm" style="margin:12px 0;transform:scale(0.9);transform-origin:left;"></div>
+            <div id="loginRecaptcha" style="margin:12px 0;transform:scale(0.9);transform-origin:left;"></div>
 
 
 <!-- Privacy policy consent checkbox -->
@@ -3346,7 +3340,7 @@ form input[type="text"] {
         <input type="text" class="form-input" id="signupName" placeholder="Full name" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:12px;">
-        <input type="text" class="form-input" id="signupIdentifier" placeholder="Email or phone" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+          <input type="email" class="form-input" id="signupIdentifier" placeholder="Email" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:12px;">
         <div style="position:relative;">
@@ -3379,7 +3373,7 @@ form input[type="text"] {
     <!-- FORGOT -->
     <form id="forgotForm" class="hidden">
       <div class="form-group" style="margin-bottom:12px;">
-        <input type="text" class="form-input" id="forgotIdentifier" placeholder="Email or phone" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+   <input type="email" class="form-input" id="forgotIdentifier" placeholder="Email" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:12px;">
         <input type="text" class="form-input" id="resetCode" placeholder="6-digit reset code" maxlength="6" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
@@ -4924,10 +4918,6 @@ const db = firebase.firestore();
     document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
     ['messagesTab','usersTab','groupsTab'].forEach(t => { const el=document.getElementById(t); if(el) el.classList.add('hidden'); });
     const st=document.getElementById('storiesTab'); if (st) st.classList.remove('hidden');
-
-    if (!localStorage.getItem('sxchatUser')) {
-        window._isGuest = true;
-    }
 })();
 
 let storage = null;
@@ -4964,26 +4954,24 @@ document.addEventListener('DOMContentLoaded', () => {
 const WORKER_URL = 'https://super-resonance-b74e.beelzeapps.workers.dev';
 
 // ============================================================
-// GUEST GUARD — blocks account-required actions, prompts login
+// LOGIN GUARD — blocks account-required actions until signed in
 // ============================================================
 function requireAuth(actionName) {
     const saved = localStorage.getItem('sxchatUser');
     if (saved) return true; // logged in, allow
-    // Guest — show auth screen as a modal
-    const auth = document.getElementById('authScreen');
-    if (auth) {
-        auth.style.display = 'flex';
-        // Optional: show a hint banner
-        let banner = document.getElementById('guestHint');
+    // Not signed in — show auth screen as a modal
+    const authEl = document.getElementById('authScreen');
+    if (authEl) {
+        authEl.style.display = 'flex';
+        let banner = document.getElementById('loginHint');
         if (!banner) {
             banner = document.createElement('div');
-            banner.id = 'guestHint';
+            banner.id = 'loginHint';
             banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#0f172a;color:white;text-align:center;padding:10px;font-size:13px;font-weight:700;z-index:100000;';
             banner.innerHTML = `<i data-lucide="lock" style="width:15px;height:15px;display:inline-block;vertical-align:middle;margin-right:6px;"></i> Sign in or create an account to ${actionName || 'continue'}`;
             document.body.appendChild(banner);
             if (window.lucide) lucide.createIcons();
             setTimeout(() => banner.remove(), 4000);
-
         }
     }
     return false;
@@ -4993,6 +4981,30 @@ function closeAuthScreen() {
     const auth = document.getElementById('authScreen');
     if (auth) auth.style.display = 'none';
 }
+
+// ============================================================
+// reCAPTCHA — explicit render (auto-render fails because the auth
+// screen is hidden while the page loads)
+// ============================================================
+let _loginRecaptchaId = null;
+function renderLoginRecaptcha() {
+    if (_loginRecaptchaId !== null) return;
+    if (typeof grecaptcha === 'undefined' || !grecaptcha.render) return;
+    const box = document.getElementById('loginRecaptcha');
+    if (!box || box.offsetParent === null) return; // wait until the login box is visible
+    try {
+        _loginRecaptchaId = grecaptcha.render(box, {
+            sitekey: '6LfYH40tAAAAAMlU_jZm94JNZ821uD7vMLWDxYgm'
+        });
+    } catch (e) { /* already rendered or blocked */ }
+}
+window.bzRecaptchaOnload = function () {
+    const iv = setInterval(() => {
+        if (_loginRecaptchaId !== null) { clearInterval(iv); return; }
+        renderLoginRecaptcha();
+        if (_loginRecaptchaId !== null) clearInterval(iv);
+    }, 400);
+};
 
 // ============================================================
 // SKELETON LOADERS (YouTube-style shimmer)
@@ -5841,31 +5853,7 @@ document.getElementById('cancelReplyBtn').addEventListener('click', () => {
 // ============================================================
 if (auth) {
 auth.onAuthStateChanged(async (firebaseUser) => {
-    // Phone-number users log in outside Firebase Auth. If a phone login just
-    // happened (or a phone session is persisted), do NOT let a stale Firebase
-    // email session override it or wipe sxchatUser.
-    if (window._phoneLoginActive) return;
     if (firebaseUser) {
-        const _saved = localStorage.getItem('sxchatUser');
-        if (_saved) {
-            try {
-                const _su = JSON.parse(_saved);
-                if (_su && _su.identifier && !_su.identifier.includes('@')) {
-                    // Saved account is a phone user — ignore Firebase's email user
-                    currentUser = { id: _su.id, ..._su };
-                    document.getElementById('app').classList.add('active');
-                    if (typeof updateProfileButton === 'function') updateProfileButton();
-                    await initializeApp();
-                    await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
-                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                    document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
-                    ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
-                    document.getElementById('storiesTab').classList.remove('hidden');
-                    window.finishLoading();
-                    return;
-                }
-            } catch (e) {}
-        }
     // User is signed in via Firebase Auth
     document.getElementById('authScreen').style.display = 'none';
   try {
@@ -6112,11 +6100,13 @@ function restoreAuthScreen() {
 
 document.getElementById('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
-    const recaptchaResponse = grecaptcha.getResponse();
+    if (typeof grecaptcha === 'undefined' || _loginRecaptchaId === null) { showToast('error', 'Verify', 'Please complete the CAPTCHA'); return; }
+    const recaptchaResponse = grecaptcha.getResponse(_loginRecaptchaId);
     if (!recaptchaResponse) { showToast('error', 'Verify', 'Please complete the CAPTCHA'); return; }
     const identifier = document.getElementById('loginIdentifier').value.trim();
     const password = document.getElementById('loginPassword').value;
     if (!identifier || !password) { showToast('error', 'Error', 'Fill all fields'); return; }
+    if (!identifier.includes('@')) { showToast('error', 'Invalid', 'Enter a valid email address'); restoreAuthScreen(); return; }
 
     // Show the themed purple/white loader RIGHT NOW — stays until the account is fully loaded (kills the white screen)
     const _ls = document.getElementById('loadingScreen');
@@ -6126,85 +6116,12 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     showLoadingScreen();
     window._justLoggedIn = true;
 
-        // Check Firestore first to get email
-    let userId = identifier.replace(/[.#$\[\]@+]/g, '_');
-    let ud = await db.collection('users').doc(userId).get();
-    // Fallback: the user changed their login email — look up by the identifier field
-    if (!ud.exists) {
-        const byEmail = await db.collection('users').where('identifier', '==', identifier).limit(1).get();
-        if (!byEmail.empty) {
-            userId = byEmail.docs[0].id;
-            ud = byEmail.docs[0];
-        }
-    }
-    if (!ud.exists) { showToast('error', 'Error', 'Not found'); restoreAuthScreen(); return; }
-
-
-    const user = ud.data();
-    // Try Firebase Auth sign in
-    let email = user.identifier;
-    // If identifier is phone number, use stored email or password auth
-    if (!email.includes('@')) {
-        // Legacy password check — also accept reset code as password
-        if (user.password !== password && user.resetCode !== password) { showToast('error', 'Error', 'Wrong password'); restoreAuthScreen(); return; }
-        // Signed in via legacy — set currentUser manually
-        // Block onAuthStateChanged from overriding this phone session, and drop
-        // any stale Firebase Auth (email) user so it can't bounce us back.
-        window._phoneLoginActive = true;
-        try { if (auth && auth.currentUser) await auth.signOut(); } catch (e) { console.log('signout', e); }
-
-        currentUser = { id: userId, ...user };
-        currentUser.userAgent = navigator.userAgent;
-        await db.collection('users').doc(userId).update({ online: true });
-        localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
-        showToast('success', 'Welcome!', user.name);
-        await initializeApp();
-        
-        
-        await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
-        document.getElementById('app').classList.add('active');
-        updateProfileButton();
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
-        ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
-        document.getElementById('storiesTab').classList.remove('hidden');
-        loadNotifications();
-        window.finishLoading();
-        loginWelcomeToast(user.name);
-        return;
-           }
-
     try {
-        await auth.signInWithEmailAndPassword(email, password);
+        await auth.signInWithEmailAndPassword(identifier, password);
         // onAuthStateChanged handles the rest
     } catch (err) {
-        // Fallback: legacy password check
-        
-        
-            if (user.password === password || user.resetCode === password) {
-            currentUser = { id: userId, ...user };
-            currentUser.userAgent = navigator.userAgent;
-            await db.collection('users').doc(userId).update({ online: true });
-            localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
-            showToast('success', 'Welcome!', user.name);
-            await initializeApp();
-            await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
-            
-            
-            
-            document.getElementById('app').classList.add('active');
-            updateProfileButton();
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
-            ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
-            document.getElementById('storiesTab').classList.remove('hidden');
-            loadNotifications();
-            window.finishLoading();
-            loginWelcomeToast(user.name);
-            return;
-         } else {
-            showToast('error', 'Error', 'Wrong password'); restoreAuthScreen();
-        }
+        showToast('error', 'Error', err.message || 'Wrong email or password');
+        restoreAuthScreen();
     }
 });
 
@@ -6225,8 +6142,13 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
     if (!name || !identifier || !password) { showToast('error', 'Error', 'Fill all fields'); return; }
+    if (!identifier.includes('@')) { showToast('error', 'Invalid', 'Enter a valid email address'); return; }
     if (password.length < 6) { showToast('error', 'Error', 'Password 6+ chars'); return; }
     if (password !== confirmPassword) { showToast('error', 'Passwords do not match!', 'Try again'); return; }
+
+    // Create the Firebase Auth account first — email is the single source of truth
+    try { await auth.createUserWithEmailAndPassword(identifier, password); }
+    catch (err) { showToast('error', 'Error', err.message || 'Could not create account'); restoreAuthScreen(); return; }
 
     const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
     const rc = Math.floor(100000 + Math.random() * 900000).toString();
@@ -6244,12 +6166,6 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
         blockedUsers: [], profilePic: null, bio: '',
         userAgent: navigator.userAgent
     });
-    
-    // Try to create Firebase Auth user if email
-    if (identifier.includes('@')) {
-        try { await auth.createUserWithEmailAndPassword(identifier, password); }
-        catch (err) { /* already exists or phone — ok */ }
-    }
 
     showToast('success', 'Done!', `Your reset code: ${rc}`);
     // Auto-login the new account so it's never treated as a guest
@@ -6285,7 +6201,8 @@ document.getElementById('forgotForm').addEventListener('submit', async e => {
     const identifier = document.getElementById('forgotIdentifier').value.trim();
     const rc = document.getElementById('resetCode').value.trim();
     const np = document.getElementById('newPassword').value;
-    if (!identifier) { showToast('error', 'Error', 'Enter your email or phone'); return; }
+    if (!identifier) { showToast('error', 'Error', 'Enter your email'); return; }
+    if (!identifier.includes('@')) { showToast('error', 'Invalid', 'Enter a valid email address'); return; }
 
     // If they used reset code + new password
     if (rc && np) {
@@ -6300,17 +6217,13 @@ document.getElementById('forgotForm').addEventListener('submit', async e => {
         return;
     }
 
-    // If they only entered email — send Firebase reset email
-    if (identifier.includes('@')) {
-        try {
-            await auth.sendPasswordResetEmail(identifier);
-            showToast('success', 'Email Sent!', 'Check your inbox for a reset link');
-            setTimeout(() => { showLogin(); document.getElementById('forgotForm').reset(); }, 3000);
-        } catch (err) {
-            showToast('error', 'Error', err.message);
-        }
-    } else {
-        showToast('info', 'Tip', 'Enter your reset code + new password to reset');
+    // Only entered email — send Firebase reset email
+    try {
+        await auth.sendPasswordResetEmail(identifier);
+        showToast('success', 'Email Sent!', 'Check your inbox for a reset link');
+        setTimeout(() => { showLogin(); document.getElementById('forgotForm').reset(); }, 3000);
+    } catch (err) {
+        showToast('error', 'Error', err.message);
     }
 });
 
@@ -6400,40 +6313,7 @@ document.getElementById('showLoginLink').addEventListener('click', showLogin);
 document.getElementById('forgotBtn').addEventListener('click', showForgotPassword);
 document.getElementById('backToLoginBtn').addEventListener('click', showLogin);
 
-document.getElementById('guestBtn').addEventListener('click', () => {
-    document.getElementById('authScreen').style.display = 'none';
-    document.getElementById('app').classList.add('active');
-    window._isGuest = true;
-    if (typeof showPostsSkeleton === 'function') showPostsSkeleton();
-    if (typeof showUsersSkeleton === 'function') showUsersSkeleton();
-    if (typeof showGroupsSkeleton === 'function') showGroupsSkeleton();
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
-    ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
-    const st = document.getElementById('storiesTab');
-    if (st) st.classList.remove('hidden');
-    const btn = document.getElementById('profileBtn');
-    if (btn) { btn.innerHTML = '<i data-lucide="user-x" style="width:20px;height:20px;color:white;"></i>'; btn.style.background = '#94a3b8'; }
-    lucide.createIcons();
-    showToast('info', 'Guest Mode', 'Sign in to comment, message & more');
 
-    // Give guest a lightweight in-memory user so the existing load functions
-    // (which reference currentUser.id / currentUser.blockedUsers) don't crash.
-    // This is NOT a real account — nothing is written to Firestore or localStorage.
-    currentUser = {
-        id: 'guest_' + Date.now(),
-        name: 'Guest',
-        identifier: 'guest',
-        blockedUsers: [],
-        profilePic: null,
-        bio: 'Browsing as guest'
-    };
-
-    // Trigger the existing lazy loaders so guest sees posts + people
-    // (same functions login uses — no changes to how data loads).
-    if (typeof loadAllPosts === 'function') loadAllPosts();
-    if (typeof loadAllUsers === 'function') loadAllUsers();
-});
 
 
 function updateProfileButton() {
@@ -8656,14 +8536,9 @@ document.getElementById('profileBtn').addEventListener('click', () => {
     const rcIcon = document.getElementById('resetCodeEyeIcon');
     if (rcIcon) { rcIcon.setAttribute('data-lucide', 'eye'); }
     document.getElementById('beelzeIdDisplay').textContent = currentUser.beelzeId || 'Not assigned yet';
-    // Phone-number accounts: their number lives in `identifier` (no @).
-    // Show it in the Phone row so they're not treated like a blank/guest account.
-    var _idIsPhone = currentUser.identifier && !currentUser.identifier.includes('@');
-    var _phoneVal = currentUser.phone || (_idIsPhone ? currentUser.identifier : '');
-    var _emailVal = currentUser.email || (_idIsPhone ? '' : currentUser.identifier);
-    document.getElementById('profilePhone').textContent = _phoneVal || 'Not set';
+document.getElementById('profilePhone').textContent = currentUser.phone || 'Not set';
     document.getElementById('profileWebsite').textContent = currentUser.website || 'Not set';
-    document.getElementById('profileEmail').textContent = _emailVal || 'Not set';
+    document.getElementById('profileEmail').textContent = currentUser.email || 'Not set';
     document.getElementById('profileAccountEmail').textContent = currentUser.identifier || 'Not set';
     const pwDisp = document.getElementById('profilePasswordDisplay');
     if (pwDisp) { pwDisp.textContent = '••••••'; pwDisp.dataset.visible = 'false'; }
@@ -9528,47 +9403,7 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
         }, 1200);
     };
 
-    // Continue as Guest — show loading briefly, then open app as guest
-    document.getElementById('logoutGuest').onclick = async () => {
-        modal.style.display = 'none';
-        document.getElementById('profileModal').classList.remove('active');
-        // Show loading screen ONLY for logout (not normal app access)
-        showLoadingScreen();
-        await db.collection('users').doc(currentUser.id).update({ online: false });
-        localStorage.removeItem('sxchatUser');
-        window._isGuest = true;
-        currentUser = null;
-        try { await auth.signOut(); } catch(e) {}
-        // After brief loading, open app as guest
-        setTimeout(() => {
-            window._loadingDone?.();
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('app').classList.add('active');
-            // Show skeletons on all tabs
-            if (typeof showPostsSkeleton === 'function') showPostsSkeleton();
-            if (typeof showUsersSkeleton === 'function') showUsersSkeleton();
-            if (typeof showGroupsSkeleton === 'function') showGroupsSkeleton();
-            if (typeof showProfileSkeleton === 'function') showProfileSkeleton();
-            // Reset profile button to skeleton
-            const btn = document.getElementById('profileBtn');
-            btn.style.background = 'linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%)';
-            btn.style.backgroundSize = '936px 100%';
-            btn.style.animation = 'shimmer 1.4s infinite';
-            btn.style.color = 'transparent';
-            btn.innerHTML = '';
-            // Default to Posts tab
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
-            ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
-            document.getElementById('storiesTab').classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('loadingScreen').classList.add('hide');
-                setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 600);
-            }, 800);
-        }, 1500);
-    };
-
-    // Sign Another Account — show loading, then show auth screen
+// Sign Another Account — show loading, then show auth screen
     document.getElementById('logoutSwitchAccount').onclick = async () => {
         modal.style.display = 'none';
         document.getElementById('profileModal').classList.remove('active');
@@ -10603,9 +10438,14 @@ document.getElementById('headerTitle').addEventListener('click', () => {
   }
 });
 
-function checkPostMgmtPw() {
+// Admin password is never stored in plain text — only its SHA-256 hash is here.
+const _POST_MGMT_PW_HASH = 'b7597bb5e2797e0276019c97acbf27bbd837cf8b33f95932b6cc742e0ba8eadb';
+async function checkPostMgmtPw() {
   const pw = document.getElementById('postMgmtPwInput').value;
-  if (pw === 'VNAXXTTM') {
+  // SHA-256 is available in all modern browsers via SubtleCrypto
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  if (hash === _POST_MGMT_PW_HASH) {
     document.getElementById('postMgmtPasswordModal').style.display = 'none';
     openPostMgmt();
   } else {
