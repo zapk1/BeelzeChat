@@ -4979,9 +4979,11 @@ function requireAuth(actionName) {
             banner = document.createElement('div');
             banner.id = 'guestHint';
             banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#0f172a;color:white;text-align:center;padding:10px;font-size:13px;font-weight:700;z-index:100000;';
-            banner.innerHTML = `🔒 Sign in or create an account to ${actionName || 'continue'}`;
+            banner.innerHTML = `<i data-lucide="lock" style="width:15px;height:15px;display:inline-block;vertical-align:middle;margin-right:6px;"></i> Sign in or create an account to ${actionName || 'continue'}`;
             document.body.appendChild(banner);
+            if (window.lucide) lucide.createIcons();
             setTimeout(() => banner.remove(), 4000);
+
         }
     }
     return false;
@@ -5174,20 +5176,20 @@ window.finishLoading = function() {
     if (rp) rp.textContent = '100%';
     if (ipb) ipb.style.width = '100%';
     if (ipt) ipt.textContent = 'Ready!';
-    // Make sure the app is visible before hiding the loader — kills the white screen
     const _app = document.getElementById('app');
     if (_app) _app.classList.add('active');
     if (currentUser) { const _as = document.getElementById('authScreen'); if (_as) _as.style.display = 'none'; }
-    // Wait for the app to actually paint its content before fading the loader
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            const ls = document.getElementById('loadingScreen');
-            if (ls) {
-                ls.classList.add('hide');
-                setTimeout(() => { ls.style.display = 'none'; }, 600);
-            }
-        });
-    });
+
+    // Hide the loader immediately — the shimmer skeleton is already showing behind it,
+    // so there's NEVER a white screen. Hard cap 1.5s so it can never get stuck.
+    const _hideLoader = () => {
+        const ls = document.getElementById('loadingScreen');
+        if (!ls || ls.style.display === 'none') return;
+        ls.classList.add('hide');
+        setTimeout(() => { ls.style.display = 'none'; }, 600);
+    };
+    requestAnimationFrame(_hideLoader);
+    setTimeout(_hideLoader, 1500);
 };
 window._loadingDone = window.finishLoading;
 
@@ -5839,7 +5841,31 @@ document.getElementById('cancelReplyBtn').addEventListener('click', () => {
 // ============================================================
 if (auth) {
 auth.onAuthStateChanged(async (firebaseUser) => {
-        if (firebaseUser) {
+    // Phone-number users log in outside Firebase Auth. If a phone login just
+    // happened (or a phone session is persisted), do NOT let a stale Firebase
+    // email session override it or wipe sxchatUser.
+    if (window._phoneLoginActive) return;
+    if (firebaseUser) {
+        const _saved = localStorage.getItem('sxchatUser');
+        if (_saved) {
+            try {
+                const _su = JSON.parse(_saved);
+                if (_su && _su.identifier && !_su.identifier.includes('@')) {
+                    // Saved account is a phone user — ignore Firebase's email user
+                    currentUser = { id: _su.id, ..._su };
+                    document.getElementById('app').classList.add('active');
+                    if (typeof updateProfileButton === 'function') updateProfileButton();
+                    await initializeApp();
+                    await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
+                    ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
+                    document.getElementById('storiesTab').classList.remove('hidden');
+                    window.finishLoading();
+                    return;
+                }
+            } catch (e) {}
+        }
     // User is signed in via Firebase Auth
     document.getElementById('authScreen').style.display = 'none';
   try {
@@ -6122,9 +6148,11 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
         // Legacy password check — also accept reset code as password
         if (user.password !== password && user.resetCode !== password) { showToast('error', 'Error', 'Wrong password'); restoreAuthScreen(); return; }
         // Signed in via legacy — set currentUser manually
-        
-        
-        
+        // Block onAuthStateChanged from overriding this phone session, and drop
+        // any stale Firebase Auth (email) user so it can't bounce us back.
+        window._phoneLoginActive = true;
+        try { if (auth && auth.currentUser) await auth.signOut(); } catch (e) { console.log('signout', e); }
+
         currentUser = { id: userId, ...user };
         currentUser.userAgent = navigator.userAgent;
         await db.collection('users').doc(userId).update({ online: true });
