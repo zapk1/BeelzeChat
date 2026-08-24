@@ -63,7 +63,9 @@
 
 
     <style>
-/* Global broken-image fallback — black box */
+/* Global broken-image fallback — size-aware (small for avatars, compact for large images) */
+@keyframes mzSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
 .bz-img-failed {
   background: #000;
   color: #fff;
@@ -71,40 +73,73 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 180px;
+  gap: 4px;
+  min-height: 80px;
   width: 100% !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   border-radius: 8px;
 }
 .bz-img-failed svg {
-  width: 38px; height: 38px; color: #ef4444;
+  width: 28px; height: 28px; color: #ef4444;
 }
 .bz-img-failed .bz-fail-title {
-  font-size: 14px; font-weight: 700; color: #fff;
+  font-size: 12px; font-weight: 700; color: #fff;
 }
 .bz-img-failed .bz-fail-sub {
-  font-size: 12px; color: #94a3b8;
+  font-size: 10px; color: #94a3b8;
+}
+/* Small avatar fallback — tiny gray circle, no text */
+.bz-avatar-failed {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: #e2e8f0;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+}
+.bz-avatar-failed svg {
+  width: 60%; height: 60%; color: #94a3b8;
 }
 </style>
 
 <script>
 /* ===== GLOBAL BROKEN IMAGE HANDLER ===== */
 (function () {
+  
   const FAILED_SVG = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 3l18 18"/></svg>';
+  const AVATAR_SVG = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>';
 
   function coverBroken(img) {
     if (!img || img.dataset.bzCovered === '1') return;
     if (img.tagName !== 'IMG') return;
-    // Never touch the full-screen viewer images — they load on demand
     if (img.id === 'viewerImage' || img.id === 'imgViewerImg') return;
     img.dataset.bzCovered = '1';
-    // Only cover if the image ACTUALLY failed — give it a moment to load first
     if (img.complete && img.naturalWidth === 0) {
-      img.outerHTML =
-        '<div class="bz-img-failed">' + FAILED_SVG +
-        '<span class="bz-fail-title">Failed to load</span>' +
-        '<span class="bz-fail-sub">Try again later</span></div>';
+      // Detect context: is this a small avatar/icon or a large image?
+      var w = img.offsetWidth || 0;
+      var p = img.parentElement;
+      var isAvatar = false;
+      if (p) {
+        isAvatar = p.classList.contains('avatar') ||
+                   p.classList.contains('message-avatar') ||
+                   p.classList.contains('chat-avatar') ||
+                   p.classList.contains('profile-btn') ||
+                   p.classList.contains('profile-avatar-large') ||
+                   p.classList.contains('avatar-wrapper') ||
+                   (p.style && p.style.borderRadius === '50%') ||
+                   w < 60;
+      }
+      if (isAvatar) {
+        // Small avatar — tiny gray circle with person silhouette, no text
+        img.outerHTML = '<div class="bz-avatar-failed">' + AVATAR_SVG + '</div>';
+      } else {
+        // Large image (post image, message image) — compact error box
+        img.outerHTML =
+          '<div class="bz-img-failed">' + FAILED_SVG +
+          '<span class="bz-fail-title">Failed to load</span>' +
+          '<span class="bz-fail-sub">Tap to retry</span></div>';
+      }
     }
   }
 
@@ -683,10 +718,17 @@ label[for="postImagesInput"].upload-btn {
             color: white;
         }
         
-        .app-content { 
+                .app-content { 
             flex: 1; 
             overflow-y: auto; 
+            overflow-x: hidden;
             padding-bottom: 100px; 
+        }
+        /* Tab isolation — each tab contains its own content, no bleeding */
+        #messagesTab, #usersTab, #storiesTab, #groupsTab {
+            overflow: hidden;
+            min-height: 0;
+            position: relative;
         }
         
         .search-container { 
@@ -1853,7 +1895,6 @@ label[for="postImagesInput"].upload-btn {
             border-radius: 18px; 
             font-size: 16px; 
             background: #ffffff; 
-            transition: all 0.3s; 
             resize: none; 
             max-height: 120px; 
             overflow-y: auto; 
@@ -3450,7 +3491,7 @@ form input[type="text"] {
     </style>
 
     <div class="app-content">
-        <div id="messagesTab">
+                <div id="messagesTab" class="hidden">
             <div id="chatsList">
                 <!-- Gray boxes shimmer until chats load -->
                 <div id="chatsSkeleton">
@@ -3797,7 +3838,19 @@ form input[type="text"] {
         </div>
     </div>
     
+        <div id="olderMsgSpinner" style="display:none;text-align:center;padding:8px;background:#f8fafc;">
+        <i data-lucide="loader-2" style="width:20px;height:20px;color:#94a3b8;animation:mzSpin 0.8s linear infinite;display:inline-block;vertical-align:middle;"></i>
+        <span style="font-size:12px;color:#94a3b8;margin-left:6px;vertical-align:middle;">Loading older messages...</span>
+    </div>
+    <div id="messengerLoader" style="display:none;position:absolute;inset:0;background:#f8fafc;z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+        <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center;">
+            <div style="position:absolute;inset:0;border:4px solid transparent;border-top-color:#ef4444;border-right-color:#ef4444;border-radius:50%;animation:mzSpin 0.8s linear infinite;"></div>
+            <i data-lucide="crown" style="width:36px;height:36px;color:#ef4444;"></i>
+        </div>
+        <span style="font-size:15px;font-weight:800;color:#0f172a;">Messenger Loading</span>
+    </div>
     <div class="messages-container" id="messagesContainer"></div>
+
     
     <div id="chatImageUploadBox" style="display:none;position:fixed;bottom:160px;left:50%;transform:translateX(-50%);z-index:999;background:white;border-radius:16px;padding:16px 20px;box-shadow:0 8px 32px rgba(0,0,0,0.25);width:280px;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -7825,14 +7878,28 @@ async function togglePostLike(postId) {
     });
     showToast(nowLiked ? 'success' : 'info', nowLiked ? 'Liked!' : 'Unliked', nowLiked ? 'Added' : 'Removed');
 
-    (async () => {
+        (async () => {
         try {
             const ref = db.collection('posts').doc(postId);
+            // Atomic update — no read needed, much faster
+            if (nowLiked) {
+                await ref.update({
+                    likedBy: firebase.firestore.FieldValue.arrayUnion(currentUser.id),
+                    realLikes: firebase.firestore.FieldValue.increment(1)
+                });
+            } else {
+                await ref.update({
+                    likedBy: firebase.firestore.FieldValue.arrayRemove(currentUser.id),
+                    realLikes: firebase.firestore.FieldValue.increment(-1)
+                });
+            }
+            // Only fetch the post data if we need to send a like notification
+            if (!nowLiked) return;
             const snap = await ref.get();
             const d = snap.data();
             const lb = d.likedBy || [];
             const liked = lb.includes(currentUser.id);
-            const newLb = liked ? lb.filter(i => i !== currentUser.id) : [...lb, currentUser.id];
+            const newLb = lb;
             const newRealLikes = liked ? Math.max((d.realLikes || 1) - 1, 0) : (d.realLikes || 0) + 1;
             await ref.update({ realLikes: newRealLikes, likedBy: newLb });
 
@@ -8122,6 +8189,7 @@ function openChat(chatId, user, userId) {
     currentChatUser = { ...user, id: userId };
     document.getElementById('app').classList.remove('active');
     document.getElementById('chatView').classList.add('active');
+    showMessengerLoader();
     document.getElementById('chatUserName').textContent = user.name;
     document.getElementById('chatAvatar').innerHTML = user.profilePic ?
         `<img src="${user.profilePic}" style="width:100%;height:100%;object-fit:cover;">` :
@@ -8138,6 +8206,7 @@ function openGroupChat(chatId, group) {
     currentChatUser = { ...group, isGroup: true };
     document.getElementById('app').classList.remove('active');
     document.getElementById('chatView').classList.add('active');
+    showMessengerLoader();
     document.getElementById('chatUserName').textContent = group.name + ' (Group)';
     const gpic = group.groupPic || `https://ui-avatars.com/api/?name=${encodeURIComponent(group.name)}&background=8b5cf6&color=fff&size=128`;
     document.getElementById('chatAvatar').innerHTML = `<img src="${gpic}" style="width:100%;height:100%;object-fit:cover;">`;
@@ -8161,41 +8230,134 @@ document.getElementById('closeChatBtn').addEventListener('click', () => {
     if (msgUnsub) { msgUnsub(); msgUnsub = null; }
 });
 
+// Chat pagination state
+let _msgOldestTs = null;
+let _loadingOlder = false;
+let _msgHasMore = true;
+const MSG_PAGE_SIZE = 20;
+
 async function loadMessages() {
     const chatId = currentChatId;
+    if (!chatId) return; // Safety — never load messages for an unknown person/group
     if (msgUnsub) { msgUnsub(); msgUnsub = null; }
     const mc = document.getElementById('messagesContainer');
     // 0. CLEAR the previous chat's messages immediately — no stale messages from another person
     mc.innerHTML = '';
     _renderedMsgIds = new Set();
-    // 1. Render cached messages INSTANTLY so the chat appears in <0.01s
+    _msgOldestTs = null;
+    _msgHasMore = true;
+    _loadingOlder = false;
+
+    // Show the messenger loader (only if messages don't arrive within 300ms)
+    showMessengerLoader();
+
+    // 1. Render cached messages INSTANTLY (only the latest 20)
     const cached = getMsgs(chatId);
     if (cached.length) {
-        renderMessages(cached, true);  // isFull=true so the Set is reset properly
+        const latestCached = cached.slice(-MSG_PAGE_SIZE);
+        renderMessages(latestCached, true);
         mc.scrollTop = mc.scrollHeight;
+        if (latestCached.length > 0) _msgOldestTs = latestCached[0].timestamp;
+        // Cached messages showed instantly — hide the loader right away
+        hideMessengerLoader();
     }
-    // 2. Subscribe to Firestore for live updates
+
+    // 2. Subscribe to Firestore for live updates — ONLY the latest 20 messages
     let _firstSnap = true;
-    const unsub = db.collection('chats').doc(chatId).collection('messages').orderBy('timestamp', 'asc').onSnapshot(snap => {
-        if (currentChatId !== chatId) return;
-        const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        saveMsgs(chatId, msgs);
-        if (_firstSnap) {
-            renderMessages(msgs, true);  // full rebuild on first load
-            mc.scrollTop = mc.scrollHeight;
-            _firstSnap = false;
-        } else {
-            renderMessages(msgs, false);  // append-only after that — no more full rebuilds
-        }
-    });
+    const unsub = db.collection('chats').doc(chatId).collection('messages')
+        .orderBy('timestamp', 'asc').limitToLast(MSG_PAGE_SIZE)
+        .onSnapshot(snap => {
+            if (currentChatId !== chatId) return;
+            const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            // Merge with older cached messages for the full cache
+            if (msgs.length) {
+                const olderCached = getMsgs(chatId).filter(m => _msgOldestTs && m.timestamp < _msgOldestTs);
+                saveMsgs(chatId, [...olderCached, ...msgs]);
+            }
+            if (_firstSnap) {
+                hideMessengerLoader();
+                renderMessages(msgs, true);
+                mc.scrollTop = mc.scrollHeight;
+                if (msgs.length) _msgOldestTs = msgs[0].timestamp;
+                if (msgs.length < MSG_PAGE_SIZE) _msgHasMore = false;
+                _firstSnap = false;
+            } else {
+                renderMessages(msgs, false);
+            }
+        });
     msgUnsub = unsub;
+}
+
+// Load 20 older messages when scrolling up
+async function loadOlderMessages() {
+    if (_loadingOlder || !_msgHasMore || !currentChatId || !_msgOldestTs) return;
+    _loadingOlder = true;
+    showOlderMsgSpinner();
+    try {
+        const chatId = currentChatId;
+        const snap = await db.collection('chats').doc(chatId).collection('messages')
+            .orderBy('timestamp', 'asc')
+            .endBefore(_msgOldestTs)
+            .limitToLast(MSG_PAGE_SIZE)
+            .get();
+        if (currentChatId !== chatId) return; // user switched chat — abort
+        const mc = document.getElementById('messagesContainer');
+        const prevHeight = mc.scrollHeight;
+        if (snap.empty || snap.docs.length === 0) {
+            _msgHasMore = false;
+        } else {
+            const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderMessages(msgs, false, true); // prepend=true — insert at top
+            if (msgs.length) _msgOldestTs = msgs[0].timestamp;
+            if (msgs.length < MSG_PAGE_SIZE) _msgHasMore = false;
+            // Keep scroll position stable after prepending
+            requestAnimationFrame(() => {
+                mc.scrollTop += (mc.scrollHeight - prevHeight);
+            });
+        }
+    } catch (e) {
+        console.log('load older msgs error', e);
+    } finally {
+        _loadingOlder = false;
+        hideOlderMsgSpinner();
+    }
+}
+
+// Scroll-up listener on messages container
+document.getElementById('messagesContainer').addEventListener('scroll', function() {
+    if (this.scrollTop < 50) loadOlderMessages();
+});
+
+function showOlderMsgSpinner() {
+    const el = document.getElementById('olderMsgSpinner');
+    if (el) el.style.display = 'block';
+}
+function hideOlderMsgSpinner() {
+    const el = document.getElementById('olderMsgSpinner');
+    if (el) el.style.display = 'none';
+}
+
+// Messenger loader — only shows if messages take >300ms to load
+let _messengerLoaderTimer = null;
+function showMessengerLoader() {
+    if (_messengerLoaderTimer) clearTimeout(_messengerLoaderTimer);
+    _messengerLoaderTimer = setTimeout(function() {
+        var el = document.getElementById('messengerLoader');
+        if (el) { el.style.display = 'flex'; lucide.createIcons(); }
+    }, 300);
+}
+function hideMessengerLoader() {
+    if (_messengerLoaderTimer) { clearTimeout(_messengerLoaderTimer); _messengerLoaderTimer = null; }
+    var el = document.getElementById('messengerLoader');
+    if (el) el.style.display = 'none';
 }
 
 let _renderedMsgIds = new Set();
 
-function renderMessages(messages, isFull) {
+function renderMessages(messages, isFull, prepend) {
     const mc = document.getElementById('messagesContainer');
     const wasAtBottom = mc.scrollHeight - mc.scrollTop - mc.clientHeight < 100;
+
 
     // Full rebuild only on first load or chat switch
     if (isFull) {
@@ -8212,8 +8374,8 @@ function renderMessages(messages, isFull) {
         const div = document.createElement('div');
         if (msg.isSystem) {
             div.style.cssText = 'text-align:center;padding:4px 0;';
-            div.innerHTML = `<span style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;">${msg.text}</span>`;
-            mc.appendChild(div);
+               div.innerHTML = `<span style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;">${msg.text}</span>`;
+            prepend ? mc.insertBefore(div, mc.firstChild) : mc.appendChild(div);
             return;
         }
         div.className = `message ${msg.senderId === currentUser.id ? 'own' : 'other'}`;
@@ -8260,12 +8422,12 @@ function renderMessages(messages, isFull) {
         div.querySelectorAll('.message-image').forEach(img => attachImgInteractions(img, msg));
         div.querySelectorAll('.message-file').forEach(f => f.addEventListener('click', () => dlFile(f.dataset.url, f.dataset.name)));
         div.querySelectorAll('.voice-play-btn').forEach(b => b.addEventListener('click', () => playVoice(b.dataset.voice, b)));
-        mc.appendChild(div);
+                prepend ? mc.insertBefore(div, mc.firstChild) : mc.appendChild(div);
     });
 
     // Only run lucide.createIcons if we actually added new elements
     if (appendedAny) lucide.createIcons();
-    if (wasAtBottom) mc.scrollTop = mc.scrollHeight;
+    if (wasAtBottom && !prepend) mc.scrollTop = mc.scrollHeight;
 }
 
 
@@ -10789,7 +10951,8 @@ function buildBannerCard(b) {
     const label = site ? 'Visit the website' : (call ? 'Call now' : (b.title || 'Advertisement'));
     const icon = site ? 'globe' : (call ? 'phone' : 'megaphone');
     const imgs = (b.images && b.images.length) ? b.images : (b.image ? [b.image] : []);
-    div.style.cssText = 'position:relative;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.12);border:3px solid #334155;margin:0;cursor:pointer;background:#0f172a;';
+    div.style.cssText = 'position:relative;border-radius:0;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.12);border:none;margin:0;cursor:pointer;background:#0f172a;';
+
 
 
     if (!imgs.length) {
@@ -10875,7 +11038,7 @@ function buildBannerMarketTile(b) {
     const label = site ? 'Visit website' : (call ? 'Call now' : (b.title || 'Ad'));
     const icon = site ? 'globe' : (call ? 'phone' : 'megaphone');
     const imgs = (b.images && b.images.length) ? b.images : (b.image ? [b.image] : []);
-     div.style.cssText = 'position:relative;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.12);border:3px solid #334155;cursor:pointer;display:flex;flex-direction:column;min-width:0;background:#0f172a;';
+     div.style.cssText = 'position:relative;border-radius:0;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.12);border:none;cursor:pointer;display:flex;flex-direction:column;min-width:0;background:#0f172a;';
 
 
     if (!imgs.length) {
