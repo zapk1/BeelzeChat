@@ -2982,11 +2982,15 @@ form input[type="text"] {
             position: relative;
         }
         #accountSwitcherModal .modal-title { display: none; }
-        #accountSwitcherModal .close-btn {
-            position: absolute; top: -8px; right: -8px;
+                #accountSwitcherModal .close-btn {
+            position: absolute; top: 12px; right: 12px;
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
             background: #fff; border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 5;
         }
+        #accountSwitcherModal .close-btn i { width: 18px; height: 18px; color: #64748b; }
+        #accountSwitcherModal .modal-header { padding-top: 6px !important; }
 
         .account-list {
             display: flex; flex-direction: column; gap: 10px;
@@ -3098,20 +3102,34 @@ form input[type="text"] {
             gap: 8px; 
         }
         
-        .forward-user-item { 
+                .forward-user-item { 
             padding: 12px; 
             border: 2px solid #e2e8f0; 
-            border-radius: 8px; 
+            border-radius: 14px; 
             display: flex; 
             align-items: center; 
             gap: 12px; 
             cursor: pointer; 
+            background: #fff; position: relative;
+            transition: border-color 0.2s, background 0.2s;
         }
-        
+        .forward-user-item:hover { border-color: #ef4444; }
         .forward-user-item.selected { 
-            border-color: #000; 
-            background: rgba(0,0,0,0.05); 
+            border-color: #ef4444; 
+            background: #fff5f5; 
         }
+        .forward-user-item .fw-check {
+            width: 26px; height: 26px; border-radius: 50%;
+            border: 2px solid #e2e8f0; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: #fff; transition: all 0.2s;
+        }
+        .forward-user-item.selected .fw-check { background: #22c55e; border-color: #22c55e; }
+        .forward-user-item .fw-check i { width: 16px; height: 16px; color: #fff; display: none; }
+        .forward-user-item.selected .fw-check i { display: block; }
+        #addMembersModal .modal-title { color:#0f172a; }
+        #confirmAddMembersBtn { background:#ef4444 !important; }
+
         
         .category-filter { 
             display: flex; 
@@ -3947,10 +3965,24 @@ form input[type="text"] {
                 </button>
             </div>
             <div class="profile-identifier" id="profileIdentifier">user@example.com</div>
-            <div style="display:flex;align-items:center;gap:6px;margin-top:8px;">
-                <span id="profileBioDisplay" style="color:#1e293b;font-size:14px;text-align:center;display:block;width:100%;">No bio yet</span>
+               <div style="display:flex;align-items:center;gap:6px;margin-top:8px;">
+                <span id="profileBioDisplay" style="color:#1e293b;font-size:14px;text-align:center;display:block;width:100%;">Bio loading…</span>
                 <button onclick="editBio()" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:14px;height:14px;color:#94a3b8;"></i></button>
             </div>
+        </div>
+        <div class="profile-actions">
+            <button class="action-btn logout-btn" id="logoutBtn">
+                <i data-lucide="log-out"></i>
+                Logout
+            </button>
+            <button class="action-btn" id="blockedUsersBtn" style="background:#f59e0b;color:white;margin-top:8px;" onclick="showBlockedUsers()">
+                <i data-lucide="ban"></i>
+                Blocked Users
+            </button>
+            <button class="action-btn" id="deleteAccountBtn" style="background:#dc2626;color:white;margin-top:8px;">
+                <i data-lucide="trash-2"></i>
+                Delete Account Permanently
+            </button>
         </div>
         <div class="profile-code-box" style="background:#dbeafe;border-color:#3b82f6;">
             <div class="code-label" style="color:#1e40af;">
@@ -4047,20 +4079,7 @@ form input[type="text"] {
                 <button onclick="editProfileField('email')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
             </div>
         </div>
-        <div class="profile-actions">
-            <button class="action-btn logout-btn" id="logoutBtn">
-                <i data-lucide="log-out"></i>
-                Logout
-            </button>
-            <button class="action-btn" id="blockedUsersBtn" style="background:#f59e0b;color:white;margin-top:8px;" onclick="showBlockedUsers()">
-                <i data-lucide="ban"></i>
-                Blocked Users
-            </button>
-            <button class="action-btn" id="deleteAccountBtn" style="background:#dc2626;color:white;margin-top:8px;">
-                <i data-lucide="trash-2"></i>
-                Delete Account Permanently
-            </button>
-        </div>
+     
         <div style="margin-top:18px;background:#f8fafc;border-radius:14px;padding:14px;border:1px solid #e2e8f0;">
   <div style="font-weight:800;color:#0f172a;margin-bottom:8px;">BeelzeChat Business</div>
   <a href="mailto:support@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Support: support@beelzechat.co.za</a>
@@ -5042,6 +5061,7 @@ function closeAuthScreen() {
 let _loginRecaptchaId = null;
 function renderLoginRecaptcha() {
     if (_loginRecaptchaId !== null) return;
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:') { _loginRecaptchaId = 'local-dev'; return; }
     if (typeof grecaptcha === 'undefined' || !grecaptcha.render) return;
     const box = document.getElementById('loginRecaptcha');
     if (!box || box.offsetParent === null) return; // wait until the login box is visible
@@ -6153,9 +6173,13 @@ function restoreAuthScreen() {
 
 document.getElementById('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
-    if (typeof grecaptcha === 'undefined' || _loginRecaptchaId === null) { showToast('error', 'Verify', 'Please complete the CAPTCHA'); return; }
-    const recaptchaResponse = grecaptcha.getResponse(_loginRecaptchaId);
-    if (!recaptchaResponse) { showToast('error', 'Verify', 'Please complete the CAPTCHA'); return; }
+        const _bzLocalDev = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:';
+    let recaptchaResponse = '';
+    if (!_bzLocalDev) {
+        if (typeof grecaptcha === 'undefined' || _loginRecaptchaId === null) { showToast('error', 'Verify', 'Please complete the CAPTCHA'); return; }
+        recaptchaResponse = grecaptcha.getResponse(_loginRecaptchaId);
+        if (!recaptchaResponse) { showToast('error', 'Verify', 'Please complete the CAPTCHA'); return; }
+    }
     const identifier = document.getElementById('loginIdentifier').value.trim();
     const password = document.getElementById('loginPassword').value;
     if (!identifier || !password) { showToast('error', 'Error', 'Fill all fields'); return; }
@@ -6379,8 +6403,8 @@ function updateProfileButton() {
     btn.style.animation = 'none';
     btn.style.color = 'white';
     const fallbackInitial = (currentUser.name || 'U').charAt(0).toUpperCase();
+    btn.innerHTML = '';   // ALWAYS wipe the old account's image first
     if (currentUser.profilePic) {
-        btn.innerHTML = '';
         const img = document.createElement('img');
         img.src = currentUser.profilePic;
         img.alt = 'P';
@@ -6394,6 +6418,15 @@ function updateProfileButton() {
     } else {
         btn.textContent = fallbackInitial;
     }
+    // Refresh every comment-input avatar + marketplace profile btn so the previous account's face is gone
+    const curPic = currentUser.profilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name||'U')}&background=000&color=fff&size=128`;
+    document.querySelectorAll('[id^="commentInputAvatar_"]').forEach(av => {
+        av.innerHTML = `<img src="${curPic}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=000&color=fff&size=128';">`;
+    });
+    const mkt = document.getElementById('mktProfileBtn');
+    if (mkt) { mkt.innerHTML = ''; mkt.style.background = '#000'; mkt.style.color = '#fff'; mkt.style.overflow = 'hidden';
+        if (currentUser.profilePic) { const im = document.createElement('img'); im.src = currentUser.profilePic; im.style.cssText = 'width:100%;height:100%;object-fit:cover;'; mkt.appendChild(im); }
+        else { mkt.textContent = fallbackInitial; } }
 }
 
 // ============================================================
@@ -6655,11 +6688,22 @@ const unread = (chat.lastMessageTime > lastSeen && lastSenderId !== currentUser.
                 });
             }
         }
-        cl.appendChild(div);
+                cl.appendChild(div);
     });
-    lucide.createIcons();
+    if (userChats.length === 0) {
+        cl.innerHTML = `<div style="text-align:center;padding:70px 20px;display:flex;flex-direction:column;align-items:center;gap:14px;">
+            <div style="position:relative;width:64px;height:64px;display:flex;align-items:center;justify-content:center;">
+                <div style="position:absolute;inset:0;border:4px solid transparent;border-top-color:#ef4444;border-right-color:#ef4444;border-radius:50%;animation:mzSpin 0.8s linear infinite;"></div>
+                <i data-lucide="message-circle" style="width:30px;height:30px;color:#ef4444;"></i>
+            </div>
+            <div style="font-weight:800;font-size:16px;color:#0f172a;">Start chatting with other people</div>
+            <div style="font-size:13px;color:#94a3b8;max-width:260px;">Tap <b>People</b> below to find someone and begin your first conversation.</div>
+        </div>`;
+        lucide.createIcons();
+    } else {
+        lucide.createIcons();
+    }
 }
-
 
 
 
@@ -8367,8 +8411,9 @@ function renderMessages(messages, isFull, prepend) {
 
     let appendedAny = false;
     messages.forEach(msg => {
-        if (_renderedMsgIds.has(msg.id)) return;
-        _renderedMsgIds.add(msg.id);
+        const _msgKey = (msg.senderId||'') + '_' + (msg.timestamp||0);
+        if (_renderedMsgIds.has(_msgKey)) return;
+        _renderedMsgIds.add(_msgKey);
         appendedAny = true;
 
         const div = document.createElement('div');
@@ -8419,6 +8464,7 @@ function renderMessages(messages, isFull, prepend) {
 
         const bubble = div.querySelector('.message-bubble');
         attachMsgInteractions(bubble, msg);
+        div.querySelectorAll('.reaction-tag').forEach(t => t.addEventListener('click', function(e){ e.stopPropagation(); showMessageReactions(msg.id); }));
         div.querySelectorAll('.message-image').forEach(img => attachImgInteractions(img, msg));
         div.querySelectorAll('.message-file').forEach(f => f.addEventListener('click', () => dlFile(f.dataset.url, f.dataset.name)));
         div.querySelectorAll('.voice-play-btn').forEach(b => b.addEventListener('click', () => playVoice(b.dataset.voice, b)));
@@ -8441,6 +8487,23 @@ function formatMsgText(text) {
     return t;
 }
 
+
+// ============================================================
+// OPTIMISTIC LOCAL CACHE (capped — never fills localStorage)
+// ============================================================
+const bz = {
+    cache(key, value) {
+        try {
+            const store = JSON.parse(localStorage.getItem('bzOpt') || '{}');
+            store[key] = { v: value, t: Date.now() };
+            const keys = Object.keys(store).sort((a,b)=>store[a].t-store[b].t);
+            while (keys.length > 50) { delete store[keys.shift()]; }   // trim oldest
+            localStorage.setItem('bzOpt', JSON.stringify(store));
+        } catch(e){}
+    },
+    read(key) { try { return JSON.parse(localStorage.getItem('bzOpt') || '{}')[key]?.v; } catch(e){ return undefined; } }
+};
+window.bz = bz;
 
 // ============================================================
 // SEND MESSAGE
@@ -8544,6 +8607,49 @@ document.getElementById('sendBtn').addEventListener('click', sendMessage);
 
 
 
+async function showMessageReactions(msgId) {
+    if (!currentChatId || !msgId) return;
+    const ov = document.createElement('div');
+    ov.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:20px;';
+    ov.innerHTML = '<div style="width:20px;height:20px;border:3px solid #ef4444;border-top-color:transparent;border-radius:50%;animation:mzSpin 0.8s linear infinite;"></div>';
+    document.body.appendChild(ov);
+    let reactions = {};
+    try {
+        const snap = await db.collection('chats').doc(currentChatId).collection('messages').doc(msgId).get();
+        reactions = snap.data()?.reactions || {};
+    } catch(e){}
+    const byEmoji = {};
+    Object.entries(reactions).forEach(([uid, emoji]) => {
+        if (!emoji) return;
+        if (!byEmoji[emoji]) byEmoji[emoji] = [];
+        byEmoji[emoji].push(uid);
+    });
+    const emojis = Object.keys(byEmoji);
+    const sections = emojis.length ? emojis.map(emoji => {
+        const uids = byEmoji[emoji];
+        const people = uids.map(uid => {
+            const u = allUsers[uid] || { name: 'User' };
+            const av = u.profilePic ? `<img src="${u.profilePic}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(u.name||'U')}&background=000&color=fff&size=128" style="width:40px;height:40px;border-radius:50%;">`;
+            return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;">${av}<div style="flex:1;font-weight:600;color:#0f172a;font-size:14px;">${u.name||'User'}</div></div>`;
+        }).join('');
+        return `<div style="margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:0 4px;">
+                <span style="font-size:22px;">${emoji}</span>
+                <span style="font-weight:800;color:#0f172a;font-size:14px;">${uids.length} ${uids.length===1?'person':'people'}</span>
+            </div>
+            <div style="padding:0 4px;">${people}</div>
+        </div>`;
+    }).join('') : '<div style="text-align:center;color:#94a3b8;padding:30px;">No reactions yet</div>';
+    ov.innerHTML = `<div style="background:#fff;border-radius:20px;width:100%;max-width:340px;max-height:80vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+        <div style="padding:16px 18px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-weight:800;font-size:16px;color:#0f172a;">Reactions</span>
+            <button onclick="this.closest('[style*=fixed]').remove()" style="background:#f1f5f9;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:16px;height:16px;color:#64748b;"></i></button>
+        </div>
+        <div style="overflow-y:auto;padding:12px 14px;">${sections}</div>
+    </div>`;
+    lucide.createIcons(ov);
+} 
+
 async function sendMessage() {
     if (requireAuth('send messages') === false) return;
     const input = document.getElementById('messageInput');
@@ -8566,31 +8672,41 @@ async function sendMessage() {
     selectedFiles = [];
     renderUploadPreview();
 
+    // Optimistic: show the message in the chat INSTANTLY (Firestore confirms in the background)
+    msg.id = 'temp_' + msg.timestamp;
+    bz.cache('lastMsg_' + currentChatId, text);
+    renderMessages([msg], false);
+
 
 
     // Fire the OUTSIDE alert (push + in-app notification) INSTANTLY — do NOT wait for Firestore
-    if (currentChatUser?.isGroup) {
-        var groupMembers = currentChatUser.members || [];
-        groupMembers.forEach(function(memberId) {
-            if (memberId !== currentUser.id) {
-                sendNotification(memberId, 'message', { title: currentChatUser.name || 'Group', body: (currentUser.name || 'Someone') + ': ' + (text || '📎 Media') });
-                var opsId = allUsers[memberId]?.oneSignalId;
+    (async function bzAlertRecipients() {
+        var title, body, ids;
+        if (currentChatUser?.isGroup) {
+            title = currentChatUser.name || 'Group';
+            body = (currentUser.name || 'Someone') + ': ' + (text || '📎 Media');
+            ids = (currentChatUser.members || []).filter(function(m){ return m !== currentUser.id; });
+        } else if (currentChatUser?.id) {
+            title = 'New message from ' + currentUser.name;
+            body = text || '📎 Media';
+            ids = [currentChatUser.id];
+        } else { return; }
+        for (const uid of ids) {
+            try { sendNotification(uid, 'message', { title: title, body: body }); } catch(e){}
+            try {
+                let opsId = allUsers[uid]?.oneSignalId;
                 if (!opsId) {
-                    db.collection('users').doc(memberId).get().then(function(ud) { if (ud.exists && ud.data().oneSignalId) sendPushNotification(ud.data().oneSignalId, currentChatUser.name || 'Group', (currentUser.name || 'Someone') + ': ' + (text || '📎 Media')); });
-                } else {
-                    sendPushNotification(opsId, currentChatUser.name || 'Group', (currentUser.name || 'Someone') + ': ' + (text || '📎 Media'));
+                    const ud = await db.collection('users').doc(uid).get();
+                    if (ud.exists && ud.data().oneSignalId) { opsId = ud.data().oneSignalId; allUsers[uid] = { ...(allUsers[uid]||{}), oneSignalId: opsId }; }
                 }
-            }
-        });
-    } else if (currentChatUser?.id) {
-        sendNotification(currentChatUser.id, 'message', { title: 'New message from ' + currentUser.name, body: text || '📎 Media' });
-        var opsId = allUsers[currentChatUser.id]?.oneSignalId;
-        if (!opsId) {
-            db.collection('users').doc(currentChatUser.id).get().then(function(ud) { if (ud.exists && ud.data().oneSignalId) sendPushNotification(ud.data().oneSignalId, currentUser.name, text || '📎 Media'); });
-        } else {
-            sendPushNotification(opsId, currentUser.name, text || '📎 Media');
+                if (!opsId) continue;
+                let ok = false;
+                for (let attempt = 0; attempt < 2 && !ok; attempt++) {
+                    try { ok = await sendPushNotification(opsId, title, body); } catch(e){ await new Promise(r=>setTimeout(r,400)); }
+                }
+            } catch(e){ console.log('push send error', e); }
         }
-    }
+    })();
 
     // 3) Persist to Firestore in the background (UI + alert already happened)
     db.collection('chats').doc(currentChatId).collection('messages').add(msg).catch(function(e){ console.log('msg send error', e); });
@@ -8698,6 +8814,19 @@ document.getElementById('profileBtn').addEventListener('click', () => {
     const rcIcon = document.getElementById('resetCodeEyeIcon');
     if (rcIcon) { rcIcon.setAttribute('data-lucide', 'eye'); }
     document.getElementById('beelzeIdDisplay').textContent = currentUser.beelzeId || 'Not assigned yet';
+    // Refresh bio from Firestore so a just-switched account doesn't show "No bio" prematurely
+    (async () => {
+        try {
+            const us = await db.collection('users').doc(currentUser.id).get();
+            if (us.exists) {
+                currentUser.bio = us.data().bio || '';
+                localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
+                const be = document.getElementById('profileBioDisplay');
+                if (be) be.textContent = currentUser.bio || 'No bio yet';
+            }
+        } catch(e){}
+    })();
+
 document.getElementById('profilePhone').textContent = currentUser.phone || 'Not set';
     document.getElementById('profileWebsite').textContent = currentUser.website || 'Not set';
     document.getElementById('profileEmail').textContent = currentUser.email || 'Not set';
@@ -8721,13 +8850,13 @@ document.getElementById('profilePhone').textContent = currentUser.phone || 'Not 
         const posts = docs.map(d=>d.data());
         const views = posts.reduce((s,p)=>s+calcPostViews(p),0);
         let el = document.getElementById('myProfileStats');
-        if (!el) { el = document.createElement('div'); el.id='myProfileStats'; el.style.cssText='display:flex;gap:20px;justify-content:center;margin:10px 0;padding:10px;background:#f8fafc;border-radius:12px;'; document.querySelector('#profileModal .profile-code-box').before(el); }
+        if (!el) { el = document.createElement('div'); el.id='myProfileStats'; el.style.cssText='display:flex;gap:20px;justify-content:center;margin:10px 0;padding:10px;background:#f8fafc;border-radius:12px;'; document.querySelector('#profileModal .profile-actions').after(el); }
         el.innerHTML=`<div style="text-align:center;"><div style="font-weight:800;font-size:18px;display:flex;align-items:center;gap:4px;justify-content:center;"><i data-lucide="image" style="width:16px;height:16px;color:#3b82f6;"></i>${posts.length}</div><div style="font-size:11px;color:#64748b;">Posts</div></div><div style="text-align:center;"><div style="font-weight:800;font-size:18px;display:flex;align-items:center;gap:4px;justify-content:center;"><i data-lucide="eye" style="width:16px;height:16px;color:#3b82f6;"></i>${formatCount(views)}</div><div style="font-size:11px;color:#64748b;">Views</div></div>`;
         lucide.createIcons();
 
         // Build a feed+grid section exactly like the other-user profile
         let sec = document.getElementById('myPostsSection');
-        if (!sec) { sec = document.createElement('div'); sec.id='myPostsSection'; sec.style.cssText='margin-top:14px;'; document.querySelector('#profileModal .profile-actions').before(sec); }
+        if (!sec) { sec = document.createElement('div'); sec.id='myPostsSection'; sec.style.cssText='margin-top:14px;'; document.querySelector('#profileModal .profile-actions').parentElement.appendChild(sec); }
         sec.innerHTML = `
             <div style="display:flex;align-items:center;justify-content:space-between;margin:0 4px 10px;">
                 <div style="font-weight:800;font-size:15px;color:#0f172a;display:flex;align-items:center;gap:6px;"><i data-lucide="images" style="width:16px;height:16px;color:#4338ca;"></i> My Posts</div>
@@ -8792,8 +8921,26 @@ async function showUserProfile(userId, user) {
         `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(ud.name)}&background=000&color=fff&size=256">`;
     document.getElementById('userProfileName').textContent = ud.name;
     document.getElementById('userProfileIdentifier').textContent = ud.bio || ud.identifier;
-    const bidEl = document.getElementById('userProfileBeelzeId');
-    if (bidEl) bidEl.textContent = ud.beelzeId || 'Not set';
+        let bidEl = document.getElementById('userProfileBeelzeId');
+    if (!bidEl) {
+        const box = document.createElement('div');
+        box.style.cssText = 'margin:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:12px 14px;';
+        box.innerHTML = `<div style="display:flex;align-items:center;gap:6px;color:#166534;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;"><i data-lucide="fingerprint" style="width:15px;height:15px;"></i> BeelzeChat ID</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+            <div id="userProfileBeelzeId" style="color:#15803d;font-weight:700;font-size:14px;letter-spacing:0.5px;word-break:break-all;">—</div>
+            <button id="userProfileBeelzeIdCopy" style="background:#22c55e;border:none;border-radius:10px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:5px;color:white;font-size:12px;font-weight:700;flex-shrink:0;"><i data-lucide="copy" style="width:14px;height:14px;color:white;"></i> Copy</button>
+        </div>
+        <div style="font-size:11px;color:#16a34a;margin-top:6px;">Paste this ID in People search to find this user</div>`;
+        document.querySelector('#userProfileModal .profile-actions')?.after(box);
+        lucide.createIcons();
+        bidEl = document.getElementById('userProfileBeelzeId');
+        document.getElementById('userProfileBeelzeIdCopy')?.addEventListener('click', function(){
+            const t = bidEl.textContent;
+            if (navigator.clipboard) navigator.clipboard.writeText(t).then(()=>showToast('success','Copied!','BeelzeChat ID copied'));
+            else { const ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); showToast('success','Copied!','BeelzeChat ID copied'); }
+        });
+    }
+    if (bidEl) bidEl.textContent = ud.beelzeId || 'Not assigned yet';
     const blocked = (currentUser.blockedUsers || []).includes(userId);
     document.getElementById('blockBtnText').textContent = blocked ? 'Unblock' : 'Block';
 
@@ -9153,11 +9300,11 @@ document.getElementById('addMembersBtn').addEventListener('click', async () => {
         const div = document.createElement('div');
         div.className = 'forward-user-item';
         div.dataset.userid = uid;
-        const av = u.profilePic ?
+                const av = u.profilePic ?
             `<img src="${u.profilePic}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` :
             `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=000&color=fff&size=128" style="width:40px;height:40px;border-radius:50%;">`;
-        div.innerHTML = `${av}<div style="flex:1;"><div style="font-weight:700;">${u.name}</div><div style="font-size:13px;color:#64748b;">${u.bio || u.identifier}</div></div>`;
-        div.addEventListener('click', function() { this.classList.toggle('selected'); });
+        div.innerHTML = `${av}<div style="flex:1;"><div style="font-weight:700;color:#0f172a;">${u.name}</div><div style="font-size:13px;color:#64748b;">${u.bio || u.identifier}</div></div><div class="fw-check"><i data-lucide="check"></i></div>`;
+        div.addEventListener('click', function() { this.classList.toggle('selected'); lucide.createIcons(); });
         list.appendChild(div);
     });
     document.getElementById('groupOptionsModal').classList.remove('active');
