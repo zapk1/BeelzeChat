@@ -113,7 +113,9 @@
   function coverBroken(img) {
     if (!img || img.dataset.bzCovered === '1') return;
     if (img.tagName !== 'IMG') return;
-    if (img.id === 'viewerImage' || img.id === 'imgViewerImg') return;
+        if (img.id === 'viewerImage' || img.id === 'imgViewerImg') return;
+    // Don't touch profile avatars — they have their own onerror fallback below
+    if (img.parentElement && img.parentElement.classList.contains('profile-avatar-large')) return;
     img.dataset.bzCovered = '1';
     if (img.complete && img.naturalWidth === 0) {
       // Detect context: is this a small avatar/icon or a large image?
@@ -241,7 +243,7 @@
       "logo": "https://i.postimg.cc/mD0dbHM0/1000287857.png",
       "contactPoint": [
         { "@type": "ContactPoint", "contactType": "customer support", "email": "support@beelzechat.co.za", "areaServed": "ZA", "availableLanguage": ["English"] },
-        { "@type": "ContactPoint", "contactType": "sales", "email": "ads@beelzechat.co.za", "description": "Banner advertising from R500", "areaServed": "ZA" },
+        { "@type": "ContactPoint", "contactType": "sales", "email": "ads@beelzechat.co.za", "description": "Banner advertising from R30500", "areaServed": "ZA" },
         { "@type": "ContactPoint", "contactType": "public relations", "email": "ceo@beelzechat.co.za", "areaServed": "ZA" }
       ]
     },
@@ -251,7 +253,7 @@
       "serviceType": "Banner Ads",
       "provider": { "@id": "https://beelzechat.co.za/#org" },
       "areaServed": "ZA",
-      "offers": { "@type": "Offer", "price": "500", "priceCurrency": "ZAR", "description": "Banner ads starting from R500" }
+      "offers": { "@type": "Offer", "price": "500", "priceCurrency": "ZAR", "description": "Banner ads starting from R30500" }
     }
   ]
 }
@@ -3969,21 +3971,7 @@ form input[type="text"] {
                 <span id="profileBioDisplay" style="color:#1e293b;font-size:14px;text-align:center;display:block;width:100%;">Bio loading…</span>
                 <button onclick="editBio()" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:14px;height:14px;color:#94a3b8;"></i></button>
             </div>
-        </div>
-        <div class="profile-actions">
-            <button class="action-btn logout-btn" id="logoutBtn">
-                <i data-lucide="log-out"></i>
-                Logout
-            </button>
-            <button class="action-btn" id="blockedUsersBtn" style="background:#f59e0b;color:white;margin-top:8px;" onclick="showBlockedUsers()">
-                <i data-lucide="ban"></i>
-                Blocked Users
-            </button>
-            <button class="action-btn" id="deleteAccountBtn" style="background:#dc2626;color:white;margin-top:8px;">
-                <i data-lucide="trash-2"></i>
-                Delete Account Permanently
-            </button>
-        </div>
+                </div>
         <div class="profile-code-box" style="background:#dbeafe;border-color:#3b82f6;">
             <div class="code-label" style="color:#1e40af;">
                 <i data-lucide="key"></i>
@@ -4080,17 +4068,32 @@ form input[type="text"] {
             </div>
         </div>
      
-        <div style="margin-top:18px;background:#f8fafc;border-radius:14px;padding:14px;border:1px solid #e2e8f0;">
+                <div style="margin-top:18px;background:#f8fafc;border-radius:14px;padding:14px;border:1px solid #e2e8f0;">
   <div style="font-weight:800;color:#0f172a;margin-bottom:8px;">BeelzeChat Business</div>
   <a href="mailto:support@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Support: support@beelzechat.co.za</a>
   <a href="mailto:ads@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Advertise: ads@beelzechat.co.za</a>
   <a href="mailto:ceo@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Owner: ceo@beelzechat.co.za</a>
-     <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R500</b> • <a href="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
+     <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R30500</b> • <a href="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
   <!-- TERMS & POLICIES BUTTON -->
   <button onclick="document.getElementById('termsModal').classList.add('active');lucide.createIcons();" style="width:100%;margin-top:10px;display:flex;align-items:center;gap:8px;padding:12px 14px;background:#0f172a;color:white;border:none;border-radius:12px;cursor:pointer;font-weight:700;font-size:13px;">
       <i data-lucide="file-text" style="width:18px;height:18px;"></i> Terms &amp; Policies
   </button>
 </div>
+        <!-- ===== ACCOUNT ACTIONS (moved to bottom — under business section) ===== -->
+        <div class="profile-actions" style="margin-top:16px;">
+            <button class="action-btn logout-btn" id="logoutBtn">
+                <i data-lucide="log-out"></i>
+                Logout
+            </button>
+            <button class="action-btn" id="blockedUsersBtn" style="background:#f59e0b;color:white;margin-top:8px;" onclick="showBlockedUsers()">
+                <i data-lucide="ban"></i>
+                Blocked Users
+            </button>
+            <button class="action-btn" id="deleteAccountBtn" style="background:#dc2626;color:white;margin-top:8px;">
+                <i data-lucide="trash-2"></i>
+                Delete Account Permanently
+            </button>
+        </div>
         </div>
     </div>
 </div>
@@ -5718,34 +5721,43 @@ EMOJIS.forEach(em => {
     b.textContent = em;
     b.addEventListener('click', async e => {
         e.stopPropagation();
-        if (emojiPop.dataset.msgId && currentChatId) {
-            const ref = db.collection('chats').doc(currentChatId).collection('messages').doc(emojiPop.dataset.msgId);
-            const snap = await ref.get();
-            if (snap.exists) {
-                const rx = snap.data().reactions || {};
-                rx[currentUser.id] = em;
-                await ref.update({ reactions: rx });
-                // Update reaction display IN-PLACE — no reload
-                const uEm2 = {};
-                Object.values(rx).forEach(e2 => { uEm2[e2] = (uEm2[e2]||0)+1; });
-                const rxHtml2 = Object.keys(uEm2).length > 0 ?
-                    `<div class="message-reactions-row">${Object.entries(uEm2).map(([e2,c])=>`<div class="reaction-tag">${e2}${c>1?' '+c:''}</div>`).join('')}</div>` : '';
-                const allMsgEls = document.querySelectorAll('#messagesContainer .message');
-                allMsgEls.forEach(m => {
-                    const bubble = m.querySelector('.message-bubble');
-                    if (bubble && bubble.dataset && bubble.dataset.msgid === emojiPop.dataset.msgId) {
-                        const existingRx = m.querySelector('.message-reactions-row');
-                        const mc2 = m.querySelector('.message-content');
-                        if (existingRx) {
-                            existingRx.outerHTML = rxHtml2;
-                        } else if (mc2) {
-                            mc2.insertAdjacentHTML('beforeend', rxHtml2);
-                        }
-                    }
-                });
+        if (!emojiPop.dataset.msgId || !currentChatId) { closeEmoji(); return; }
+        if (!currentUser) { showToast('error', 'Not logged in', 'Please log in first'); closeEmoji(); return; }
+        const msgId = emojiPop.dataset.msgId;
+        // 1. INSTANT UI — read reactions from localStorage cache (no network wait)
+        const cacheKey = 'rx_' + currentChatId + '_' + msgId;
+        let rx = {};
+        try { rx = JSON.parse(localStorage.getItem(cacheKey) || '{}'); } catch(e){}
+        rx[currentUser.id] = em;
+        try { localStorage.setItem(cacheKey, JSON.stringify(rx)); } catch(e){}
+        // Rebuild the reaction row HTML immediately
+        const uEm2 = {};
+        Object.values(rx).forEach(e2 => { uEm2[e2] = (uEm2[e2]||0)+1; });
+        const rxHtml2 = Object.keys(uEm2).length > 0 ?
+            `<div class="message-reactions-row">${Object.entries(uEm2).map(([e2,c])=>`<div class="reaction-tag">${e2}${c>1?' '+c:''}</div>`).join('')}</div>` : '';
+        document.querySelectorAll('#messagesContainer .message').forEach(m => {
+            const bubble = m.querySelector('.message-bubble');
+            if (bubble && bubble.dataset && bubble.dataset.msgid === msgId) {
+                const existingRx = m.querySelector('.message-reactions-row');
+                const mc2 = m.querySelector('.message-content');
+                if (existingRx) existingRx.outerHTML = rxHtml2;
+                else if (mc2) mc2.insertAdjacentHTML('beforeend', rxHtml2);
             }
-        }
+        });
+        showToast('success', 'Reacted!', em);
         closeEmoji();
+        // 2. Firestore save in the background — UI already updated, this just persists
+        (async () => {
+            try {
+                const ref = db.collection('chats').doc(currentChatId).collection('messages').doc(msgId);
+                const snap = await ref.get();
+                if (snap.exists) {
+                    const serverRx = snap.data().reactions || {};
+                    serverRx[currentUser.id] = em;
+                    await ref.update({ reactions: serverRx });
+                }
+            } catch (err) { console.log('reaction save error', err); }
+        })();
     });
     emojiPop.appendChild(b);
 });
@@ -5814,10 +5826,16 @@ function showMsgActionBar(msg, e) {
 
 function showEmoji(msgId, e) {
     closeEmoji();
-    // Force re-attach by cloning the popup to clear all stale event listeners
     emojiPop.dataset.msgId = msgId;
     emojiPop.classList.add('active');
-    const bnd = (e.target.closest('.message-bubble') || e.target).getBoundingClientRect();
+    console.log('😀 Emoji popup opened for message:', msgId);
+    let bnd;
+    try {
+        bnd = (e.target.closest('.message-bubble') || e.target).getBoundingClientRect();
+    } catch (err) {
+        // Fallback — center the popup if the event target is stale
+        bnd = { top: window.innerHeight / 2, bottom: window.innerHeight / 2, left: window.innerWidth / 2 };
+    }
     let top = bnd.top - 68;
     if (top < 8) top = bnd.bottom + 8;
     let left = bnd.left;
@@ -6469,7 +6487,7 @@ document.getElementById('profilePicInput').addEventListener('change', async e =>
     });
     loadNotifications();
     
-document.getElementById('profileAvatarLarge').innerHTML = `<img src="${url}"><div class="profile-avatar-camera" id="profileCameraBtn"><i data-lucide="camera"></i></div>`;
+document.getElementById('profileAvatarLarge').innerHTML = `<img src="${url}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name||'U')}&background=000&color=fff&size=256';"><div class="profile-avatar-camera" id="profileCameraBtn"><i data-lucide="camera"></i></div>`;
     showToast('success', 'Done!', 'Pic updated');
     lucide.createIcons();
     document.getElementById('profileCameraBtn').addEventListener('click', e => {
@@ -8213,6 +8231,7 @@ function openChat(chatId, user, userId) {
     currentChatUser = { ...user, id: userId };
     document.getElementById('app').classList.remove('active');
     document.getElementById('chatView').classList.add('active');
+    document.getElementById('bottomNav').style.display = 'none';
     showMessengerLoader();
     document.getElementById('chatUserName').textContent = user.name;
     document.getElementById('chatAvatar').innerHTML = user.profilePic ?
@@ -8230,6 +8249,7 @@ function openGroupChat(chatId, group) {
     currentChatUser = { ...group, isGroup: true };
     document.getElementById('app').classList.remove('active');
     document.getElementById('chatView').classList.add('active');
+    document.getElementById('bottomNav').style.display = 'none';
     showMessengerLoader();
     document.getElementById('chatUserName').textContent = group.name + ' (Group)';
     const gpic = group.groupPic || `https://ui-avatars.com/api/?name=${encodeURIComponent(group.name)}&background=8b5cf6&color=fff&size=128`;
@@ -8246,6 +8266,7 @@ document.getElementById('chatAvatar').addEventListener('click', () => {
 document.getElementById('closeChatBtn').addEventListener('click', () => {
     document.getElementById('chatView').classList.remove('active');
     document.getElementById('app').classList.add('active');
+    document.getElementById('bottomNav').style.display = 'flex';
     currentChatId = null;
     currentChatUser = null;
     replyToMessage = null;
@@ -8782,7 +8803,7 @@ document.getElementById('profileBtn').addEventListener('click', () => {
     if (typeof showProfileSkeleton === 'function') showProfileSkeleton();
     const avatarLarge = document.getElementById('profileAvatarLarge');
     if (currentUser?.profilePic) {
-        avatarLarge.innerHTML = `<img src="${currentUser.profilePic}"><div class="profile-avatar-camera" id="profileCameraBtn"><i data-lucide="camera"></i></div>`;
+        avatarLarge.innerHTML = `<img src="${currentUser.profilePic}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name||'U')}&background=000&color=fff&size=256';"><div class="profile-avatar-camera" id="profileCameraBtn"><i data-lucide="camera"></i></div>`;
     } else {
         avatarLarge.textContent = currentUser?.name?.charAt(0).toUpperCase() || 'U';
         avatarLarge.innerHTML += '<div class="profile-avatar-camera" id="profileCameraBtn"><i data-lucide="camera"></i></div>';
@@ -8830,14 +8851,14 @@ document.getElementById('profilePhone').textContent = currentUser.phone || 'Not 
         const docs = snap.docs.sort((a,b)=>b.data().timestamp-a.data().timestamp);
         const posts = docs.map(d=>d.data());
         const views = posts.reduce((s,p)=>s+calcPostViews(p),0);
-        let el = document.getElementById('myProfileStats');
-        if (!el) { el = document.createElement('div'); el.id='myProfileStats'; el.style.cssText='display:flex;gap:20px;justify-content:center;margin:10px 0;padding:10px;background:#f8fafc;border-radius:12px;'; document.querySelector('#profileModal .profile-actions').after(el); }
+                let el = document.getElementById('myProfileStats');
+        if (!el) { el = document.createElement('div'); el.id='myProfileStats'; el.style.cssText='display:flex;gap:20px;justify-content:center;margin:12px 0;padding:12px;background:#f8fafc;border-radius:14px;border:1px solid #e2e8f0;'; document.querySelector('#profileModal .profile-info').after(el); }
         el.innerHTML=`<div style="text-align:center;"><div style="font-weight:800;font-size:18px;display:flex;align-items:center;gap:4px;justify-content:center;"><i data-lucide="image" style="width:16px;height:16px;color:#3b82f6;"></i>${posts.length}</div><div style="font-size:11px;color:#64748b;">Posts</div></div><div style="text-align:center;"><div style="font-weight:800;font-size:18px;display:flex;align-items:center;gap:4px;justify-content:center;"><i data-lucide="eye" style="width:16px;height:16px;color:#3b82f6;"></i>${formatCount(views)}</div><div style="font-size:11px;color:#64748b;">Views</div></div>`;
         lucide.createIcons();
 
         // Build a feed+grid section exactly like the other-user profile
         let sec = document.getElementById('myPostsSection');
-        if (!sec) { sec = document.createElement('div'); sec.id='myPostsSection'; sec.style.cssText='margin-top:14px;'; document.querySelector('#profileModal .profile-actions').parentElement.appendChild(sec); }
+        if (!sec) { sec = document.createElement('div'); sec.id='myPostsSection'; sec.style.cssText='margin-top:14px;'; document.querySelector('#profileModal .profile-actions').before(sec); }
         sec.innerHTML = `
             <div style="display:flex;align-items:center;justify-content:space-between;margin:0 4px 10px;">
                 <div style="font-weight:800;font-size:15px;color:#0f172a;display:flex;align-items:center;gap:6px;"><i data-lucide="images" style="width:16px;height:16px;color:#4338ca;"></i> My Posts</div>
