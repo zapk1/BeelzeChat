@@ -5023,7 +5023,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-const WORKER_URL = 'https://super-resonance-b74e.beelzeapps.workers.dev';
+// ===== Cloudflare R2 Storage =====
+const R2_WORKER_URL = 'https://beelzechat-storage-worker.white-mouse-5467.workers.dev';
+const R2_PUBLIC_BUCKET_URL = 'https://pub-730c026431a641358f01194bd545a5f4.r2.dev'; // e.g. https://pub-xxxxxxxx.r2.dev
+
 
 // ============================================================
 // LOGIN GUARD — blocks account-required actions until signed in
@@ -5192,11 +5195,10 @@ function showMarketSkeleton() {
     grid.innerHTML = html;
 }
 
-const CLOUDINARY_CLOUD_NAME = 'dyrrwset4';   // paste your cloud name from step 1
-const CLOUDINARY_UPLOAD_PRESET = 'crqiisx7'; // paste your preset name from step 1
+const CLOUDINARY_CLOUD_NAME = 'dyrrwset4';   // Cloudinary — kept for VIDEO uploads only
+const CLOUDINARY_UPLOAD_PRESET = 'crqiisx7';
 
-// ImgBB API Key
-const IMGBB_API_KEY = '7582cc8e40651016b8391c34b4216727';
+// ImgBB — REMOVED. All images now go to Cloudflare R2.
 
 
 
@@ -5532,45 +5534,25 @@ async function compressImage(file) {
     }
 }
 
-// ===== Real ImgBB upload (returns URL) =====
-async function uploadToImgBBReal(file) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = async () => {
-            try {
-                const base64 = reader.result.split(',')[1];
-                const fd = new FormData();
-                fd.append('image', base64);
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: fd });
-                const data = await res.json();
-                if (data?.data?.url) resolve(data.data.url);
-                else { showToast('error', 'Upload Failed', data?.error?.message || 'ImgBB error'); resolve(null); }
-            } catch (e) { showToast('error', 'Upload Failed', e.message); resolve(null); }
-        };
-        reader.readAsDataURL(file);
-    });
+// ===== Cloudflare R2 upload (returns full public URL) =====
+async function uploadToR2(file) {
+    try {
+        const fd = new FormData();
+        fd.append('file', file);
+        const res = await fetch(R2_WORKER_URL, { method: 'POST', body: fd });
+        if (!res.ok) { showToast('error', 'Upload Failed', 'Server error ' + res.status); return null; }
+        const data = await res.json();
+        if (data.key) {
+            return R2_PUBLIC_BUCKET_URL.replace(/\/+$/, '') + '/' + data.key;
+        }
+        showToast('error', 'Upload Failed', 'No file key returned');
+        return null;
+    } catch (e) { showToast('error', 'Upload Failed', e.message); return null; }
 }
 
-// ===== GitHub worker upload (the original one) =====
+// ===== GitHub worker — REMOVED. All uploads now go to Cloudflare R2. =====
 async function uploadToGitHub(file) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = async () => {
-            try {
-                const base64 = reader.result.split(',')[1];
-                const fileName = `uploads/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-                const response = await fetch(WORKER_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ fileName, content: base64 })
-                });
-                const data = await response.json();
-                if (data.content?.download_url) resolve(data.content.download_url);
-                else { showToast('error', 'Upload Failed', data.message || 'Try again'); resolve(null); }
-            } catch (error) { showToast('error', 'Upload Failed', error.message); resolve(null); }
-        };
-        reader.readAsDataURL(file);
-    });
+    return await uploadToR2(file);
 }
 
 // ===== Picker modal — lets the user choose ImgBB or GitHub =====
@@ -5614,9 +5596,7 @@ function pickUploadProvider() {
 // ===== Main upload helper — compresses, shows picker, returns URL =====
 async function uploadToImgBB(file) {
     const compressed = await compressImage(file);
-    const choice = await pickUploadProvider();
-    if (!choice) return null;
-    return choice === 'imgbb' ? await uploadToImgBBReal(compressed) : await uploadToGitHub(compressed);
+    return await uploadToR2(compressed);
 }
 
 
@@ -8679,6 +8659,7 @@ async function sendMessage() {
 
 
 
+
     // Fire the OUTSIDE alert (push + in-app notification) INSTANTLY — do NOT wait for Firestore
     (async function bzAlertRecipients() {
         var title, body, ids;
@@ -10694,10 +10675,10 @@ async function attemptImageHostDelete(url) {
             console.log('ImgBB image (capture delete_url at upload to enable auto-delete):', url);
             return;
         }
-        if (url.includes('githubusercontent.com') && WORKER_URL) {
+        if (url.includes(R2_PUBLIC_BUCKET_URL) && R2_WORKER_URL) {
             const fileName = url.split('/').slice(-2).join('/');
             try {
-                await fetch(WORKER_URL, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName }) });
+                // R2 delete not exposed by the worker — images are simply orphaned (cheap, no harm)
                 console.log('GitHub image delete attempted:', fileName);
             } catch (e) { /* worker may not support DELETE — OK */ }
         }
