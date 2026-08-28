@@ -2897,17 +2897,27 @@ form input[type="text"] {
             pointer-events: none; 
         }
         
-        .toast { 
-            background: white; 
-            padding: 16px 20px; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15); 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            min-width: 250px; 
-            border: 2px solid #000; 
-            pointer-events: all; 
+        .toast {
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            border-radius: 18px;
+            box-shadow: 0 10px 34px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.85), 0 0 0 1px rgba(255,255,255,0.55);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 260px;
+            max-width: 88vw;
+            border: none;
+            pointer-events: all;
+        }
+        .toast-logo {
+            width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+        }
+        .toast-body {
+            display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;
         }
         
         @keyframes toastIn { 
@@ -5704,13 +5714,18 @@ function showToast(type, title, msg) {
     const t = document.createElement('div');
     t.className = `toast ${type}`;
     const i = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info';
-    t.innerHTML = `<i data-lucide="${i}" class="toast-icon"></i><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${msg}</div></div>`;
+    t.innerHTML =
+        '<img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" class="toast-logo">' +
+        '<div class="toast-body">' +
+          `<i data-lucide="${i}" class="toast-icon"></i>` +
+          '<div class="toast-content"><div class="toast-title">' + (title || '') + '</div><div class="toast-message">' + (msg || '') + '</div></div>' +
+        '</div>';
     c.appendChild(t);
     lucide.createIcons();
     setTimeout(() => {
-        t.style.opacity = '0'; t.style.transform = 'scale(0.8)'; t.style.transition = 'all 0.3s';
+        t.style.opacity = '0'; t.style.transform = 'scale(0.9) translateY(-6px)'; t.style.transition = 'all 0.3s';
         setTimeout(() => t.remove(), 350);
-    }, 2000);
+    }, 2200);
 }// ============================================================
 // SYSTEM TO CLOSE AND OPEN MESSAGES EMOJIS 
 // ============================================================
@@ -5736,26 +5751,35 @@ EMOJIS.forEach(em => {
         const rxHtml2 = Object.keys(uEm2).length > 0 ?
             `<div class="message-reactions-row">${Object.entries(uEm2).map(([e2,c])=>`<div class="reaction-tag">${e2}${c>1?' '+c:''}</div>`).join('')}</div>` : '';
         document.querySelectorAll('#messagesContainer .message').forEach(m => {
-            const bubble = m.querySelector('.message-bubble');
-            if (bubble && bubble.dataset && bubble.dataset.msgid === msgId) {
-                const existingRx = m.querySelector('.message-reactions-row');
-                const mc2 = m.querySelector('.message-content');
-                if (existingRx) existingRx.outerHTML = rxHtml2;
-                else if (mc2) mc2.insertAdjacentHTML('beforeend', rxHtml2);
-            }
-        });
+                const bubble = m.querySelector('.message-bubble');
+                if (bubble && bubble.dataset && bubble.dataset.msgid === msg.id) {
+                    const existingRx = m.querySelector('.message-reactions-row');
+                    const mc = m.querySelector('.message-content');
+                    if (existingRx) { if (newRxHtml) existingRx.outerHTML = newRxHtml; else existingRx.remove(); }
+                    else if (mc && newRxHtml) mc.insertAdjacentHTML('beforeend', newRxHtml);
+                    // Re-attach the "who reacted" click handler on every live update — outerHTML wiped the old ones
+                    m.querySelectorAll('.reaction-tag').forEach(function(t){
+                        t.addEventListener('click', function(e){ e.stopPropagation(); showMessageReactions(msg.id); });
+                    });
+                    // Force lucide to re-scan so no broken/empty reaction tags linger
+                    if (window.lucide) lucide.createIcons();
+                }
+            });
+        lucide.createIcons();
         showToast('success', 'Reacted!', em);
         closeEmoji();
-        // 2. Firestore save in the background — UI already updated, this just persists
+                // 2. Firestore save in the background — UI already updated, this just persists
         (async () => {
             try {
                 const ref = db.collection('chats').doc(currentChatId).collection('messages').doc(msgId);
-                const snap = await ref.get();
-                if (snap.exists) {
+                // Transaction = atomic, so two people reacting at once can't overwrite each other
+                await db.runTransaction(async tx => {
+                    const snap = await tx.get(ref);
+                    if (!snap.exists) return;
                     const serverRx = snap.data().reactions || {};
                     serverRx[currentUser.id] = em;
-                    await ref.update({ reactions: serverRx });
-                }
+                    tx.update(ref, { reactions: serverRx });
+                });
             } catch (err) { console.log('reaction save error', err); }
         })();
     });
@@ -6583,12 +6607,33 @@ document.getElementById('bottomNav').addEventListener('click', e => {
 // LOAD CHATS — FULL, NO LIMIT
 // ============================================================
 async function loadChats() {
-    const unsub = db.collection('chats').orderBy('lastMessageTime', 'desc').onSnapshot(snap => {
-        const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        sc('chats', data);
-        renderChatsList(data);
-    });
-    unsubscribes.push(unsub);
+    if (!currentUser || !currentUser.id) return;
+    // Clear the list INSTANTLY so the previous account's chats can never bleed through
+    const cl = document.getElementById('chatsList');
+    if (cl) cl.innerHTML = '';
+    // DMs where I'm a participant — server-side filtered (fast, private)
+    const unsubDM = db.collection('chats')
+        .where('participants', 'array-contains', currentUser.id)
+        .onSnapshot(snap => {
+            const dms = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            // Groups I'm a member of — also server-side filtered
+            db.collection('chats')
+                .where('isGroup', '==', true)
+                .where('members', 'array-contains', currentUser.id)
+                .get()
+                .then(gsnap => {
+                    const groups = gsnap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    const all = [...dms, ...groups];
+                    all.sort((a, b) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
+                    renderChatsList(all);
+                })
+                .catch(e => {
+                    // If the group query fails, still render DMs
+                    dms.sort((a, b) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
+                    renderChatsList(dms);
+                });
+        });
+    unsubscribes.push(unsubDM);
 }
 
 
@@ -7144,16 +7189,12 @@ async function loadAllPosts() {
     const nb = document.getElementById('newPostsBtn'); if (nb) nb.style.display = 'none';
 
     const pl = document.getElementById('postsList');
-    const alreadyLoaded = pl.querySelectorAll('.post-card').length > 0;
-
-
-if (!alreadyLoaded) {
-        const feedSk = document.getElementById('postsSkeleton');
-        const gridSk = document.getElementById('postsGridSkeleton');
-        if (currentViewMode === 'grid') { if (gridSk) gridSk.style.display = 'grid'; if (feedSk) feedSk.style.display = 'none'; }
-        else { if (feedSk) feedSk.style.display = 'flex'; if (gridSk) gridSk.style.display = 'none'; }
-        pl.innerHTML = '';
-    }
+    // Always clear and re-render fresh from Firestore so comments/likes update
+    pl.innerHTML = '';
+    const feedSk = document.getElementById('postsSkeleton');
+    const gridSk = document.getElementById('postsGridSkeleton');
+    if (currentViewMode === 'grid') { if (gridSk) gridSk.style.display = 'grid'; if (feedSk) feedSk.style.display = 'none'; }
+    else { if (feedSk) feedSk.style.display = 'flex'; if (gridSk) gridSk.style.display = 'none'; }
 
     // Then fetch fresh page 1 from Firestore and merge only NEW posts
     await loadMorePosts();
@@ -7186,20 +7227,23 @@ async function loadMorePosts() {
                 if (!snap.empty) {
             _postsLastDoc = snap.docs[snap.docs.length - 1];
             const pl = document.getElementById('postsList');
-            const existingIds = new Set(Array.from(pl.querySelectorAll('.post-card')).map(c => c.querySelector('[data-postid]')?.dataset?.postid).filter(Boolean));
-            const toCache = [];
+            const existingCards = {};
+            pl.querySelectorAll('.post-card').forEach(c => {
+                const pid = c.querySelector('[data-postid]')?.dataset?.postid;
+                if (pid) existingCards[pid] = c;
+            });
             for (const doc of snap.docs) {
                 const p = { id: doc.id, ...doc.data() };
-                toCache.push(p);
-                
-                
-                
-                
-                if (existingIds.has(p.id)) continue; // already on screen — don't duplicate
                 const el = await createPostElement(p);
-                if (el && el.tagName) pl.appendChild(el);
+                if (el && el.tagName) {
+                    if (existingCards[p.id]) {
+                        // Post already on screen — REPLACE it so fresh comments/likes show
+                        existingCards[p.id].replaceWith(el);
+                    } else {
+                        pl.appendChild(el);
+                    }
+                }
             }
-                      // cache removed — always load fresh
         }
 
         filterPosts();
@@ -7543,7 +7587,7 @@ async function createPostElement(post) {
         const remaining = count - 4;
                 imgs = `<div class="post-images" style="display:grid;${gridStyle}gap:3px;border-radius:,7px;overflow:hidden;margin-top: 9px;">                        
             ${visible.map((img, idx) => `
-                <div style="position:relative;${count === 3 && idx === 0 ? 'grid-column:span 2;' : ''}overflow:hidden;border-radius:6px;background:#f1f5f9;' : ''}">
+                <div style="position:relative;${count === 3 && idx === 0 ? 'grid-column:span 2;' : ''}overflow:hidden;border-radius:6px;background:#f1f5f9;">
                     <img class="post-image" src="${img}" data-img="${img}" style="width:100%;height:auto;max-height:480px;object-fit:contain;display:block;cursor:pointer;">
                     ${idx === 3 && remaining > 0 ? `<div style="position:absolute;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;color:white;font-size:28px;font-weight:800;cursor:pointer;" data-img="${img}">+${remaining}</div>` : ''}
                 </div>
@@ -8413,7 +8457,26 @@ function renderMessages(messages, isFull, prepend) {
     let appendedAny = false;
     messages.forEach(msg => {
         const _msgKey = (msg.senderId||'') + '_' + (msg.timestamp||0);
-        if (_renderedMsgIds.has(_msgKey)) return;
+        if (_renderedMsgIds.has(_msgKey)) {
+            // Message already on screen — live-update its reactions row instead of skipping
+            const reactions = msg.reactions || {};
+            const uEm = {};
+            Object.values(reactions).forEach(e => { uEm[e] = (uEm[e]||0)+1; });
+            const newRxHtml = Object.keys(uEm).length > 0
+                ? `<div class="message-reactions-row">${Object.entries(uEm).map(([e,c])=>`<div class="reaction-tag">${e}${c>1?' '+c:''}</div>`).join('')}</div>`
+                : '';
+            document.querySelectorAll('#messagesContainer .message').forEach(m => {
+                const bubble = m.querySelector('.message-bubble');
+                if (bubble && bubble.dataset && bubble.dataset.msgid === msg.id) {
+                    const existingRx = m.querySelector('.message-reactions-row');
+                    const mc = m.querySelector('.message-content');
+                    if (existingRx) { if (newRxHtml) existingRx.outerHTML = newRxHtml; else existingRx.remove(); }
+                    else if (mc && newRxHtml) mc.insertAdjacentHTML('beforeend', newRxHtml);
+                    m.querySelectorAll('.reaction-tag').forEach(t => t.onclick = function(e){ e.stopPropagation(); showMessageReactions(msg.id); });
+                }
+            });
+            return;
+        }
         _renderedMsgIds.add(_msgKey);
         appendedAny = true;
 
@@ -8674,12 +8737,31 @@ async function sendMessage() {
     renderUploadPreview();
 
     // Optimistic: show the message in the chat INSTANTLY (Firestore confirms in the background)
-    msg.id = 'temp_' + msg.timestamp;
+    const _optimisticKey = 'temp_' + msg.timestamp;
+    msg.id = _optimisticKey;
     bz.cache('lastMsg_' + currentChatId, text);
     renderMessages([msg], false);
 
 
 
+
+    // Persist to Firestore, then SWAP the temp id for the real one so reactions/deletes work
+    db.collection('chats').doc(currentChatId).collection('messages').add(msg)
+        .then(function(docRef) {
+            // Replace the temp bubble's msgid with the real Firestore id
+            const realId = docRef.id;
+            document.querySelectorAll('#messagesContainer .message-bubble[data-msgid="' + _optimisticKey + '"]')
+                .forEach(function(b){ b.dataset.msgid = realId; });
+            // Update the rendered-id tracker so live updates don't duplicate
+            const oldKey = (msg.senderId||'') + '_' + (msg.timestamp||0);
+            _renderedMsgIds.delete(oldKey);
+        })
+        .catch(function(e){
+            console.log('msg send error', e);
+            // Mark the bubble as failed so the user knows it didn't go through
+            document.querySelectorAll('#messagesContainer .message-bubble[data-msgid="' + _optimisticKey + '"]')
+                .forEach(function(b){ b.style.opacity = '0.5'; b.title = 'Failed to send — check connection'; });
+        });
 
     // Fire the OUTSIDE alert (push + in-app notification) INSTANTLY — do NOT wait for Firestore
     (async function bzAlertRecipients() {
@@ -8710,10 +8792,7 @@ async function sendMessage() {
         }
     })();
 
-    // 3) Persist to Firestore in the background (UI + alert already happened)
-    db.collection('chats').doc(currentChatId).collection('messages').add(msg).catch(function(e){ console.log('msg send error', e); });
-
-    let lastMsgPreview = text || '';
+let lastMsgPreview = text || '';
     if (!lastMsgPreview && imgs.length) lastMsgPreview = '📷 Photo';
     else if (!lastMsgPreview && docs.length) lastMsgPreview = '📄 Document';
     else if (!lastMsgPreview && vids.length) lastMsgPreview = '🎥 Video';
@@ -9127,11 +9206,17 @@ document.getElementById('createGroupForm').addEventListener('submit', async e =>
 });
 
 async function loadGroups() {
-    const unsub = db.collection('chats').where('isGroup', '==', true).onSnapshot(snap => {
+    if (!currentUser || !currentUser.id) return;
+    const gl0 = document.getElementById('groupsList');
+    if (gl0) gl0.innerHTML = '';
+    const unsub = db.collection('chats')
+        .where('isGroup', '==', true)
+        .where('members', 'array-contains', currentUser.id)
+        .onSnapshot(snap => {
         const gl = document.getElementById('groupsList');
         gl.innerHTML = '';
         if (typeof hideGroupsSkeleton === 'function') hideGroupsSkeleton();
-        const groups = snap.docs.filter(d => d.data().members?.includes(currentUser.id));
+        const groups = snap.docs;
         if (!groups.length) {
             gl.innerHTML = `<div class="empty-state"><i data-lucide="users-round" class="empty-icon"></i><div class="empty-title">No groups yet</div><div class="empty-text">Create a group to start</div></div>`;
             lucide.createIcons(); return;
@@ -9302,10 +9387,12 @@ document.getElementById('addMembersBtn').addEventListener('click', async () => {
         const div = document.createElement('div');
         div.className = 'forward-user-item';
         div.dataset.userid = uid;
-                const av = u.profilePic ?
-            `<img src="${u.profilePic}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` :
-            `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=000&color=fff&size=128" style="width:40px;height:40px;border-radius:50%;">`;
-        div.innerHTML = `${av}<div style="flex:1;"><div style="font-weight:700;color:#0f172a;">${u.name}</div><div style="font-size:13px;color:#64748b;">${u.bio || u.identifier}</div></div><div class="fw-check"><i data-lucide="check"></i></div>`;
+        const initial = (u.name || 'U').charAt(0).toUpperCase();
+        const av = u.profilePic
+            ? `<div style="width:40px;height:40px;border-radius:50%;background:#0f172a;color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative;">${initial}<img src="${u.profilePic}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="this.style.display='none';"></div>`
+            : `<div style="width:40px;height:40px;border-radius:50%;background:#0f172a;color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${initial}</div>`;
+        const bioText = u.bio || u.identifier || '';
+        div.innerHTML = `${av}<div style="flex:1;min-width:0;"><div style="font-weight:700;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${u.name || 'User'}</div><div style="font-size:13px;color:#64748b;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;">${bioText}</div></div><div class="fw-check"><i data-lucide="check"></i></div>`;
         div.addEventListener('click', function() { this.classList.toggle('selected'); lucide.createIcons(); });
         list.appendChild(div);
     });
@@ -11480,8 +11567,6 @@ history.pushState(null, '', window.location.href);
     cv.style.top = offTop() + 'px';
     cv.style.bottom = 'auto';
     cv.style.setProperty('--bz-chat-height', visH() + 'px');
-    var mc = document.getElementById('messagesContainer');
-    if(mc){ try{ mc.scrollTop = mc.scrollHeight; }catch(e){} }
   }
   function resetChat(){
     var cv = document.getElementById('chatView');
@@ -11504,10 +11589,13 @@ history.pushState(null, '', window.location.href);
     if(mc && document.getElementById('chatView').classList.contains('active')){ try{ mc.scrollTop = mc.scrollHeight; }catch(e){} }
   }
 
+  var _rafPending = false;
+  function syncChatRaf(){ if(_rafPending) return; _rafPending = true; requestAnimationFrame(function(){ _rafPending = false; syncChat(); }); }
   var v = vv();
-  if(v){ v.addEventListener('resize', syncChat); v.addEventListener('scroll', syncChat); }
-  window.addEventListener('resize', syncChat);
+  if(v){ v.addEventListener('resize', syncChatRaf); }
+  window.addEventListener('resize', syncChatRaf);
   window.addEventListener('orientationchange', syncChat);
+
 
   document.addEventListener('click', function(e){
     if(e.target.closest('.chat-item, [onclick*="openChat"], [onclick*="openGroupChat"]')){
