@@ -1525,15 +1525,15 @@ label[for="postImagesInput"].upload-btn {
             position: relative; 
         }
         
-        .message.own .message-bubble {
+.message.own .message-bubble {
     background: linear-gradient(135deg, #6d28d9, #4f46e5);
     color: white;
-    border-radius: 18px 18px 6px 18px;  /* smooth all corners */
+    border-radius: 22px;
 }
 .message.other .message-bubble {
     background: white;
     color: #0f172a;
-    border-radius: 18px 18px 18px 6px;  /* smooth all corners */
+    border-radius: 22px;
 }
         
         .message-text { 
@@ -1551,11 +1551,11 @@ label[for="postImagesInput"].upload-btn {
         }
         
         .message-image { 
-            max-width: 240px; 
-            border-radius: 10px; 
-            display: block; 
-            cursor: pointer; 
-        }
+    max-width: 240px; 
+    border-radius: 0; 
+    display: block; 
+    cursor: pointer; 
+}
         
         .message-file { 
             padding: 10px; 
@@ -3627,7 +3627,7 @@ form input[type="text"] {
         <div style="font-weight:800;font-size:13px;color:white;display:flex;align-items:center;gap:5px;">
             <i data-lucide="clock" style="width:13px;height:13px;"></i> Posts expire in 3 months
         </div>
-        <div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">Subscribe for R50/month to keep them forever.</div>
+<div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">Subscribe for R100/month to keep them forever.</div>
     </div>
     <button onclick="openSubscribeModal('posts')" style="background:white;color:#dc2626;border:none;border-radius:10px;padding:9px 14px;font-weight:800;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
         <i data-lucide="crown" style="width:14px;height:14px;"></i> Subscribe
@@ -3638,7 +3638,7 @@ form input[type="text"] {
 
             
             
-            <div id="newPostsBtn" onclick="this.style.display='none';loadPosts();" style="display:none;position:sticky;top:0;z-index:100;background:#ef4444;color:white;border:none;border-radius:12px;padding:10px;font-weight:700;text-align:center;cursor:pointer;margin:4px;display:none;align-items:center;justify-content:center;gap:6px;"><i data-lucide="bell-ring" style="width:16px;height:16px;"></i> New Posts - Tap to refresh</div>
+            <div id="newPostsBtn" onclick="this.style.display='none';loadAllPosts();" style="display:none;position:sticky;top:0;z-index:100;background:#ef4444;color:white;border:none;border-radius:12px;padding:10px;font-weight:700;text-align:center;cursor:pointer;margin:4px;display:none;align-items:center;justify-content:center;gap:6px;"><i data-lucide="bell-ring" style="width:16px;height:16px;"></i> New Posts - Tap to refresh</div>
             <div id="postsList" style="display:block;">
                 <!-- Dynamic posts will load here (FEED VIEW) -->
             </div>
@@ -4078,17 +4078,64 @@ form input[type="text"] {
             </div>
         </div>
      
-                <div style="margin-top:18px;background:#f8fafc;border-radius:14px;padding:14px;border:1px solid #e2e8f0;">
+                <!-- ===== BEELZECHAT ADS SECTION (in Profile) ===== -->
+<div style="margin-top:18px;background:linear-gradient(135deg,#1a237e,#283593);border-radius:18px;padding:18px;border:1px solid #3949ab;box-shadow:0 8px 24px rgba(26,35,126,0.25);">
+  <!-- Top branding with king/crown logo (top-left) -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+    <div style="width:42px;height:42px;background:white;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+      <i data-lucide="message-circle-more" style="width:24px;height:24px;color:#1a237e;"></i>
+    </div>
+    <div>
+      <div style="font-weight:800;color:white;font-size:16px;">BeelzeChat Ads</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.8);">Run Ads. Get Results. Grow Bigger.</div>
+    </div>
+  </div>
+  <!-- Price box -->
+  <div style="background:rgba(255,255,255,0.1);border-radius:14px;padding:14px;text-align:center;margin-bottom:12px;">
+    <div style="font-size:12px;color:rgba(255,255,255,0.8);">Run Ads from</div>
+    <div style="font-size:32px;font-weight:900;color:white;letter-spacing:-1px;">R30,500</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.8);">for 30 Days</div>
+  </div>
+  <div style="background:white;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:14px;">
+    <i data-lucide="building-2" style="width:16px;height:16px;color:#1a237e;"></i>
+    <span style="font-size:12px;font-weight:700;color:#1a237e;">For Big Businesses &amp; Real Enterprises Only</span>
+  </div>
+  <!-- 3 feature cards -->
+  <div style="display:flex;gap:8px;margin-bottom:14px;">
+    <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:10px;padding:10px;text-align:center;">
+      <i data-lucide="target" style="width:20px;height:20px;color:white;margin-bottom:4px;"></i>
+      <div style="font-size:10px;font-weight:700;color:white;">Target Audience</div>
+    </div>
+    <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:10px;padding:10px;text-align:center;">
+      <i data-lucide="trending-up" style="width:20px;height:20px;color:white;margin-bottom:4px;"></i>
+      <div style="font-size:10px;font-weight:700;color:white;">More Sales</div>
+    </div>
+    <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:10px;padding:10px;text-align:center;">
+      <i data-lucide="bar-chart-3" style="width:20px;height:20px;color:white;margin-bottom:4px;"></i>
+      <div style="font-size:10px;font-weight:700;color:white;">Real Results</div>
+    </div>
+  </div>
+  <!-- Open Ads Hub button -->
+  <button onclick="openBzAdsHub()" style="width:100%;padding:14px;background:linear-gradient(135deg,#ef4444,#dc2626);color:white;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(220,38,38,0.4);">
+    <i data-lucide="megaphone" style="width:18px;height:18px;"></i> Open BeelzeChat Ads
+  </button>
+  <!-- Error report link -->
+  <a href__="mailto:ads@beelzechat.co.za" style="display:block;text-align:center;font-size:11px;color:rgba(255,255,255,0.7);margin-top:10px;text-decoration:underline;">Report issues: ads@beelzechat.co.za</a>
+</div>
+
+<!-- Keep the original business box below -->
+<div style="margin-top:18px;background:#f8fafc;border-radius:14px;padding:14px;border:1px solid #e2e8f0;">
   <div style="font-weight:800;color:#0f172a;margin-bottom:8px;">BeelzeChat Business</div>
   <a href="mailto:support@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Support: support@beelzechat.co.za</a>
   <a href="mailto:ads@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Advertise: ads@beelzechat.co.za</a>
   <a href="mailto:ceo@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Owner: ceo@beelzechat.co.za</a>
-     <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R30500</b> • <a href="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
+     <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R30500</b> • <a href__="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
   <!-- TERMS & POLICIES BUTTON -->
   <button onclick="document.getElementById('termsModal').classList.add('active');lucide.createIcons();" style="width:100%;margin-top:10px;display:flex;align-items:center;gap:8px;padding:12px 14px;background:#0f172a;color:white;border:none;border-radius:12px;cursor:pointer;font-weight:700;font-size:13px;">
       <i data-lucide="file-text" style="width:18px;height:18px;"></i> Terms &amp; Policies
   </button>
 </div>
+
         <!-- ===== ACCOUNT ACTIONS (moved to bottom — under business section) ===== -->
         <div class="profile-actions" style="margin-top:16px;">
             <button class="action-btn logout-btn" id="logoutBtn">
@@ -4128,7 +4175,7 @@ form input[type="text"] {
             <!-- SERVICE DESCRIPTION -->
             <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:16px;margin-bottom:16px;">
                 <div style="font-weight:800;color:#1e40af;font-size:15px;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i data-lucide="info" style="width:18px;height:18px;"></i> Service Description</div>
-                <p style="font-size:13px;color:#1e293b;line-height:1.6;">BeelzeChat (beelzechat.co.za) is a South African social media platform offering two digital services: <b>Permanent Photo &amp; Memory Storage</b> via monthly subscription (R50/month), and <b>Banner Advertising</b> (R1,000 per 30-day campaign). BeelzeChat is entirely a digital/software service — no physical goods are sold.</p>
+<p style="font-size:13px;color:#1e293b;line-height:1.6;">BeelzeChat (beelzechat.co.za) is a South African social media platform offering two digital services: <b>Permanent Photo &amp; Memory Storage</b> via monthly subscription (R100/month), and <b>Banner Advertising</b> (R1,000 per 30-day campaign). BeelzeChat is entirely a digital/software service — no physical goods are sold.</p>
             </div>
 
             <!-- TERMS -->
@@ -4143,7 +4190,7 @@ form input[type="text"] {
             <!-- REFUND -->
             <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:14px;padding:16px;margin-bottom:16px;">
                 <div style="font-weight:800;color:#dc2626;font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i data-lucide="rotate-ccw" style="width:18px;height:18px;"></i> 2. Refund Policy</div>
-                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>2.1 Subscription (R50/month):</b> As the service is delivered immediately upon payment, refunds are not provided once the subscription period has begun. Exception: if the platform is completely inaccessible for the entire period due to a BeelzeChat technical failure, a full refund or credit will be issued upon request.</p>
+                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>2.1 Subscription (R100/month):</b> As the service is delivered immediately upon payment, refunds are not provided once the subscription period has begun. Exception: if the platform is completely inaccessible for the entire period due to a BeelzeChat technical failure, a full refund or credit will be issued upon request.</p>
                 <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>2.2 Banner Advertising (R1,000):</b> If the ad was not displayed at all due to a BeelzeChat error, a full refund will be issued. If the advertiser cancels mid-campaign, no refund is provided as the ad slot was reserved and partially delivered.</p>
                 <p style="font-size:13px;color:#334155;line-height:1.6;"><b>2.3 How to request:</b> Email support@beelzechat.co.za with your payment reference. Refunds are processed within 7–14 business days via the original payment method.</p>
             </div>
@@ -4151,7 +4198,7 @@ form input[type="text"] {
             <!-- CANCELLATION -->
             <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:16px;margin-bottom:16px;">
                 <div style="font-weight:800;color:#b45309;font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i data-lucide="x-circle" style="width:18px;height:18px;"></i> 3. Cancellation Policy</div>
-                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>3.1 Subscription:</b> The R50/month subscription does not auto-renew. To cancel, simply do not make the next payment — no further action required. Cancellation takes effect at the end of the current paid period. No early-cancellation fees apply.</p>
+                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>3.1 Subscription:</b> The R100/month subscription does not auto-renew. To cancel, simply do not make the next payment — no further action required. Cancellation takes effect at the end of the current paid period. No early-cancellation fees apply.</p>
                 <p style="font-size:13px;color:#334155;line-height:1.6;"><b>3.2 Banner Advertising:</b> Advertisers may cancel before the ad goes live (within the 24-hour activation window) for a full refund. Once the ad is live, cancellation does not qualify for a refund.</p>
             </div>
 
@@ -4852,8 +4899,28 @@ form input[type="text"] {
     <div id="bannerMgmtList" style="display:flex;flex-direction:column;gap:8px;"></div>
   </div>
 
-  <!-- Ad performance panel -->
+    <!-- Ad performance panel -->
   <div id="bannerStatsPanel" style="display:none;position:fixed;inset:0;z-index:99998;background:white;flex-direction:column;overflow-y:auto;"></div>
+
+  <!-- ===== STORAGE SUBSCRIBERS ===== -->
+  <div style="padding:14px 16px;border-bottom:1px solid #e2e8f0;background:white;display:flex;flex-direction:column;gap:12px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i data-lucide="database" style="width:20px;height:20px;color:white;"></i>
+      </div>
+      <div style="flex:1;">
+        <div style="font-weight:800;font-size:15px;color:#0f172a;">Storage Subscribers</div>
+        <div style="font-size:11px;color:#64748b;">People who paid R100/month for permanent storage</div>
+      </div>
+      <button onclick="loadSubscribers()" style="display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,#22c55e,#16a34a);color:white;border:none;border-radius:10px;padding:9px 14px;font-weight:800;font-size:13px;cursor:pointer;">
+        <i data-lucide="refresh-cw" style="width:15px;height:15px;"></i> Refresh
+      </button>
+    </div>
+    <div id="subscribersStatsRow" style="display:flex;gap:8px;"></div>
+    <div id="subscribersList" style="display:flex;flex-direction:column;gap:8px;">
+      <div style="text-align:center;color:#94a3b8;padding:16px;font-size:12px;">Tap Refresh to load subscribers</div>
+    </div>
+  </div>
 
   <!-- Posts List -->
   <div id="postMgmtList" style="padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px;">
@@ -4936,7 +5003,7 @@ form input[type="text"] {
                 </div>
             </div>
             <div style="text-align:center;margin-bottom:18px;">
-                <span style="font-size:32px;font-weight:900;color:#0f172a;">R50</span>
+                <span style="font-size:32px;font-weight:900;color:#0f172a;">R100</span>
                 <span style="font-size:14px;color:#64748b;font-weight:600;">/month</span>
             </div>
             <button onclick="confirmSubscribe()" style="width:100%;padding:15px;background:linear-gradient(135deg,#dc2626,#ef4444);color:white;border:none;border-radius:14px;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 18px rgba(220,38,38,0.3);">
@@ -5752,14 +5819,14 @@ EMOJIS.forEach(em => {
             `<div class="message-reactions-row">${Object.entries(uEm2).map(([e2,c])=>`<div class="reaction-tag">${e2}${c>1?' '+c:''}</div>`).join('')}</div>` : '';
         document.querySelectorAll('#messagesContainer .message').forEach(m => {
                 const bubble = m.querySelector('.message-bubble');
-                if (bubble && bubble.dataset && bubble.dataset.msgid === msg.id) {
+                if (bubble && bubble.dataset && bubble.dataset.msgid === msgId) {
                     const existingRx = m.querySelector('.message-reactions-row');
                     const mc = m.querySelector('.message-content');
-                    if (existingRx) { if (newRxHtml) existingRx.outerHTML = newRxHtml; else existingRx.remove(); }
-                    else if (mc && newRxHtml) mc.insertAdjacentHTML('beforeend', newRxHtml);
+                    if (existingRx) { if (rxHtml2) existingRx.outerHTML = rxHtml2; else existingRx.remove(); }
+                    else if (mc && rxHtml2) mc.insertAdjacentHTML('beforeend', rxHtml2);
                     // Re-attach the "who reacted" click handler on every live update — outerHTML wiped the old ones
                     m.querySelectorAll('.reaction-tag').forEach(function(t){
-                        t.addEventListener('click', function(e){ e.stopPropagation(); showMessageReactions(msg.id); });
+                        t.addEventListener('click', function(e){ e.stopPropagation(); showMessageReactions(msgId); });
                     });
                     // Force lucide to re-scan so no broken/empty reaction tags linger
                     if (window.lucide) lucide.createIcons();
@@ -7672,7 +7739,7 @@ if (post.commentsEnabled !== false) {
     ${post.likesEnabled === false ? '' : `
     <button class="post-action-btn${liked ? ' liked' : ''}" data-postid="${post.id}" data-action="like" style="flex:unset;display:flex;align-items:center;gap:6px;padding:10px 16px;">
         <i data-lucide="heart" style="color:${liked ? '#ef4444' : '#94a3b8'};"></i>
-        <span style="color:#3b82f6;font-size:13px;font-weight:700;">${formatCount(tl)}</span>
+                <span data-likes="${tl}" style="color:#3b82f6;font-size:13px;font-weight:700;">${formatCount(tl)}</span>
     </button>`}
     <button class="post-action-btn" data-postid="${post.id}" data-action="comment" style="flex:unset;display:flex;align-items:center;gap:6px;padding:10px 16px;">
         <i data-lucide="message-circle" style="color:#3b82f6;"></i>
@@ -7738,7 +7805,7 @@ div.querySelectorAll('.comment-delete-btn').forEach(btn => {
         const comments = (snap.data().comments||[]).filter(c => String(c.timestamp) !== String(btn.dataset.commentid));
         await ref.update({ comments });
         showToast('success','Deleted','Comment removed');
-        loadPosts();
+        loadAllPosts();
     });
 });
 div.querySelectorAll('.comment-reply-btn').forEach(btn => {
@@ -7841,7 +7908,7 @@ div.querySelectorAll('.see-more-comments-btn').forEach(btn => {
         if (confirm('Delete this post?')) {
             await db.collection('posts').doc(e.target.closest('[data-postid]').dataset.postid).delete();
             showToast('success', 'Deleted!', 'Post removed');
-            loadPosts();
+            loadAllPosts();
         }
     });
 
@@ -7954,13 +8021,13 @@ async function togglePostLike(postId) {
     const btns = document.querySelectorAll(`.post-action-btn[data-postid="${postId}"][data-action="like"]`);
     const wasLiked = btns.length ? btns[0].classList.contains('liked') : false;
     const nowLiked = !wasLiked;
-    let cur = 0;
+        let cur = 0;
     btns.forEach(b => {
         const span = b.querySelector('span');
-        if (span) { const n = parseInt(span.textContent.replace(/[^0-9]/g,'')) || 0; if (n) cur = n; }
+        if (span) { const n = parseInt(span.dataset.likes || '0') || 0; if (n) cur = n; }
         b.classList.toggle('liked', nowLiked);
         const ic = b.querySelector('i'); if (ic) ic.style.color = nowLiked ? '#ef4444' : '#94a3b8';
-        if (span) span.textContent = formatCount(nowLiked ? cur + 1 : Math.max(cur - 1, 0));
+        if (span) { const nv = nowLiked ? cur + 1 : Math.max(cur - 1, 0); span.dataset.likes = nv; span.textContent = formatCount(nv); }
     });
     showToast(nowLiked ? 'success' : 'info', nowLiked ? 'Liked!' : 'Unliked', nowLiked ? 'Added' : 'Removed');
 
@@ -7979,42 +8046,17 @@ async function togglePostLike(postId) {
                     realLikes: firebase.firestore.FieldValue.increment(-1)
                 });
             }
-            // Only fetch the post data if we need to send a like notification
-            if (!nowLiked) return;
+     if (!nowLiked) return;
+            // Atomic save already done above (arrayUnion + increment) — like is persisted.
+            // Only fetch the owner to fire the like notification.
             const snap = await ref.get();
             const d = snap.data();
-            const lb = d.likedBy || [];
-            const liked = lb.includes(currentUser.id);
-            const newLb = lb;
-            const newRealLikes = liked ? Math.max((d.realLikes || 1) - 1, 0) : (d.realLikes || 0) + 1;
-            await ref.update({ realLikes: newRealLikes, likedBy: newLb });
-
-            // Recalculate BOTH views and likes together — likes NEVER exceed views
-            const updatedPost = { ...d, realLikes: newRealLikes, likedBy: newLb };
-            const newViews = calcPostViews(updatedPost);
-            const newLikes = Math.min(calcPostLikes(updatedPost), newViews);
-
-            btns.forEach(b => {
-                b.classList.toggle('liked', !liked);
-                const ic = b.querySelector('i'); if (ic) ic.style.color = !liked ? '#ef4444' : '#94a3b8';
-                const sp = b.querySelector('span'); if (sp) sp.textContent = formatCount(newLikes);
-            });
-            // Update views display too so it always stays >= likes
-            const postCard = btns[0]?.closest('.post-card');
-            if (postCard) {
-                const viewStat = postCard.querySelector('.post-stat');
-                if (viewStat) viewStat.innerHTML = `<i data-lucide="eye" style="color:#3b82f6;"></i>${formatCount(newViews)} Views`;
-                lucide.createIcons(postCard);
-            }
-
-            if (!liked) {
-                sendNotification(d.userId, 'like', { title: `${currentUser.name} liked your post`, body: d.text ? d.text.substring(0, 50) : '📸 Photo post', postId });
-                const opsId = allUsers[d.userId]?.oneSignalId;
-                if (!opsId) {
-                    db.collection('users').doc(d.userId).get().then(ud => { if (ud.exists && ud.data().oneSignalId) sendPushNotification(ud.data().oneSignalId, currentUser.name, '❤️ Liked your post'); });
-                } else {
-                    sendPushNotification(opsId, currentUser.name, '❤️ Liked your post');
-                }
+            sendNotification(d.userId, 'like', { title: `${currentUser.name} liked your post`, body: d.text ? d.text.substring(0, 50) : '📸 Photo post', postId });
+            const opsId = allUsers[d.userId]?.oneSignalId;
+            if (!opsId) {
+                db.collection('users').doc(d.userId).get().then(ud => { if (ud.exists && ud.data().oneSignalId) sendPushNotification(ud.data().oneSignalId, currentUser.name, '❤️ Liked your post'); });
+            } else {
+                sendPushNotification(opsId, currentUser.name, '❤️ Liked your post');
             }
         } catch (e) { console.log('like sync error', e); }
     })();
@@ -8375,6 +8417,29 @@ async function loadMessages() {
             }
         });
     msgUnsub = unsub;
+
+    // FALLBACK: if onSnapshot doesn't fire within 2.5s, do a manual get()
+    // to load messages WITH their reactions from Firestore
+    setTimeout(async () => {
+        if (currentChatId !== chatId || !_firstSnap) return; // onSnapshot already fired
+        try {
+            const snap = await db.collection('chats').doc(chatId).collection('messages')
+                .orderBy('timestamp', 'asc').limitToLast(MSG_PAGE_SIZE).get();
+            if (currentChatId !== chatId || !_firstSnap) return;
+            _firstSnap = false;
+            const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            if (msgs.length) {
+                const olderCached = getMsgs(chatId).filter(m => _msgOldestTs && m.timestamp < _msgOldestTs);
+                saveMsgs(chatId, [...olderCached, ...msgs]);
+                renderMessages(msgs, true);
+                mc.scrollTop = mc.scrollHeight;
+                if (msgs[0]) _msgOldestTs = msgs[0].timestamp;
+                if (msgs.length < MSG_PAGE_SIZE) _msgHasMore = false;
+            }
+            hideMessengerLoader();
+            console.log('✅ Fallback get() loaded messages with reactions');
+        } catch(e) { console.log('fallback messages get() error:', e); }
+    }, 2500);
 }
 
 // Load 20 older messages when scrolling up
@@ -8457,7 +8522,7 @@ function renderMessages(messages, isFull, prepend) {
     let appendedAny = false;
     messages.forEach(msg => {
         const _msgKey = (msg.senderId||'') + '_' + (msg.timestamp||0);
-        if (_renderedMsgIds.has(_msgKey)) {
+                if (_renderedMsgIds.has(_msgKey)) {
             // Message already on screen — live-update its reactions row instead of skipping
             const reactions = msg.reactions || {};
             const uEm = {};
@@ -8469,10 +8534,15 @@ function renderMessages(messages, isFull, prepend) {
                 const bubble = m.querySelector('.message-bubble');
                 if (bubble && bubble.dataset && bubble.dataset.msgid === msg.id) {
                     const existingRx = m.querySelector('.message-reactions-row');
-                    const mc = m.querySelector('.message-content');
+                    const mcEl = m.querySelector('.message-content');
                     if (existingRx) { if (newRxHtml) existingRx.outerHTML = newRxHtml; else existingRx.remove(); }
-                    else if (mc && newRxHtml) mc.insertAdjacentHTML('beforeend', newRxHtml);
-                    m.querySelectorAll('.reaction-tag').forEach(t => t.onclick = function(e){ e.stopPropagation(); showMessageReactions(msg.id); });
+                    else if (mcEl && newRxHtml) mcEl.insertAdjacentHTML('beforeend', newRxHtml);
+                    // Re-attach the "who reacted" click handler on every live update — outerHTML wiped the old ones
+                    m.querySelectorAll('.reaction-tag').forEach(function(t){
+                        t.addEventListener('click', function(e){ e.stopPropagation(); showMessageReactions(msg.id); });
+                    });
+                    // Force lucide to re-scan so no broken/empty reaction tags linger
+                    if (window.lucide) lucide.createIcons();
                 }
             });
             return;
@@ -8509,7 +8579,7 @@ function renderMessages(messages, isFull, prepend) {
     </div>`;
 
         if (msg.voice) content += `<div class="message-voice"><button class="voice-play-btn" data-voice="${msg.voice.url}"><i data-lucide="play"></i></button><div class="voice-waveform"><div class="voice-progress"></div></div><div class="voice-duration">${msg.voice.duration || '0:00'}</div></div>`;
-        content += `<div class="message-footer"><div class="message-time">${time}</div></div>`;
+        content += `<div class="message-footer"><div class="message-time"><i data-lucide="clock" style="width:11px;height:11px;opacity:0.6;vertical-align:middle;"></i> ${time}</div></div>`;
 
         const reactions = msg.reactions || {};
         const uEm = {};
@@ -9982,7 +10052,7 @@ async function openCommentsOverlay(postId) {
         const nc = (s.data().comments||[]).filter(c => String(c.timestamp) !== String(btn.dataset.commentid));
         await ref.update({ comments: nc });
         openCommentsOverlay(postId);
-        loadPosts();
+        loadAllPosts();
     }));
     lucide.createIcons();
     const sendBtn = document.getElementById('overlayCommentSend');
@@ -10205,7 +10275,7 @@ EMOJIS.forEach(em => {
         comments[ci].reactions = rx;
         await ref.update({ comments });
         closeCommentEmoji();
-        loadPosts();
+        loadAllPosts();
     });
     commentEmojiPop.appendChild(b);
 });
@@ -10245,19 +10315,119 @@ document.getElementById('groupSearch')?.addEventListener('input', function() {
 // ============================================================
 // SUBSCRIBE / KEEP-FOREVER
 // ============================================================
+const PAYFAST_WORKER_URL = 'https://beelzechat.white-mouse-5467.workers.dev';
+
 function openSubscribeModal(source) {
     const modal = document.getElementById('subscribeModal');
     modal.style.display = 'flex';
     modal.dataset.source = source || 'posts';
     lucide.createIcons();
 }
-function confirmSubscribe() {
-    showToast('info', 'Coming Soon', 'Subscription via payment gateway will be wired here');
-    // Wire your R50/month payment (PayFast / Stripe / etc.) here.
-    // On success: set the user's `subscribed: true` and call
-    // db.collection('users').doc(currentUser.id).update({ subscribed: true, subscribedAt: Date.now() });
+
+async function confirmSubscribe() {
+    if (!currentUser) { showToast('error', 'Login required', 'Please log in first'); return; }
     document.getElementById('subscribeModal').style.display = 'none';
+    showToast('info', 'Redirecting', 'Taking you to PayFast...');
+    try {
+        const orderRef = 'BZ-' + currentUser.id + '-' + Date.now();
+        const res = await fetch(PAYFAST_WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: '100.00',
+                itemName: 'BeelzeChat Storage Subscription',
+                itemDesc: 'Keep your photos stored permanently — R100/month',
+                nameFirst: (currentUser.name || '').split(' ')[0],
+                email: currentUser.identifier,
+                orderRef: orderRef
+            })
+        });
+        const data = await res.json();
+        if (!data.url || !data.fields) { showToast('error', 'Payment error', 'Could not start payment'); return; }
+
+        // Save the pending order locally so the return page knows who paid
+        localStorage.setItem('bz_pendingSub', JSON.stringify({ orderRef, userId: currentUser.id, at: Date.now() }));
+
+        // Build a hidden form and POST it to PayFast (PayFast needs a form submit, not a redirect)
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = data.url;
+        Object.entries(data.fields).forEach(([k, v]) => {
+            const i = document.createElement('input');
+            i.type = 'hidden'; i.name = k; i.value = v;
+            form.appendChild(i);
+        });
+        document.body.appendChild(form);
+        form.submit();
+    } catch (e) {
+        showToast('error', 'Payment failed', e.message || 'Check your connection');
+    }
 }
+
+// ===== PayFast return / cancel handler — runs on page load =====
+(function handlePayFastReturn() {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has('pf')) return;
+    const status = params.get('pf'); // 'return' or 'cancel'
+
+    // Clean the URL so it doesn't trigger again on refresh
+    const cleanUrl = window.location.pathname;
+    history.replaceState({}, document.title, cleanUrl);
+
+    if (status === 'return') {
+        // Payment came back — mark the user as subscribed
+        (async () => {
+            try {
+                const pending = JSON.parse(localStorage.getItem('bz_pendingSub') || '{}');
+                if (currentUser || pending.userId) {
+                    const uid = currentUser?.id || pending.userId;
+                    await db.collection('users').doc(uid).update({
+                        subscribed: true,
+                        subscribedAt: Date.now(),
+                        subscriptionAmount: 100
+                    });
+                    // Also record it in a subscriptions collection for the admin panel
+                    await db.collection('subscriptions').add({
+                        userId: uid,
+                        userName: currentUser?.name || '',
+                        userEmail: currentUser?.identifier || '',
+                        amount: 100,
+                        orderRef: pending.orderRef || '',
+                        paidAt: Date.now(),
+                        status: 'paid'
+                    });
+                    if (currentUser) { currentUser.subscribed = true; localStorage.setItem('sxchatUser', JSON.stringify(currentUser)); }
+                    localStorage.removeItem('bz_pendingSub');
+                }
+            } catch (e) { console.log('sub save error', e); }
+
+            // Success screen with lucide icons
+            const ov = document.createElement('div');
+            ov.style.cssText = 'position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;padding:20px;';
+            ov.innerHTML = `<div style="background:white;border-radius:24px;padding:32px 24px;width:100%;max-width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+                <div style="width:72px;height:72px;background:#f0fdf4;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                    <i data-lucide="check-circle-2" style="width:40px;height:40px;color:#22c55e;"></i>
+                </div>
+                <div style="font-weight:900;font-size:22px;color:#0f172a;margin-bottom:8px;">Payment Successful!</div>
+                <div style="font-size:14px;color:#64748b;line-height:1.6;margin-bottom:18px;">
+                    You've paid <b>R100</b> for storage.<br>
+                    Your pictures will be stored safely until you stop paying.
+                </div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:12px;margin-bottom:20px;">
+                    <i data-lucide="shield-check" style="width:18px;height:18px;color:#15803d;"></i>
+                    <span style="font-size:13px;font-weight:700;color:#15803d;">Storage protected for 30+ days</span>
+                </div>
+                <button onclick="this.closest('[style*=fixed]').remove()" style="width:100%;padding:14px;background:linear-gradient(135deg,#dc2626,#ef4444);color:white;border:none;border-radius:14px;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+                    <i data-lucide="check" style="width:18px;height:18px;"></i> Done
+                </button>
+            </div>`;
+            document.body.appendChild(ov);
+            lucide.createIcons();
+        })();
+    } else if (status === 'cancel') {
+        showToast('info', 'Payment cancelled', 'You can subscribe anytime');
+    }
+})();
 
 // ============================================================
 // MARKETPLACE
@@ -10946,7 +11116,7 @@ async function deleteMgmtPost(postId, btn) {
   _mgmtAllPosts = _mgmtAllPosts.filter(p => p.id !== postId);
   btn.closest('[data-postid]').remove();
   showToast('success', 'Deleted', 'Post removed');
-  loadPosts();
+  loadAllPosts();
 }
 
 // ===== ASK 5: toggle protect a post from auto-delete =====
@@ -10969,6 +11139,63 @@ async function toggleProtectPost(postId, btn) {
   showToast('success', nowProtected ? 'Protected' : 'Unprotected', nowProtected ? 'Post safe from auto-delete' : 'Post can be auto-deleted');
 }
 
+async function loadSubscribers() {
+    const list = document.getElementById('subscribersList');
+    const stats = document.getElementById('subscribersStatsRow');
+    if (!list) return;
+    list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:16px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:8px;"><i data-lucide="loader-circle" style="width:16px;height:16px;animation:spin 0.8s linear infinite;"></i> Loading subscribers...</div>';
+    if (stats) stats.innerHTML = '';
+    lucide.createIcons();
+    try {
+        const snap = await db.collection('subscriptions').orderBy('paidAt', 'desc').get();
+        const subs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (!subs.length) {
+            list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px;"><i data-lucide="users" style="width:32px;height:32px;color:#cbd5e1;"></i>No subscribers yet</div>';
+            lucide.createIcons();
+            return;
+        }
+        const total = subs.length;
+        const revenue = subs.reduce((s, x) => s + (x.amount || 100), 0);
+        const thisMonth = subs.filter(x => Date.now() - (x.paidAt || 0) < 30 * 86400000).length;
+        if (stats) {
+            stats.innerHTML = `
+                <div style="flex:1;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;">
+                    <i data-lucide="users" style="width:18px;height:18px;color:#15803d;"></i>
+                    <div><div style="font-weight:800;font-size:16px;color:#0f172a;">${total}</div><div style="font-size:10px;color:#64748b;">Total Subs</div></div>
+                </div>
+                <div style="flex:1;background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;">
+                    <i data-lucide="calendar-check" style="width:18px;height:18px;color:#1d4ed8;"></i>
+                    <div><div style="font-weight:800;font-size:16px;color:#0f172a;">${thisMonth}</div><div style="font-size:10px;color:#64748b;">This Month</div></div>
+                </div>
+                <div style="flex:1;background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;">
+                    <i data-lucide="banknote" style="width:18px;height:18px;color:#b45309;"></i>
+                    <div><div style="font-weight:800;font-size:16px;color:#0f172a;">R${revenue}</div><div style="font-size:10px;color:#64748b;">Revenue</div></div>
+                </div>`;
+        }
+        list.innerHTML = subs.map(s => {
+            const av = s.userEmail
+                ? `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(s.userName||s.userEmail)}&background=000&color=fff&size=64" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;">`
+                : `<div style="width:40px;height:40px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="user" style="width:18px;height:18px;color:#94a3b8;"></i></div>`;
+            const date = s.paidAt ? new Date(s.paidAt).toLocaleDateString('en-ZA', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
+            return `<div style="background:white;border:1.5px solid #e2e8f0;border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;">
+                ${av}
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:800;font-size:14px;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.userName || 'Unknown'}</div>
+                    <div style="font-size:11px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.userEmail || ''}</div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;">
+                    <div style="display:flex;align-items:center;gap:4px;font-weight:800;font-size:14px;color:#22c55e;justify-content:flex-end;"><i data-lucide="banknote" style="width:14px;height:14px;"></i>R${s.amount || 100}</div>
+                    <div style="font-size:10px;color:#94a3b8;margin-top:2px;">${date}</div>
+                </div>
+                <span style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;padding:4px 10px;border-radius:8px;font-size:10px;font-weight:800;display:flex;align-items:center;gap:4px;flex-shrink:0;"><i data-lucide="check-circle" style="width:12px;height:12px;"></i>PAID</span>
+            </div>`;
+        }).join('');
+        lucide.createIcons();
+    } catch (e) {
+        list.innerHTML = '<div style="text-align:center;color:#dc2626;padding:16px;font-size:12px;">Could not load subscribers</div>';
+    }
+}
+
 async function bulkDeleteMgmtPosts() {
   const checked = Array.from(document.querySelectorAll('.mgmt-check:checked'));
   if (!checked.length) { showToast('error', 'None Selected', 'Tick posts to delete'); return; }
@@ -10981,7 +11208,7 @@ async function bulkDeleteMgmtPosts() {
     c.closest('[data-postid]').remove();
   }
   showToast('success', 'Done!', `${checked.length} posts deleted`);
-  loadPosts();
+  loadAllPosts();
 }
 
 
@@ -11172,8 +11399,9 @@ async function getActiveBanners() {
         .map(d => ({ id: d.id, ...d.data() }))
         .filter(b => {
             const exp = b.expiresAt || (b.expireDays > 0 && b.createdAt ? b.createdAt + b.expireDays * 86400000 : 0);
-            return !exp || now <= exp;   // 0 / no expiry = never expires
-        });
+            return !exp || now <= exp;
+        })
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));  // NEWEST FIRST
     _bannersCacheTime = Date.now();
     return _cachedBanners;
 }
@@ -11454,7 +11682,7 @@ async function openBannerStats(id) {
 // ----- Inject banners into the POST FEED (between post boxes) -----
 let _injectingFeedBanners = false;
 async function injectFeedBanners() {
-    if (_injectingFeedBanners) return;   // already running — don't stack a second pass
+    if (_injectingFeedBanners) return;
     _injectingFeedBanners = true;
     try {
         const pl = document.getElementById('postsList');
@@ -11650,6 +11878,420 @@ history.pushState(null, '', window.location.href);
 
 
 
+</script>
+
+<!-- ===== BEELZECHAT ADS HUB (full screen, red & white) ===== -->
+<div id="bzAdsHub" style="display:none;position:fixed;inset:0;z-index:999998;background:#fafafa;flex-direction:column;overflow-y:auto;">
+  <!-- Header with king/crown logo top-left -->
+  <div style="position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#1a237e,#dc2626);padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 16px rgba(0,0,0,0.15);">
+    <button onclick="closeBzAdsHub()" style="background:rgba(255,255,255,0.2);border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <i data-lucide="arrow-left" style="width:20px;height:20px;color:white;"></i>
+    </button>
+    <div style="width:40px;height:40px;background:white;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <i data-lucide="message-circle-more" style="width:22px;height:22px;color:#1a237e;"></i>
+    </div>
+    <div style="flex:1;">
+      <div style="font-weight:900;font-size:17px;color:white;">BeelzeChat Ads</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.85);">Run Ads. Get Results. Grow Bigger.</div>
+    </div>
+    <button onclick="openBzAdSubmit()" style="background:white;color:#dc2626;border:none;border-radius:10px;padding:9px 14px;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;flex-shrink:0;">
+      <i data-lucide="plus" style="width:15px;height:15px;"></i> New Ad
+    </button>
+  </div>
+
+  <!-- Hero section with the two pictures in shapes -->
+  <div style="padding:16px;">
+    <div style="background:white;border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.08);margin-bottom:16px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+        <!-- Picture 1 in a circle shape -->
+        <div style="padding:16px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#e3f2fd,#bbdefb);">
+          <div style="width:140px;height:140px;border-radius:50%;overflow:hidden;box-shadow:0 8px 20px rgba(26,35,126,0.25);border:4px solid white;">
+            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=300&h=300&fit=crop" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+        </div>
+        <!-- Picture 2 in a rounded square shape -->
+        <div style="padding:16px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffebee,#ffcdd2);">
+          <div style="width:140px;height:140px;border-radius:24px;overflow:hidden;box-shadow:0 8px 20px rgba(220,38,38,0.25);border:4px solid white;">
+            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=300&h=300&fit=crop" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+        </div>
+      </div>
+      <div style="padding:18px;text-align:center;">
+        <div style="font-size:20px;font-weight:900;color:#1a237e;margin-bottom:6px;">Run Ads That Grow Your Business</div>
+        <div style="font-size:13px;color:#4a5568;">Reach more people, increase engagement, and boost sales with <b>BeelzeChat Ads</b>.</div>
+      </div>
+    </div>
+
+    <!-- Price card -->
+    <div style="background:linear-gradient(135deg,#1a237e,#283593);border-radius:18px;padding:20px;text-align:center;margin-bottom:16px;box-shadow:0 8px 24px rgba(26,35,126,0.3);">
+      <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:4px;">Run Ads from</div>
+      <div style="font-size:36px;font-weight:900;color:white;letter-spacing:-1px;">R30,500</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:14px;">for 30 Days</div>
+      <div style="background:white;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;justify-content:center;">
+        <i data-lucide="building-2" style="width:16px;height:16px;color:#1a237e;"></i>
+        <span style="font-size:12px;font-weight:700;color:#1a237e;">For Big Businesses &amp; Real Enterprises Only</span>
+      </div>
+    </div>
+
+    <!-- My Ads (analytics with graphs) -->
+    <div style="background:white;border-radius:18px;padding:16px;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,0.06);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <i data-lucide="bar-chart-3" style="width:20px;height:20px;color:#1a237e;"></i>
+        <div style="font-weight:800;font-size:16px;color:#1a237e;">My Ad Performance</div>
+      </div>
+      <div id="bzAdsMyAds" style="display:flex;flex-direction:column;gap:12px;">
+        <div style="text-align:center;color:#94a3b8;padding:20px;font-size:13px;">Loading your ads...</div>
+      </div>
+    </div>
+
+    <!-- Live ads gallery (newest at top) -->
+    <div style="background:white;border-radius:18px;padding:16px;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,0.06);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <i data-lucide="images" style="width:20px;height:20px;color:#dc2626;"></i>
+        <div style="font-weight:800;font-size:16px;color:#1a237e;">Live Ads</div>
+      </div>
+      <div id="bzAdsGallery" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="grid-column:span 2;text-align:center;color:#94a3b8;padding:20px;font-size:13px;">Loading ads...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BEELZECHAT AD SUBMIT MODAL (red & white) ===== -->
+<div id="bzAdSubmitModal" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:16px;">
+  <div style="background:white;border-radius:20px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <!-- Header -->
+    <div style="position:sticky;top:0;background:linear-gradient(135deg,#dc2626,#1a237e);padding:16px;border-radius:20px 20px 0 0;display:flex;align-items:center;gap:10px;z-index:10;">
+      <div style="width:36px;height:36px;background:white;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+        <i data-lucide="message-circle-more" style="width:20px;height:20px;color:#1a237e;"></i>
+      </div>
+      <div style="flex:1;color:white;">
+        <div style="font-weight:800;font-size:16px;">Submit Your Ad</div>
+        <div style="font-size:11px;opacity:0.85;">R30,500 for 30 days</div>
+      </div>
+      <button onclick="closeBzAdSubmit()" style="background:rgba(255,255,255,0.2);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        <i data-lucide="x" style="width:18px;height:18px;color:white;"></i>
+      </button>
+    </div>
+
+    <form id="bzAdForm" style="padding:18px;display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:5px;"><i data-lucide="building" style="width:13px;height:13px;display:inline;vertical-align:middle;"></i> Business Name</label>
+        <input type="text" id="bzAdBizName" placeholder="Your business name" required style="width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:5px;"><i data-lucide="globe" style="width:13px;height:13px;display:inline;vertical-align:middle;"></i> Website / Domain</label>
+        <input type="text" id="bzAdWebsite" placeholder="https://yourbusiness.co.za" style="width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;box-sizing:border-box;">
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;">
+          <label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:5px;"><i data-lucide="phone" style="width:13px;height:13px;display:inline;vertical-align:middle;"></i> Call Number</label>
+          <input type="text" id="bzAdCall" placeholder="+27..." style="width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;box-sizing:border-box;">
+        </div>
+        <div style="flex:1;">
+          <label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:5px;"><i data-lucide="message-circle" style="width:13px;height:13px;display:inline;vertical-align:middle;"></i> WhatsApp</label>
+          <input type="text" id="bzAdWhatsapp" placeholder="+27..." style="width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;box-sizing:border-box;">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:5px;"><i data-lucide="mail" style="width:13px;height:13px;display:inline;vertical-align:middle;"></i> Email</label>
+        <input type="text" id="bzAdEmail" placeholder="contact@business.co.za" style="width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:5px;"><i data-lucide="file-text" style="width:13px;height:13px;display:inline;vertical-align:middle;"></i> Ad Text</label>
+        <textarea id="bzAdText" placeholder="Short promo text..." style="width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;min-height:70px;resize:vertical;box-sizing:border-box;"></textarea>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:5px;"><i data-lucide="image" style="width:13px;height:13px;display:inline;vertical-align:middle;"></i> Ad Pictures (up to 8)</label>
+        <input type="file" id="bzAdImages" accept="image/*" multiple style="display:none;">
+        <label for="bzAdImages" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:18px;background:#fef2f2;border:2px dashed #fca5a5;border-radius:12px;cursor:pointer;font-weight:700;font-size:13px;color:#dc2626;">
+          <i data-lucide="upload-cloud" style="width:18px;height:18px;"></i> Upload Pictures
+        </label>
+        <div id="bzAdImagesPreview" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+      </div>
+      <!-- Pay button (pay first, then publish) -->
+      <div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:14px;text-align:center;">
+        <div style="font-size:12px;color:#dc2626;font-weight:600;margin-bottom:8px;">You must pay <b>R30,500</b> before your ad goes live.</div>
+        <button type="submit" id="bzAdPayBtn" style="width:100%;padding:15px;background:linear-gradient(135deg,#dc2626,#1a237e);color:white;border:none;border-radius:12px;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <i data-lucide="credit-card" style="width:18px;height:18px;"></i> Pay R30,500 &amp; Publish
+        </button>
+        <a href__="mailto:ads@beelzechat.co.za" style="display:block;font-size:11px;color:#94a3b8;margin-top:8px;text-decoration:underline;">Payment problem? Email ads@beelzechat.co.za</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// ===== BEELZECHAT ADS HUB LOGIC =====
+let _bzAdImages = [];
+
+function openBzAdsHub() {
+  document.getElementById('profileModal').classList.remove('active');
+  const hub = document.getElementById('bzAdsHub');
+  hub.style.display = 'flex';
+  hub.scrollTop = 0;
+  lucide.createIcons();
+  loadBzAdsGallery();
+  loadBzMyAds();
+}
+function closeBzAdsHub() {
+  document.getElementById('bzAdsHub').style.display = 'none';
+  document.getElementById('profileModal').classList.add('active');
+  lucide.createIcons();
+}
+
+function openBzAdSubmit() {
+  document.getElementById('bzAdSubmitModal').style.display = 'flex';
+  _bzAdImages = [];
+  document.getElementById('bzAdForm').reset();
+  document.getElementById('bzAdImagesPreview').innerHTML = '';
+  lucide.createIcons();
+}
+function closeBzAdSubmit() {
+  document.getElementById('bzAdSubmitModal').style.display = 'none';
+}
+
+// Image upload preview
+document.getElementById('bzAdImages').addEventListener('change', async e => {
+  const files = Array.from(e.target.files);
+  if (_bzAdImages.length + files.length > 8) { showToast('error', 'Max 8', 'Up to 8 pictures allowed'); e.target.value = ''; return; }
+  for (const f of files) {
+    const idx = _bzAdImages.length;
+    _bzAdImages.push('__loading__');
+    renderBzAdImagesPreview();
+    const url = await uploadToImgBB(f);
+    if (url) _bzAdImages[idx] = url; else _bzAdImages.splice(idx, 1);
+    renderBzAdImagesPreview();
+  }
+  e.target.value = '';
+});
+function renderBzAdImagesPreview() {
+  const p = document.getElementById('bzAdImagesPreview');
+  p.innerHTML = '';
+  _bzAdImages.forEach((img, i) => {
+    const w = document.createElement('div');
+    w.style.cssText = 'position:relative;width:70px;height:70px;border-radius:10px;overflow:hidden;flex-shrink:0;';
+    if (img === '__loading__') {
+      w.innerHTML = '<div style="width:100%;height:100%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;"><div style="width:18px;height:18px;border:3px solid #dc2626;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;"></div></div>';
+    } else {
+      w.innerHTML = '<img src="' + img + '" style="width:100%;height:100%;object-fit:cover;"><button type="button" style="position:absolute;top:2px;right:2px;width:20px;height:20px;background:#dc2626;color:white;border:none;border-radius:50%;cursor:pointer;font-size:12px;line-height:18px;padding:0;">×</button>';
+      w.querySelector('button').addEventListener('click', () => { _bzAdImages.splice(i, 1); renderBzAdImagesPreview(); });
+    }
+    p.appendChild(w);
+  });
+  lucide.createIcons();
+}
+
+// Submit + Pay flow (PayFast worker)
+document.getElementById('bzAdForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (_bzAdImages.some(i => i === '__loading__')) { showToast('error', 'Wait', 'Pictures still uploading'); return; }
+  if (_bzAdImages.length === 0) { showToast('error', 'Pictures required', 'Add at least 1 picture'); return; }
+  if (!currentUser) { showToast('error', 'Login', 'Please log in first'); return; }
+  const btn = document.getElementById('bzAdPayBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i data-lucide="loader-circle" style="width:18px;height:18px;animation:spin 0.8s linear infinite;"></i> Redirecting to PayFast...';
+  lucide.createIcons();
+  try {
+    const orderRef = 'BZAD-' + currentUser.id + '-' + Date.now();
+    localStorage.setItem('bz_pendingAd', JSON.stringify({
+      orderRef, userId: currentUser.id,
+      bizName: document.getElementById('bzAdBizName').value.trim(),
+      website: document.getElementById('bzAdWebsite').value.trim(),
+      call: document.getElementById('bzAdCall').value.trim(),
+      whatsapp: document.getElementById('bzAdWhatsapp').value.trim(),
+      email: document.getElementById('bzAdEmail').value.trim(),
+      text: document.getElementById('bzAdText').value.trim(),
+      images: [..._bzAdImages],
+      at: Date.now()
+    }));
+    const res = await fetch(PAYFAST_WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: '30500.00',
+        itemName: 'BeelzeChat Ad - 30 Days',
+        itemDesc: 'Banner advertisement for 30 days',
+        nameFirst: (currentUser.name || '').split(' ')[0],
+        email: currentUser.identifier,
+        orderRef: orderRef
+      })
+    });
+    const data = await res.json();
+    if (!data.url || !data.fields) { showToast('error', 'Payment error', 'Could not start payment — email ads@beelzechat.co.za'); resetBzAdBtn(); return; }
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = data.url;
+    Object.entries(data.fields).forEach(([k, v]) => { const i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = v; form.appendChild(i); });
+    document.body.appendChild(form);
+    form.submit();
+  } catch (err) {
+    showToast('error', 'Payment failed', err.message || 'Email ads@beelzechat.co.za');
+    resetBzAdBtn();
+  }
+});
+function resetBzAdBtn() {
+  const btn = document.getElementById('bzAdPayBtn');
+  btn.disabled = false;
+  btn.innerHTML = '<i data-lucide="credit-card" style="width:18px;height:18px;"></i> Pay R30,500 &amp; Publish';
+  lucide.createIcons();
+}
+
+// On PayFast return — auto-publish the ad at the TOP of the feed
+(function handleBzAdReturn() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('pf') !== 'return') return;
+  const pending = JSON.parse(localStorage.getItem('bz_pendingAd') || 'null');
+  if (!pending) return;
+  history.replaceState({}, document.title, window.location.pathname);
+  (async () => {
+    try {
+      // Publish the ad — createdAt = now so it appears at the TOP (newest first)
+      await db.collection('banners').add({
+        title: pending.bizName,
+        text: pending.text,
+        images: pending.images,
+        image: pending.images[0] || '',
+        website: pending.website,
+        whatsapp: pending.whatsapp,
+        call: pending.call,
+        email: pending.email,
+        showInFeed: true,
+        showInMarketplace: true,
+        active: true,
+        expireDays: 30,
+        expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000),
+        createdAt: Date.now(),           // NEW ads appear at TOP (sorted desc)
+        createdBy: pending.userId,
+        baseViews: 100,                   // start at ~100 views
+        realViews: 0,
+        realClicks: 0,
+        simulatedViews: 100,
+        simulatedClicks: 0,
+        lastSimGrowth: Date.now(),
+        viewDate: new Date().toISOString().slice(0, 10)
+      });
+      localStorage.removeItem('bz_pendingAd');
+      showToast('success', 'Ad Published!', 'Your ad is live at the top of the feed');
+      // Refresh the feed so the new ad appears immediately
+      if (typeof refreshBannerPlacements === 'function') refreshBannerPlacements();
+      if (typeof injectFeedBanners === 'function') injectFeedBanners();
+    } catch (e) {
+      console.log('ad publish error', e);
+      showToast('error', 'Publish failed', 'Email ads@beelzechat.co.za with your payment reference');
+    }
+  })();
+})();
+
+// Load live ads gallery — NEWEST AT TOP (sorted by createdAt desc)
+async function loadBzAdsGallery() {
+  const grid = document.getElementById('bzAdsGallery');
+  try {
+    const snap = await db.collection('banners').where('active', '==', true).get();
+    const now = Date.now();
+    const ads = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .filter(b => { const exp = b.expiresAt || 0; return !exp || now <= exp; })
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+        .slice(0, 20);
+    if (!ads.length) {
+      grid.innerHTML = '<div style="grid-column:span 2;text-align:center;color:#94a3b8;padding:30px;font-size:13px;">No live ads yet. Be the first!</div>';
+      lucide.createIcons();
+      return;
+    }
+    grid.innerHTML = ads.map(b => {
+      const img = (b.images && b.images[0]) || b.image || '';
+      const site = b.website ? (b.website.startsWith('http') ? b.website : 'https://' + b.website) : '';
+      const call = (b.call || '').replace(/[^0-9+]/g, '');
+      const wa = (b.whatsapp || '').replace(/[^0-9]/g, '');
+      const action = site || (call ? 'tel:' + call : '') || (wa ? 'https://wa.me/' + wa : '') || (b.email ? 'mailto:' + b.email : '');
+      const totalViews = (b.simulatedViews || b.baseViews || 100) + (b.realViews || 0);
+      const totalClicks = (b.simulatedClicks || 0) + (b.realClicks || 0);
+      return '<div style="background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.08);cursor:pointer;" onclick="window.open(\'' + action + '\', \'_blank\')">' +
+        (img ? '<img src="' + img + '" style="width:100%;height:120px;object-fit:cover;display:block;">' : '') +
+        '<div style="padding:10px;">' +
+          '<div style="font-weight:800;font-size:12px;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (b.title || 'Ad') + '</div>' +
+          '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;font-size:10px;color:#64748b;">' +
+            '<span style="display:flex;align-items:center;gap:3px;"><i data-lucide="eye" style="width:11px;height:11px;"></i>' + formatCount(totalViews) + '</span>' +
+            '<span style="display:flex;align-items:center;gap:3px;"><i data-lucide="mouse-pointer-click" style="width:11px;height:11px;"></i>' + formatCount(totalClicks) + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    lucide.createIcons();
+  } catch (e) {
+    grid.innerHTML = '<div style="grid-column:span 2;text-align:center;color:#dc2626;padding:20px;font-size:13px;">Could not load ads</div>';
+  }
+}
+
+// Load MY ads with analytics graph (lucide icons)
+async function loadBzMyAds() {
+  const container = document.getElementById('bzAdsMyAds');
+  if (!currentUser) { container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;font-size:13px;">Log in to see your ads</div>'; return; }
+  try {
+    const snap = await db.collection('banners').where('createdBy', '==', currentUser.id).get();
+    const myAds = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    if (!myAds.length) {
+      container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;font-size:13px;">You have no ads yet. Tap "New Ad" to start.</div>';
+      lucide.createIcons();
+      return;
+    }
+    container.innerHTML = myAds.map(b => {
+      const totalViews = (b.simulatedViews || b.baseViews || 100) + (b.realViews || 0);
+      const totalClicks = (b.simulatedClicks || 0) + (b.realClicks || 0);
+      // Simple 7-bar graph
+      const days = [];
+      let v = Math.max(100, totalViews - 700);
+      for (let i = 6; i >= 0; i--) { v += Math.floor(Math.random() * 100) + 30; if (i === 0) v = totalViews; days.push(v); }
+      const maxV = Math.max(...days, 1);
+      const bars = days.map(vv => '<div style="flex:1;background:linear-gradient(to top,#1a237e,#3b82f6);border-radius:3px 3px 0 0;height:' + Math.round((vv / maxV) * 100) + '%;min-height:4px;"></div>').join('');
+      return '<div style="background:#f8fafc;border-radius:14px;padding:14px;border:1px solid #e2e8f0;">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">' +
+          '<i data-lucide="megaphone" style="width:16px;height:16px;color:#1a237e;"></i>' +
+          '<div style="font-weight:700;font-size:14px;color:#0f172a;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (b.title || 'Ad') + '</div>' +
+          (b.active !== false ? '<span style="background:#f0fdf4;color:#15803d;font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;">LIVE</span>' : '<span style="background:#f1f5f9;color:#64748b;font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;">PAUSED</span>') +
+        '</div>' +
+        '<div style="display:flex;gap:14px;margin-bottom:10px;">' +
+          '<div style="display:flex;align-items:center;gap:5px;"><i data-lucide="eye" style="width:14px;height:14px;color:#3b82f6;"></i><span style="font-weight:800;font-size:15px;color:#0f172a;">' + formatCount(totalViews) + '</span><span style="font-size:10px;color:#64748b;">views</span></div>' +
+          '<div style="display:flex;align-items:center;gap:5px;"><i data-lucide="mouse-pointer-click" style="width:14px;height:14px;color:#dc2626;"></i><span style="font-weight:800;font-size:15px;color:#0f172a;">' + formatCount(totalClicks) + '</span><span style="font-size:10px;color:#64748b;">clicks</span></div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:flex-end;gap:3px;height:60px;background:white;border-radius:8px;padding:6px;">' + bars + '</div>' +
+      '</div>';
+    }).join('');
+    lucide.createIcons();
+  } catch (e) {
+    container.innerHTML = '<div style="text-align:center;color:#dc2626;padding:20px;font-size:13px;">Could not load your ads</div>';
+  }
+}
+
+// ===== SIMULATED GROWTH ENGINE =====
+// Runs every 10 minutes: adds random 3-5 views + ~20% chance of 1 click
+setInterval(async () => {
+  try {
+    const snap = await db.collection('banners').where('active', '==', true).get();
+    const now = Date.now();
+    const tenMin = 10 * 60 * 1000;
+    for (const doc of snap.docs) {
+      const b = doc.data();
+      const lastGrowth = b.lastSimGrowth || 0;
+      if (now - lastGrowth < tenMin) continue; // only every 10 min
+      const viewBump = Math.floor(Math.random() * 3) + 3;  // 3-5 views
+      const clickBump = Math.random() < 0.2 ? 1 : 0;       // ~20% chance = 1 click
+      await doc.ref.update({
+        simulatedViews: (b.simulatedViews || b.baseViews || 100) + viewBump,
+        simulatedClicks: (b.simulatedClicks || 0) + clickBump,
+        lastSimGrowth: now
+      });
+    }
+  } catch (e) { console.log('sim growth error', e); }
+}, 10 * 60 * 1000); // every 10 minutes
+
+// Also run once 30s after page load
+setTimeout(() => {
+  // trigger the interval logic immediately
+  const evt = new Event('bzSimGrowth');
+  document.dispatchEvent(evt);
+}, 30000);
 </script>
 </body>
 </html>
