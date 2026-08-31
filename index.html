@@ -8837,6 +8837,15 @@ async function showMessageReactions(msgId) {
         if (!byEmoji[emoji]) byEmoji[emoji] = [];
         byEmoji[emoji].push(uid);
     });
+    // Fetch any missing users from Firestore so names + avatars show on every account
+    const allUids = Object.values(byEmoji).flat();
+    await Promise.all(allUids.map(async uid => {
+        if (allUsers[uid]) return;
+        try {
+            const ud = await db.collection('users').doc(uid).get();
+            if (ud.exists) allUsers[uid] = ud.data();
+        } catch(e){}
+    }));
     const emojis = Object.keys(byEmoji);
     const sections = emojis.length ? emojis.map(emoji => {
         const uids = byEmoji[emoji];
