@@ -196,6 +196,23 @@
       try{ obs.observe(document.documentElement, { childList: true, subtree: true }); }catch(e){}
   };
 })();
+
+// Pause the broken-image observer while ANY input/textarea/contenteditable is focused
+// so the mobile keyboard never freezes (the observer's lucide.createIcons() was resetting the keyboard)
+(function(){
+  function isTypingTarget(el){
+    if(!el) return false;
+    if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return true;
+    if(el.isContentEditable) return true;
+    return false;
+  }
+  document.addEventListener('focusin', function(e){
+    if(isTypingTarget(e.target) && window._bzPauseImgObs) window._bzPauseImgObs();
+  }, true);
+  document.addEventListener('focusout', function(e){
+    if(isTypingTarget(e.target) && window._bzResumeImgObs) window._bzResumeImgObs();
+  }, true);
+})();
 </script>
 
 
@@ -5860,14 +5877,10 @@ EMOJIS.forEach(em => {
                     if (String(realId).indexOf('temp_') === 0) { console.log('reaction: message still sending, skipped save'); return; }
                 }
                 const ref = db.collection('chats').doc(currentChatId).collection('messages').doc(realId);
-                // Transaction = atomic, so two people reacting at once can't overwrite each other
-                await db.runTransaction(async tx => {
-                    const snap = await tx.get(ref);
-                    if (!snap.exists) return;
-                    const serverRx = snap.data().reactions || {};
-                    serverRx[currentUser.id] = em;
-                    tx.update(ref, { reactions: serverRx });
-                });
+                // Dot-notation update = atomic, no transaction needed. Only touches THIS user's
+                // reaction key, so 99 people reacting at once never overwrite each other.
+                await ref.update({ ['reactions.' + currentUser.id]: em });
+
                 // 3. UPDATE the message cache so reactions survive app restart
                 const cachedMsgs = getMsgs(currentChatId);
                 const idx = cachedMsgs.findIndex(m => m.id === realId || m.id === msgId);
@@ -5877,7 +5890,10 @@ EMOJIS.forEach(em => {
                     cachedMsgs[idx].id = realId; // make sure the cache uses the real id
                     saveMsgs(currentChatId, cachedMsgs);
                 }
-            } catch (err) { console.log('reaction save error', err); }
+            } catch (err) {
+                console.log('reaction save error', err);
+                showToast('error', 'Reaction failed', 'Could not save — check your connection');
+            }
         })();
     });
     emojiPop.appendChild(b);
@@ -7325,7 +7341,10 @@ let _postsLoading = false;
 let _postsHasMore = true;
 const POSTS_PAGE_SIZE = 2;
 
+let _postsEpoch = 0;
 async function loadAllPosts() {
+    // Invalidate any in-flight loadMorePosts so it can't append stale older posts onto a fresh reload (fixes feed ordering bug)
+    _postsEpoch++;
     // Reset the Firestore cursor, but KEEP already-loaded posts in the DOM
     _postsLastDoc = null;
     _postsLoading = false;
@@ -7350,13 +7369,17 @@ async function loadAllPosts() {
 async function loadMorePosts() {
     if (_postsLoading || !_postsHasMore) return;
     _postsLoading = true;
+    const myEpoch = _postsEpoch;
 
     try {
         let query = db.collection('posts').orderBy('timestamp', 'desc').limit(POSTS_PAGE_SIZE);
         if (_postsLastDoc) query = query.startAfter(_postsLastDoc);
 
         const snap = await query.get();
+        // A reset (loadAllPosts) happened while we were fetching — drop this stale batch so older posts never land above newer ones
+        if (myEpoch !== _postsEpoch) { _postsLoading = false; return; }
         console.log(`📰 ${snap.size} posts loaded from Firestore`);
+
 
         if (snap.empty || snap.size < POSTS_PAGE_SIZE) {
             _postsHasMore = false;
