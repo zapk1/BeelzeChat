@@ -657,14 +657,15 @@ label[for="postImagesInput"].upload-btn {
             display: flex; 
         }
         
-        .app-header { 
+                .app-header { 
             background: white; 
-            padding: 16px 20px; 
-            border-bottom: 1px solid #e2e8f0; 
+            margin: 4px 4px 0; 
+            padding: 10px 14px; 
+            border-radius: 16px; 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
         }
         
         .header-title { 
@@ -3009,8 +3010,6 @@ form input[type="text"] {
         
         
         
-        /* ===== Account Switcher — purple bg + white card ===== */
-        #accountSwitcherModal { background: #BCC6E5 !important; }
         #accountSwitcherModal .modal-content {
             background: #fff !important;
             border-radius: 24px !important;
@@ -3018,17 +3017,17 @@ form input[type="text"] {
             width: 90% !important; max-width: 380px !important;
             box-shadow: 0 8px 40px rgba(60,50,120,0.18) !important;
             border: none !important;
+            position: relative !important;
         }
         #accountSwitcherModal .modal-header {
             border: none !important; padding: 0 0 20px 0 !important; margin: 0 !important;
-            position: relative;
         }
         #accountSwitcherModal .modal-title { display: none; }
                 #accountSwitcherModal .close-btn {
-            position: absolute; top: 12px; right: 12px;
+            position: absolute; top: 10px; right: 10px;
             width: 34px; height: 34px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            background: #fff; border: 1px solid #e2e8f0;
+            background: #f1f5f9; border: 1px solid #e2e8f0;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 5;
         }
         #accountSwitcherModal .close-btn i { width: 18px; height: 18px; color: #64748b; }
@@ -6278,6 +6277,14 @@ function editBio() {
     };
 }
 
+// Pause the broken-image observer while typing the bio — same fix as the messenger, stops the Gboard keyboard freeze
+(function(){
+    const ta = document.getElementById('bioEditInput');
+    if (!ta) return;
+    ta.addEventListener('focus', function(){ if(window._bzPauseImgObs) window._bzPauseImgObs(); });
+    ta.addEventListener('blur',  function(){ if(window._bzResumeImgObs) window._bzResumeImgObs(); });
+})();
+
 
 // ============================================================
 // GOOGLE SIGN IN
@@ -6452,7 +6459,7 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     document.getElementById('storiesTab').classList.remove('hidden');
     loadNotifications();
     window.finishLoading();
-    loginWelcomeToast(name);
+    // In-app "Welcome back" toast removed — the OneSignal welcome push (fired in onAuthStateChanged) handles it instead.
     document.getElementById('signupForm').reset();
 });
 
@@ -7333,22 +7340,29 @@ function filterPosts() {
 
 
 
-    // ============================================================
-// POSTS PAGINATION STATE
+        // ============================================================
+// POSTS PAGINATION STATE — recent (last 24h) stay on top, then older posts load randomly 2×2
 // ============================================================
 let _postsLastDoc = null;
 let _postsLoading = false;
 let _postsHasMore = true;
 const POSTS_PAGE_SIZE = 2;
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+let _recentDone = false;   // true once every post from the last 24h is loaded
+let _olderPool = [];        // older posts, shuffled once (random order, no repeats)
+let _olderServed = 0;       // how many of the shuffled older pool we've already shown
 
 let _postsEpoch = 0;
 async function loadAllPosts() {
-    // Invalidate any in-flight loadMorePosts so it can't append stale older posts onto a fresh reload (fixes feed ordering bug)
+    // Invalidate any in-flight loadMorePosts so it can't append stale posts onto a fresh reload (fixes feed ordering bug)
     _postsEpoch++;
-    // Reset the Firestore cursor, but KEEP already-loaded posts in the DOM
     _postsLastDoc = null;
     _postsLoading = false;
     _postsHasMore = true;
+    _recentDone = false;
+    _olderPool = [];
+    _olderServed = 0;
 
     localStorage.setItem('lastSeenPost', Date.now().toString());
     const nb = document.getElementById('newPostsBtn'); if (nb) nb.style.display = 'none';
@@ -7361,66 +7375,88 @@ async function loadAllPosts() {
     if (currentViewMode === 'grid') { if (gridSk) gridSk.style.display = 'grid'; if (feedSk) feedSk.style.display = 'none'; }
     else { if (feedSk) feedSk.style.display = 'flex'; if (gridSk) gridSk.style.display = 'none'; }
 
-    // Then fetch fresh page 1 from Firestore and merge only NEW posts
     await loadMorePosts();
     if (currentViewMode === 'grid') buildGridView();
 }
 
+// One-time fetch of every post older than 24h, shuffled into a random order
+async function _loadOlderPool() {
+    const oneDayAgo = Date.now() - ONE_DAY_MS;
+    // where('timestamp','<',oneDayAgo) = posts OLDER than 24h. (The old .endAt(oneDayAgo) with desc order returned the RECENT set — that's why loading stopped at ~21h.)
+    const snap = await db.collection('posts').where('timestamp', '<', oneDayAgo).get();
+    const all = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // Fisher–Yates shuffle — older section loads in a different random order every session
+    for (let i = all.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [all[i], all[j]] = [all[j], all[i]];
+    }
+    _olderPool = all;
+    _olderServed = 0;
+}
+
 async function loadMorePosts() {
-    if (_postsLoading || !_postsHasMore) return;
+    if (_postsLoading) return;
+    if (_recentDone && _olderPool.length && _olderServed >= _olderPool.length) _postsHasMore = false;
+    if (!_postsHasMore) return;
     _postsLoading = true;
     const myEpoch = _postsEpoch;
 
     try {
-        let query = db.collection('posts').orderBy('timestamp', 'desc').limit(POSTS_PAGE_SIZE);
-        if (_postsLastDoc) query = query.startAfter(_postsLastDoc);
+        let batch = [];   // post objects to render this round (max POSTS_PAGE_SIZE)
 
-        const snap = await query.get();
-        // A reset (loadAllPosts) happened while we were fetching — drop this stale batch so older posts never land above newer ones
-        if (myEpoch !== _postsEpoch) { _postsLoading = false; return; }
-        console.log(`📰 ${snap.size} posts loaded from Firestore`);
-
-
-        if (snap.empty || snap.size < POSTS_PAGE_SIZE) {
-            _postsHasMore = false;
+        // PHASE 1 — recent posts (last 24h), newest first, paginated by cursor
+        if (!_recentDone) {
+            const oneDayAgo = Date.now() - ONE_DAY_MS;
+            let q = db.collection('posts').where('timestamp', '>=', oneDayAgo).orderBy('timestamp', 'desc').limit(POSTS_PAGE_SIZE);
+            if (_postsLastDoc) q = q.startAfter(_postsLastDoc);
+            const snap = await q.get();
+            // A reset (loadAllPosts) happened while we were fetching — drop this stale batch
+            if (myEpoch !== _postsEpoch) { _postsLoading = false; return; }
+            if (!snap.empty) {
+                _postsLastDoc = snap.docs[snap.docs.length - 1];
+                batch = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            }
+            // Fewer than a full page means the recent section is exhausted → move to older
+            if (snap.size < POSTS_PAGE_SIZE) _recentDone = true;
         }
 
-// Hide skeleton
-        hidePostsSkeleton();
-        // Reveal the correct container for the active view mode
-        if (currentViewMode === 'grid') {
-            document.getElementById('postsGrid').style.display = 'grid';
-        } else {
-            document.getElementById('postsList').style.display = 'block';
+        // PHASE 2 — older posts, served randomly from the shuffled pool (no duplicates)
+        if (_recentDone && batch.length < POSTS_PAGE_SIZE) {
+            if (_olderPool.length === 0) await _loadOlderPool();
+            if (myEpoch !== _postsEpoch) { _postsLoading = false; return; }
+            while (batch.length < POSTS_PAGE_SIZE && _olderServed < _olderPool.length) {
+                batch.push(_olderPool[_olderServed++]);
+            }
+            if (_olderServed >= _olderPool.length) _postsHasMore = false;
         }
-                if (!snap.empty) {
-            _postsLastDoc = snap.docs[snap.docs.length - 1];
+
+        if (batch.length) {
+            hidePostsSkeleton();
+            if (currentViewMode === 'grid') document.getElementById('postsGrid').style.display = 'grid';
+            else document.getElementById('postsList').style.display = 'block';
+
             const pl = document.getElementById('postsList');
             const existingCards = {};
             pl.querySelectorAll('.post-card').forEach(c => {
                 const pid = c.querySelector('[data-postid]')?.dataset?.postid;
                 if (pid) existingCards[pid] = c;
             });
-            for (const doc of snap.docs) {
-                const p = { id: doc.id, ...doc.data() };
+            for (const p of batch) {
                 const el = await createPostElement(p);
                 if (el && el.tagName) {
-                    if (existingCards[p.id]) {
-                        // Post already on screen — REPLACE it so fresh comments/likes show
-                        existingCards[p.id].replaceWith(el);
-                    } else {
-                        pl.appendChild(el);
-                    }
+                    if (existingCards[p.id]) existingCards[p.id].replaceWith(el);
+                    else pl.appendChild(el);
                 }
             }
+        } else if (_recentDone && _olderServed >= _olderPool.length) {
+            _postsHasMore = false;
         }
 
         filterPosts();
-        // Rebuild grid tiles so newly-loaded posts appear without leaving grid view
         if (currentViewMode === 'grid') buildGridView();
         injectFeedBanners();
         lucide.createIcons();
-        } catch(e) {
+    } catch(e) {
         console.error('Posts load error:', e);
     }
 
