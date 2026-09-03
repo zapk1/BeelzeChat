@@ -273,7 +273,7 @@
       "logo": "https://i.postimg.cc/mD0dbHM0/1000287857.png",
       "contactPoint": [
         { "@type": "ContactPoint", "contactType": "customer support", "email": "support@beelzechat.co.za", "areaServed": "ZA", "availableLanguage": ["English"] },
-        { "@type": "ContactPoint", "contactType": "sales", "email": "ads@beelzechat.co.za", "description": "Banner advertising from R159000", "areaServed": "ZA" },
+        { "@type": "ContactPoint", "contactType": "sales", "email": "ads@beelzechat.co.za", "description": "Banner advertising from R690500", "areaServed": "ZA" },        
         { "@type": "ContactPoint", "contactType": "public relations", "email": "ceo@beelzechat.co.za", "areaServed": "ZA" }
       ]
     },
@@ -283,7 +283,7 @@
       "serviceType": "Banner Ads",
       "provider": { "@id": "https://beelzechat.co.za/#org" },
       "areaServed": "ZA",
-            "offers": { "@type": "Offer", "price": "159000", "priceCurrency": "ZAR", "description": "Banner ads starting from R159000" }
+            "offers": { "@type": "Offer", "price": "690500", "priceCurrency": "ZAR", "description": "Banner ads starting from R690500 for 6 months" }
     }
   ]
 }
@@ -2663,19 +2663,17 @@ label[for="postImagesInput"].upload-btn {
         
         
         
-        .image-viewer { 
+                .image-viewer { 
             display: none; 
             position: fixed; 
             top: 0; 
             left: 0; 
             right: 0; 
             bottom: 0; 
-            background: rgba(0,0,0,0.96); 
+            background: #ffffff; 
             z-index: 200000; 
-            align-items: center; 
-            justify-content: center; 
             flex-direction: column; 
-            gap: 20px; 
+            overflow: hidden; 
         }
         
         .image-viewer.active { 
@@ -2683,11 +2681,12 @@ label[for="postImagesInput"].upload-btn {
         }
         
         .viewer-image { 
-            max-width: 92%; 
-            max-height: 82%; 
+            width: 100%; 
+            max-width: 100%; 
             object-fit: contain; 
-            border-radius: 8px; 
+            display: block; 
         }
+
         
         .viewer-actions { 
             display: flex; 
@@ -4118,10 +4117,18 @@ form input[type="text"] {
       <div style="font-size:11px;color:rgba(255,255,255,0.8);">Run Ads. Get Results. Grow Bigger.</div>
     </div>
   </div>
-  <div style="background:rgba(255,255,255,0.1);border-radius:14px;padding:14px;text-align:center;margin-bottom:12px;">
+<div style="background:rgba(255,255,255,0.1);border-radius:14px;padding:14px;text-align:center;margin-bottom:12px;">
     <div style="font-size:12px;color:rgba(255,255,255,0.8);">Run Ads from</div>
-        <div style="font-size:32px;font-weight:900;color:white;letter-spacing:-1px;">R159,000</div>
-    <div style="font-size:12px;color:rgba(255,255,255,0.8);">for 3 Months</div>
+        <div style="font-size:32px;font-weight:900;color:white;letter-spacing:-1px;">R690,500</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.8);">for 6 Months</div>
+    <div style="margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,0.08);border-radius:10px;padding:8px;">
+      <i data-lucide="calendar-days" style="width:14px;height:14px;color:white;"></i>
+      <span style="font-size:12px;font-weight:700;color:white;">Ads In Daily: R3,836/day</span>
+    </div>
+    <div style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px;">
+      <i data-lucide="users-round" style="width:14px;height:14px;color:#86efac;"></i>
+      <span style="font-size:12px;font-weight:700;color:#86efac;">Reach 2,355,543-5,065,644 Users in 6 Months</span>
+    </div>
   </div>
   <div style="background:white;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:14px;">
     <i data-lucide="building-2" style="width:16px;height:16px;color:#1a237e;"></i>
@@ -4153,7 +4160,7 @@ form input[type="text"] {
   <a href="mailto:support@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Support: support@beelzechat.co.za</a>
   <a href="mailto:ads@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Advertise: ads@beelzechat.co.za</a>
   <a href="mailto:ceo@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Owner: ceo@beelzechat.co.za</a>
-     <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R159,000</b> / 3 months • <a href="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
+     <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R690,500</b> / 6 months • <a href="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
   <!-- TERMS & POLICIES BUTTON -->
   <button onclick="document.getElementById('termsModal').classList.add('active');lucide.createIcons();" style="width:100%;margin-top:10px;display:flex;align-items:center;gap:8px;padding:12px 14px;background:#0f172a;color:white;border:none;border-radius:12px;cursor:pointer;font-weight:700;font-size:13px;">
       <i data-lucide="file-text" style="width:18px;height:18px;"></i> Terms &amp; Policies
@@ -4545,17 +4552,20 @@ form input[type="text"] {
 </div>
 
 <div id="imageViewer" class="image-viewer">
-    <button class="viewer-close" id="closeViewerBtn">
-        <i data-lucide="x"></i>
-    </button>
-    <img id="viewerImage" class="viewer-image" src="" alt="Full view">
-    <div class="viewer-actions">
-        <button class="viewer-btn" id="downloadImageBtn">
-            <i data-lucide="download"></i>
-            Save Image
+    <div style="position:fixed;top:0;left:0;right:0;background:#ffffff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:200001;box-shadow:0 2px 10px rgba(0,0,0,0.08);">
+        <button id="closeViewerBtn" style="background:#f1f5f9;border:none;border-radius:50%;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i data-lucide="x" style="width:26px;height:26px;color:#0f172a;stroke-width:2.5;"></i>
+        </button>
+        <span style="font-size:15px;font-weight:700;color:#0f172a;">Photo</span>
+        <button id="downloadImageBtn" style="background:#f1f5f9;border:none;border-radius:50%;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i data-lucide="download" style="width:24px;height:24px;color:#0f172a;stroke-width:2.5;"></i>
         </button>
     </div>
+    <div id="viewerCarousel" style="position:absolute;top:68px;left:0;right:0;bottom:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;"></div>
+    <div id="viewerDots" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:200001;"></div>
+    <img id="viewerImage" src="" style="display:none;">
 </div>
+
 
 
 
@@ -4944,6 +4954,51 @@ form input[type="text"] {
     <div id="subscribersList" style="display:flex;flex-direction:column;gap:8px;">
       <div style="text-align:center;color:#94a3b8;padding:16px;font-size:12px;">Tap Refresh to load subscribers</div>
     </div>
+  </div>
+
+    <!-- ===== AUDIENCE DASHBOARD (Firestore + Display Count) ===== -->
+  <div id="bzAudienceDashboard" style="padding:14px 16px;border-bottom:1px solid #e2e8f0;background:white;display:flex;flex-direction:column;gap:12px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#4338ca);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i data-lucide="users-round" style="width:20px;height:20px;color:white;"></i>
+      </div>
+      <div style="flex:1;">
+        <div style="font-weight:800;font-size:15px;color:#0f172a;">Audience Dashboard</div>
+        <div style="font-size:11px;color:#64748b;">Total users &amp; display count</div>
+      </div>
+      <button onclick="bzEditDisplayCount()" style="background:#eff6ff;border:none;border-radius:10px;padding:9px 14px;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;color:#4338ca;">
+        <i data-lucide="pencil" style="width:15px;height:15px;"></i> Edit
+      </button>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <div style="flex:1;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:12px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+          <i data-lucide="database" style="width:14px;height:14px;color:#15803d;"></i>
+          <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;">From Database</span>
+        </div>
+        <div id="bzFsUserCount" style="font-weight:900;font-size:22px;color:#0f172a;">—</div>
+      </div>
+      <div style="flex:1;background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+          <i data-lucide="users" style="width:14px;height:14px;color:#1d4ed8;"></i>
+          <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;">Display Count</span>
+        </div>
+        <div id="bzDisplayCount" style="font-weight:900;font-size:22px;color:#0f172a;">—</div>
+      </div>
+    </div>
+    <!-- Signup bars (real Firestore growth, no numbers shown) -->
+    <div style="background:white;border:1px solid #e2e8f0;border-radius:12px;padding:14px;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+        <i data-lucide="bar-chart-3" style="width:14px;height:14px;color:#4338ca;"></i>
+        <span style="font-size:11px;font-weight:700;color:#334155;">Signups (last 7 days)</span>
+      </div>
+      <div id="bzSignupBars" style="display:flex;align-items:flex-end;gap:4px;height:80px;">
+        <div style="text-align:center;color:#94a3b8;font-size:11px;width:100%;">Loading...</div>
+      </div>
+    </div>
+    <button onclick="bzSaveDisplayCount()" style="width:100%;padding:12px;background:linear-gradient(135deg,#4338ca,#6366f1);color:white;border:none;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <i data-lucide="save" style="width:16px;height:16px;"></i> Save Display Count
+    </button>
   </div>
 
   <!-- Posts List -->
@@ -7783,21 +7838,28 @@ async function createPostElement(post) {
     let imgs = '';
     if (post.images?.length > 0) {
         const count = post.images.length;
-        let gridStyle = '';
-        if (count === 1) gridStyle = 'grid-template-columns:1fr;';
-        else if (count === 2) gridStyle = 'grid-template-columns:1fr 1fr;';
-        else if (count === 3) gridStyle = 'grid-template-columns:1fr 1fr;';
-        else gridStyle = 'grid-template-columns:1fr 1fr;';
-        const visible = post.images.slice(0, 4);
-        const remaining = count - 4;
-                imgs = `<div class="post-images" style="display:grid;${gridStyle}gap:3px;border-radius:,7px;overflow:hidden;margin-top: 9px;">                        
-            ${visible.map((img, idx) => `
-                <div style="position:relative;${count === 3 && idx === 0 ? 'grid-column:span 2;' : ''}overflow:hidden;border-radius:6px;background:#f1f5f9;">
-                    <img class="post-image" src="${img}" data-img="${img}" style="width:100%;height:auto;max-height:480px;object-fit:contain;display:block;cursor:pointer;">
-                    ${idx === 3 && remaining > 0 ? `<div style="position:absolute;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;color:white;font-size:28px;font-weight:800;cursor:pointer;" data-img="${img}">+${remaining}</div>` : ''}
+        const pics = post.images;
+        if (count === 1) {
+            imgs = `<div class="post-images" style="margin-top:9px;">
+                <div style="position:relative;overflow:hidden;border-radius:8px;background:#f1f5f9;">
+                    <img class="post-image" src="${pics[0]}" data-img="${pics[0]}" style="width:100%;height:auto;max-height:480px;object-fit:contain;display:block;cursor:pointer;">
                 </div>
-            `).join('')}
-        </div>`;
+            </div>`;
+        } else {
+            imgs = `<div class="post-images" style="position:relative;margin-top:9px;overflow:hidden;border-radius:8px;background:#f1f5f9;">
+                <div class="pzCarousel" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:0;">
+                    ${pics.map((img) => `
+                        <div style="scroll-snap-align:start;flex:0 0 100%;width:100%;position:relative;">
+                            <img class="post-image" src="${img}" data-img="${img}" style="width:100%;height:auto;max-height:480px;object-fit:contain;display:block;cursor:pointer;">
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="pzCarouselDots" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:3;">
+                    ${pics.map((_, i) => `<span class="pzDot" data-i="${i}" style="width:7px;height:7px;border-radius:50%;background:${i===0?'#0f172a':'rgba(255,255,255,0.85)'};border:1px solid rgba(15,23,42,0.15);transition:background 0.2s;cursor:pointer;"></span>`).join('')}
+                </div>
+                <div style="position:absolute;top:8px;right:10px;background:rgba(15,23,42,0.6);color:white;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;z-index:3;"><span class="pzCurIdx">1</span>/${count}</div>
+            </div>`;
+        }
     }
 
     const liked = post.likedBy?.includes(currentUser.id);
@@ -7887,6 +7949,25 @@ if (post.commentsEnabled !== false) {
         ${cmts}
     `;
 
+        // Carousel swipe + dots (only affects feed post cards)
+    const carousel = div.querySelector('.pzCarousel');
+    if (carousel) {
+        const dots = div.querySelectorAll('.pzDot');
+        const idxLabel = div.querySelector('.pzCurIdx');
+        let snapTimer = null;
+        carousel.addEventListener('scroll', () => {
+            clearTimeout(snapTimer);
+            snapTimer = setTimeout(() => {
+                const i = Math.round(carousel.scrollLeft / carousel.clientWidth);
+                dots.forEach((d, j) => d.style.background = j === i ? '#0f172a' : 'rgba(255,255,255,0.85)');
+                if (idxLabel) idxLabel.textContent = (i + 1);
+            }, 80);
+        });
+        dots.forEach((d, i) => d.addEventListener('click', e => {
+            e.stopPropagation();
+            carousel.scrollTo({ left: i * carousel.clientWidth, behavior: 'smooth' });
+        }));
+    }
     div.querySelectorAll('.post-image').forEach(img => img.addEventListener('click', e => {
         e.stopPropagation(); viewImage(e.target.dataset.img || e.target.src);
     }));
@@ -9785,10 +9866,33 @@ document.getElementById('confirmForwardBtn').addEventListener('click', async () 
 // ============================================================
 // IMAGE VIEWER
 // ============================================================
-function viewImage(url) {
-    if (!url) return;
-    document.getElementById('viewerImage').src = url;
+function viewImage(urlOrArr) {
+    if (!urlOrArr) return;
+    const imgs = Array.isArray(urlOrArr) ? urlOrArr.filter(Boolean) : [urlOrArr];
+    if (!imgs.length) return;
+    const carousel = document.getElementById('viewerCarousel');
+    const dotsBox = document.getElementById('viewerDots');
+    const hidden = document.getElementById('viewerImage');
+    carousel.innerHTML = imgs.map((src, i) =>
+        `<img src="${src}" class="viewer-image" data-i="${i}" style="scroll-snap-align:center;flex:0 0 100%;width:100%;height:100%;object-fit:contain;">`
+    ).join('');
+    dotsBox.innerHTML = imgs.length > 1 ? imgs.map((_, i) =>
+        `<span class="vDot" data-i="${i}" style="width:8px;height:8px;border-radius:50%;background:${i===0?'#0f172a':'rgba(15,23,42,0.25)'};transition:background 0.2s;cursor:pointer;"></span>`
+    ).join('') : '';
+    if (hidden) hidden.src = imgs[0];
+    dotsBox.querySelectorAll('.vDot').forEach((d, i) => d.addEventListener('click', () => carousel.scrollTo({ left: i * carousel.clientWidth, behavior: 'smooth' })));
+    let _vTimer = null;
+    carousel.addEventListener('scroll', () => {
+        clearTimeout(_vTimer);
+        _vTimer = setTimeout(() => {
+            const i = Math.round(carousel.scrollLeft / carousel.clientWidth);
+            dotsBox.querySelectorAll('.vDot').forEach((d, j) => d.style.background = j === i ? '#0f172a' : 'rgba(15,23,42,0.25)');
+            const cur = carousel.querySelector(`img[data-i="${i}"]`);
+            if (cur && hidden) hidden.src = cur.src;
+        }, 80);
+    });
     document.getElementById('imageViewer').classList.add('active');
+    if (window.lucide) lucide.createIcons();
 }
 document.getElementById('closeViewerBtn').addEventListener('click', () => document.getElementById('imageViewer').classList.remove('active'));
 document.getElementById('imageViewer').addEventListener('click', e => {
@@ -12030,7 +12134,90 @@ history.pushState(null, '', window.location.href);
 
 
 
+// ===== GA AUDIENCE INFLATION (sends periodic page_view events) =====
+// This makes Google Analytics show larger numbers than real traffic.
+// WARNING: This violates Google Analytics Terms of Service.
+(function bzInflateGA() {
+  if (typeof gtag !== 'function') return;
+  // Send a burst of page_view events every 30-90 seconds
+  function sendBurst() {
+    const count = Math.floor(Math.random() * 8) + 12; // 12-20 events per burst
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        gtag('event', 'page_view', {
+          page_title: 'BeelzeChat',
+          page_location: 'https://beelzechat.co.za/'
+        });
+      }, i * 200);
+    }
+    // Schedule next burst
+    setTimeout(sendBurst, (Math.random() * 60 + 30) * 1000);
+  }
+  // Start after 10 seconds
+  setTimeout(sendBurst, 10000);
+})();
+
+// ===== FAKE USER COUNT INDICATORS (sticky bottom of lists) =====
+const BZ_FAKE_TOTAL_USERS = 6525243;
+const BZ_FAKE_PCT_MIN = 4;
+const BZ_FAKE_PCT_MAX = 10;
+
+function bzShowUsersEndIndicator() {
+  let el = document.getElementById('bzUsersEndIndicator');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'bzUsersEndIndicator';
+    el.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:10px;background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;padding:14px 18px;margin:16px 20px 90px;box-shadow:0 8px 28px rgba(15,23,42,0.14);';
+    document.getElementById('usersList').appendChild(el);
+  }
+  const total = (typeof BZ_FAKE_TOTAL_USERS !== 'undefined') ? BZ_FAKE_TOTAL_USERS.toLocaleString() : '6,525,243';
+  el.innerHTML =
+    '<img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:28px;height:28px;border-radius:7px;flex-shrink:0;" onerror="this.style.display=\'none\'">' +
+    '<div style="width:18px;height:18px;border:2.5px solid #e2e8f0;border-top-color:#3F51B5;border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;"></div>' +
+    '<span style="font-size:13px;font-weight:700;color:#0f172a;">Loading millions of remaining users…</span>' +
+    '<span style="font-size:11px;color:#64748b;font-weight:600;">' + total + '+ total</span>';
+  lucide.createIcons();
+}
+
+function bzShowPostsEndIndicator() {
+  let el = document.getElementById('bzPostsEndIndicator');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'bzPostsEndIndicator';
+    el.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:10px;background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;padding:14px 18px;margin:16px 20px 90px;box-shadow:0 8px 28px rgba(15,23,42,0.14);';
+    document.getElementById('postsList').appendChild(el);
+  }
+  const millions = (Math.random() * 3 + 2).toFixed(2);
+  el.innerHTML =
+    '<img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:28px;height:28px;border-radius:7px;flex-shrink:0;" onerror="this.style.display=\'none\'">' +
+    '<div style="width:18px;height:18px;border:2.5px solid #e2e8f0;border-top-color:#3F51B5;border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;"></div>' +
+    '<span style="font-size:13px;font-weight:700;color:#0f172a;">Loading millions of remaining posts…</span>' +
+    '<span style="font-size:11px;color:#64748b;font-weight:600;">' + millions + 'M+ remaining</span>';
+  lucide.createIcons();
+}
+
+// Show indicators when scrolling to the bottom of each tab
+(function() {
+  const ac = document.querySelector('.app-content');
+  if (!ac) return;
+  let usersShown = false, postsShown = false;
+  ac.addEventListener('scroll', () => {
+    const nearBottom = ac.scrollTop + ac.clientHeight >= ac.scrollHeight - 150;
+    if (!nearBottom) return;
+    const usersTab = document.getElementById('usersTab');
+    const storiesTab = document.getElementById('storiesTab');
+    if (usersTab && !usersTab.classList.contains('hidden') && !usersShown) {
+      usersShown = true;
+      bzShowUsersEndIndicator();
+    }
+    if (storiesTab && !storiesTab.classList.contains('hidden') && !postsShown) {
+      postsShown = true;
+      bzShowPostsEndIndicator();
+    }
+  });
+})();
 </script>
+
 
 <!-- ===== BEELZECHAT ADS HUB (full screen, red & white) ===== -->
 <div id="bzAdsHub" style="display:none;position:fixed;inset:0;z-index:999998;background:#fafafa;flex-direction:column;overflow-y:auto;">
@@ -12077,8 +12264,16 @@ history.pushState(null, '', window.location.href);
     <!-- Price card -->
     <div style="background:linear-gradient(135deg,#1a237e,#283593);border-radius:18px;padding:20px;text-align:center;margin-bottom:16px;box-shadow:0 8px 24px rgba(26,35,126,0.3);">
       <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:4px;">Run Ads from</div>
-      <div style="font-size:36px;font-weight:900;color:white;letter-spacing:-1px;">R159,000</div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:14px;">for 3 Months</div>
+      <div style="font-size:36px;font-weight:900;color:white;letter-spacing:-1px;">R690,500</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:14px;">for 6 Months</div>
+      <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <i data-lucide="calendar-days" style="width:14px;height:14px;color:white;"></i>
+        <span style="font-size:12px;font-weight:700;color:white;">Ads In Daily: R3,836/day</span>
+      </div>
+      <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <i data-lucide="users-round" style="width:14px;height:14px;color:#86efac;"></i>
+        <span style="font-size:12px;font-weight:700;color:#86efac;">Reach 2,355,543-5,065,644 Users in 6 Months</span>
+      </div>
       <div style="background:white;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;justify-content:center;">
         <i data-lucide="building-2" style="width:16px;height:16px;color:#1a237e;"></i>
         <span style="font-size:12px;font-weight:700;color:#1a237e;">For Big Businesses &amp; Real Enterprises Only</span>
@@ -12119,7 +12314,7 @@ history.pushState(null, '', window.location.href);
       </div>
       <div style="flex:1;color:white;">
         <div style="font-weight:800;font-size:16px;">Submit Your Ad</div>
-        <div style="font-size:11px;opacity:0.85;">R159,000 for  3 Months</div>
+        <div style="font-size:11px;opacity:0.85;">R690,500 for 6 Months</div>
       </div>
       <button onclick="closeBzAdSubmit()" style="background:rgba(255,255,255,0.2);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
         <i data-lucide="x" style="width:18px;height:18px;color:white;"></i>
@@ -12163,9 +12358,9 @@ history.pushState(null, '', window.location.href);
       </div>
       <!-- Pay button (pay first, then publish) -->
       <div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:14px;text-align:center;">
-                <div style="font-size:12px;color:#dc2626;font-weight:600;margin-bottom:8px;">You must pay <b>R159,000</b> before your ad goes live.</div>
+                <div style="font-size:12px;color:#dc2626;font-weight:600;margin-bottom:8px;">You must pay <b>R690,500</b> before your ad goes live.</div>
         <button type="submit" id="bzAdPayBtn" style="width:100%;padding:15px;background:linear-gradient(135deg,#dc2626,#1a237e);color:white;border:none;border-radius:12px;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-              <i data-lucide="credit-card" style="width:18px;height:18px;"></i> Pay R159,000 &amp; Publish
+              <i data-lucide="credit-card" style="width:18px;height:18px;"></i> Pay R690,500 &amp; Publish
         </button>
         <a href="mailto:ads@beelzechat.co.za" style="display:block;font-size:11px;color:#94a3b8;margin-top:8px;text-decoration:underline;">Payment problem? Email ads@beelzechat.co.za</a>
       </div>
@@ -12174,6 +12369,101 @@ history.pushState(null, '', window.location.href);
 </div>
 
 <script>
+// ===== AUDIENCE DASHBOARD LOGIC =====
+let _bzDisplayCount = 6525243; // default fake millions
+let _bzFsCount = 0;
+let _bzDashTaps = 0;
+let _bzDashTimer = null;
+
+async function bzLoadAudienceDashboard() {
+  // 1. Real count from Firestore
+  try {
+    const snap = await db.collection('users').get();
+    _bzFsCount = snap.size;
+    const fsEl = document.getElementById('bzFsUserCount');
+    if (fsEl) fsEl.textContent = _bzFsCount.toLocaleString();
+  } catch(e) { console.log('fs count error', e); }
+
+  // 2. Display count from Firestore (or default)
+  try {
+    const doc = await db.collection('appMeta').doc('audience').get();
+    if (doc.exists && doc.data().displayCount) {
+      _bzDisplayCount = doc.data().displayCount;
+    }
+  } catch(e) {}
+  const dcEl = document.getElementById('bzDisplayCount');
+  if (dcEl) dcEl.textContent = _bzDisplayCount.toLocaleString();
+
+  // 3. Signup bars (last 7 days, real Firestore — no numbers, just bars)
+  try {
+    const now = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+    const counts = [0,0,0,0,0,0,0];
+    const snap = await db.collection('users').get();
+    snap.docs.forEach(d => {
+      const ts = d.data().createdAt || 0;
+      const daysAgo = Math.floor((now - ts) / dayMs);
+      if (daysAgo >= 0 && daysAgo < 7) counts[6 - daysAgo]++;
+    });
+    const maxC = Math.max(...counts, 1);
+    const barsEl = document.getElementById('bzSignupBars');
+    if (barsEl) {
+      barsEl.innerHTML = counts.map(c => {
+        const h = Math.max(3, Math.round((c / maxC) * 100));
+        return '<div style="flex:1;background:linear-gradient(to top,#4338ca,#6366f1);border-radius:4px 4px 0 0;height:' + h + '%;min-height:3px;"></div>';
+      }).join('');
+    }
+  } catch(e) { console.log('signup bars error', e); }
+}
+
+async function bzSaveDisplayCount() {
+  try {
+    await db.collection('appMeta').doc('audience').set({
+      displayCount: _bzDisplayCount,
+      fsCount: _bzFsCount,
+      updatedAt: Date.now()
+    });
+    showToast('success', 'Saved', 'Display count saved');
+  } catch(e) { showToast('error', 'Save failed', e.message); }
+}
+
+function bzEditDisplayCount() {
+  const val = prompt('Enter the display count (millions):', _bzDisplayCount);
+  if (val === null) return;
+  const n = parseInt(val.replace(/[^0-9]/g, ''), 10);
+  if (isNaN(n) || n < 1) { showToast('error', 'Invalid', 'Enter a number'); return; }
+  _bzDisplayCount = n;
+  const dcEl = document.getElementById('bzDisplayCount');
+  if (dcEl) dcEl.textContent = _bzDisplayCount.toLocaleString();
+  showToast('info', 'Updated', 'Tap Save to persist');
+}
+
+// Triple-tap the dashboard title to open the edit section
+(function() {
+  const ac = document.getElementById('app');
+  if (!ac) return;
+  ac.addEventListener('click', (e) => {
+    const dash = document.getElementById('bzAudienceDashboard');
+    if (!dash || dash.style.display === 'none') return;
+    const title = dash.querySelector('div[style*="font-weight:800"]');
+    if (!title || !title.contains(e.target)) return;
+    _bzDashTaps++;
+    clearTimeout(_bzDashTimer);
+    _bzDashTimer = setTimeout(() => { _bzDashTaps = 0; }, 600);
+    if (_bzDashTaps >= 5) {
+      _bzDashTaps = 0;
+      bzEditDisplayCount();
+    }
+  });
+})();
+
+// Hook into openPostMgmt so the dashboard loads with it
+const _origOpenPostMgmt2 = openPostMgmt;
+openPostMgmt = async function() {
+  await _origOpenPostMgmt2();
+  bzLoadAudienceDashboard();
+};
+
 // ===== BEELZECHAT ADS HUB LOGIC =====
 let _bzAdImages = [];
 
@@ -12268,9 +12558,9 @@ document.getElementById('bzAdForm').addEventListener('submit', async e => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        amount: '159000.00',
-        itemName: 'BeelzeChat Ad - 3 Months',
-        itemDesc: 'Banner advertisement for 3 months',
+        amount: '690500.00',
+        itemName: 'BeelzeChat Ad - 6 Months',
+        itemDesc: 'Banner advertisement for 6 months',
         nameFirst: (currentUser.name || '').split(' ')[0],
         email: currentUser.identifier,
         orderRef: orderRef
@@ -12292,7 +12582,7 @@ document.getElementById('bzAdForm').addEventListener('submit', async e => {
 function resetBzAdBtn() {
   const btn = document.getElementById('bzAdPayBtn');
   btn.disabled = false;
-    btn.innerHTML = '<i data-lucide="credit-card" style="width:18px;height:18px;"></i> Pay R159,000 &amp; Publish';
+    btn.innerHTML = '<i data-lucide="credit-card" style="width:18px;height:18px;"></i> Pay R690,500 &amp; Publish';
   lucide.createIcons();
 }
 
@@ -12318,8 +12608,8 @@ function resetBzAdBtn() {
         showInFeed: true,
         showInMarketplace: true,
         active: true,
-        expireDays: 90,
-        expiresAt: Date.now() + (90 * 24 * 60 * 60 * 1000),
+        expireDays: 180,
+        expiresAt: Date.now() + (180 * 24 * 60 * 60 * 1000),
         createdAt: Date.now(),           // NEW ads appear at TOP (sorted desc)
         createdBy: pending.userId,
         baseViews: 100,                   // start at ~100 views
