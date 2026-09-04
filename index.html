@@ -136,6 +136,14 @@
                    (p.style && p.style.borderRadius === '50%') ||
                    w < 60;
       }
+      var isLogo = img.classList.contains('app-logo') ||
+                   (p && (p.classList.contains('logo-container') || p.classList.contains('app-logo')));
+      if (isLogo) {
+        // Logo failed (low data) — go invisible, keep the round container clean. NO square error.
+        img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        img.style.opacity = '0';
+        return;
+      }
       if (isAvatar) {
         // Small avatar — tiny gray circle with person silhouette, no text
         img.outerHTML = '<div class="bz-avatar-failed">' + AVATAR_SVG + '</div>';
@@ -210,8 +218,24 @@
     if(isTypingTarget(e.target) && window._bzPauseImgObs) window._bzPauseImgObs();
   }, true);
   document.addEventListener('focusout', function(e){
-    if(isTypingTarget(e.target) && window._bzResumeImgObs) window._bzResumeImgObs();
+    if(isTypingTarget(e.target)) {
+      if (window._bzResumeImgObs) window._bzResumeImgObs();
+      // Re-render any icons that were skipped while the keyboard was open
+      try { lucide.createIcons(); } catch(e2){}
+    }
   }, true);
+})();
+// Route EVERY lucide.createIcons() call through a typing-safe wrapper so the
+// mobile keyboard (Gboard) never resets while typing, using autocorrect, or picking emojis
+(function(){
+  if (!window.lucide || lucide._bzSafe) return;
+  var _orig = lucide.createIcons.bind(lucide);
+  lucide._bzSafe = true;
+  lucide.createIcons = function(){
+    var el = document.activeElement;
+    if (el && (el.tagName==='INPUT' || el.tagName==='TEXTAREA' || el.isContentEditable)) return;
+    return _orig.apply(this, arguments);
+  };
 })();
 </script>
 
@@ -483,12 +507,13 @@ label[for="postImagesInput"].upload-btn {
     border-radius: 24px;
 }
 
-/* Make post cards full-width Facebook style */
+/* Make post cards full-width with smooth top corners */
 .post-card {
-    margin: 8px 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
+    margin: 8px 4px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     border-bottom: 8px solid #f1f5f9 !important;
+    overflow: hidden;
 }
 
 .post-card .post-images {
@@ -1389,9 +1414,10 @@ label[for="postImagesInput"].upload-btn {
         }
         
         .chat-header { 
+            margin: 4px 4px 0;
             padding: 16px 20px; 
             background: white; 
-            border-bottom: 1px solid #e2e8f0; 
+            border-radius: 16px 16px 0 0;
             display: flex; 
             align-items: center; 
             gap: 14px; 
@@ -5944,6 +5970,28 @@ EMOJIS.forEach(em => {
                     cachedMsgs[idx].id = realId; // make sure the cache uses the real id
                     saveMsgs(currentChatId, cachedMsgs);
                 }
+
+                // Force a fresh re-render of this message's reactions from Firestore
+                // (safety net — guarantees group reactions show, not just personal chats)
+                try {
+                    var fresh = await ref.get();
+                    var frx = (fresh.data() && fresh.data().reactions) || {};
+                    var fuEm = {};
+                    Object.values(frx).forEach(function(e){ fuEm[e] = (fuEm[e]||0)+1; });
+                    var frxHtml = Object.keys(fuEm).length > 0 ?
+                        '<div class="message-reactions-row">' + Object.entries(fuEm).map(function(pe){ return '<div class="reaction-tag">'+pe[0]+(pe[1]>1?' '+pe[1]:'')+'</div>'; }).join('') + '</div>' : '';
+                    document.querySelectorAll('#messagesContainer .message').forEach(function(m){
+                        var bubble = m.querySelector('.message-bubble');
+                        if (bubble && bubble.dataset && bubble.dataset.msgid === realId) {
+                            var existingRx = m.querySelector('.message-reactions-row');
+                            var mcEl = m.querySelector('.message-content');
+                            if (existingRx) { if (frxHtml) existingRx.outerHTML = frxHtml; else existingRx.remove(); }
+                            else if (mcEl && frxHtml) mcEl.insertAdjacentHTML('beforeend', frxHtml);
+                            m.querySelectorAll('.reaction-tag').forEach(function(t){ t.addEventListener('click', function(e){ e.stopPropagation(); showMessageReactions(realId); }); });
+                            if (window.lucide) lucide.createIcons();
+                        }
+                    });
+                } catch(e2){}
             } catch (err) {
                 console.log('reaction save error', err);
                 showToast('error', 'Reaction failed', 'Could not save — check your connection');
@@ -6114,8 +6162,9 @@ document.getElementById('cancelReplyBtn').addEventListener('click', () => {
 // FIREBASE AUTH STATE — THE MAIN ENTRY POINT
 // ============================================================
 if (auth) {
-auth.onAuthStateChanged(async (firebaseUser) => {
-        if (firebaseUser) {
+  auth.onAuthStateChanged(async (firebaseUser) => {
+    if (window._bzSignupPending) return;   // signup handler is in charge — don't race it
+    if (firebaseUser) {
     document.getElementById('authScreen').style.display = 'none';
   try {
     const userEmail = firebaseUser.email || (firebaseUser.providerData && firebaseUser.providerData[0] && firebaseUser.providerData[0].email) || firebaseUser.uid;
@@ -6432,6 +6481,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     if (!identifier.includes('@')) { showToast('error', 'Invalid', 'Enter a valid email address'); restoreAuthScreen(); return; }
 
     // Show the themed purple/white loader RIGHT NOW — stays until the account is fully loaded (kills the white screen)
+    localStorage.removeItem('sxchatUser');   // drop the OLD account so onAuthStateChanged loads the NEW one
     const _ls = document.getElementById('loadingScreen');
     _ls.style.display = 'flex';
     _ls.classList.remove('hide');
@@ -6469,9 +6519,12 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     if (password.length < 6) { showToast('error', 'Error', 'Password 6+ chars'); return; }
     if (password !== confirmPassword) { showToast('error', 'Passwords do not match!', 'Try again'); return; }
 
-    // Create the Firebase Auth account first — email is the single source of truth
+        // Create the Firebase Auth account first — email is the single source of truth
+    window._bzSignupPending = true;
+    localStorage.removeItem('sxchatUser');   // never load the OLD account into a NEW signup
     try { await auth.createUserWithEmailAndPassword(identifier, password); }
-    catch (err) { showToast('error', 'Error', err.message || 'Could not create account'); restoreAuthScreen(); return; }
+    catch (err) { window._bzSignupPending = false; showToast('error', 'Error', err.message || 'Could not create account'); restoreAuthScreen(); return; }
+
 
     const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
     const rc = Math.floor(100000 + Math.random() * 900000).toString();
@@ -6514,7 +6567,8 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     document.getElementById('storiesTab').classList.remove('hidden');
     loadNotifications();
     window.finishLoading();
-    // In-app "Welcome back" toast removed — the OneSignal welcome push (fired in onAuthStateChanged) handles it instead.
+        // In-app "Welcome back" toast removed — the OneSignal welcome push (fired in onAuthStateChanged) handles it instead.
+    window._bzSignupPending = false;
     document.getElementById('signupForm').reset();
 });
 
@@ -9036,9 +9090,18 @@ async function sendMessage() {
 
     // Optimistic: show the message in the chat INSTANTLY (Firestore confirms in the background)
     const _optimisticKey = 'temp_' + msg.timestamp;
-    msg.id = _optimisticKey;
+        msg.id = _optimisticKey;
     bz.cache('lastMsg_' + currentChatId, text);
     renderMessages([msg], false);
+
+    // Optimistically update the chat-list preview RIGHT NOW (no waiting for Firestore round-trip)
+    (function(){
+        var _preview = text || (imgs.length ? '📷 Photo' : docs.length ? '📄 Document' : vids.length ? '🎥 Video' : '📎 Media');
+        var item = document.querySelector('.chat-item[data-chatid="' + currentChatId + '"]');
+        if (!item) return;
+        var pv = item.querySelector('.chat-preview'); if (pv) pv.textContent = _preview;
+        var tm = item.querySelector('.chat-time'); if (tm) tm.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    })();
 
 
 
@@ -9251,10 +9314,14 @@ document.getElementById('profilePhone').textContent = currentUser.phone || 'Not 
         const gridEl = document.getElementById('myPostsGrid');
         if (!docs.length) { document.getElementById('myPostsEmpty').style.display='block'; lucide.createIcons(); return; }
         const cards = {};
-        for (const pd of docs) {
+        const feedDocs = docs.slice(0, 3);
+        for (const pd of feedDocs) {
             const p = pd.data();
             const card = await createPostElement({ id: pd.id, ...p });
             if (card && card.tagName) { feedEl.appendChild(card); cards[pd.id] = card; }
+        }
+        for (const pd of docs) {
+            const p = pd.data();
             const thumb = p.images?.[0];
             if (thumb) {
                 const tile = document.createElement('div');
@@ -9263,6 +9330,22 @@ document.getElementById('profilePhone').textContent = currentUser.phone || 'Not 
                 tile.addEventListener('click', () => { if (cards[pd.id]) openPostDetail(cards[pd.id]); });
                 gridEl.appendChild(tile);
             }
+        }
+        if (docs.length > 3) {
+            const moreBtn = document.createElement('button');
+            moreBtn.style.cssText = 'width:100%;padding:14px;background:linear-gradient(135deg,#4338ca,#6366f1);color:white;border:none;border-radius:14px;font-weight:800;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;box-shadow:0 4px 14px rgba(67,56,202,0.25);';
+            moreBtn.innerHTML = '<i data-lucide="chevrons-down" style="width:18px;height:18px;"></i> More Posts (' + docs.length + ')';
+            moreBtn.addEventListener('click', async () => {
+                moreBtn.remove();
+                const rest = docs.slice(3);
+                for (const pd of rest) {
+                    const p = pd.data();
+                    const card = await createPostElement({ id: pd.id, ...p });
+                    if (card && card.tagName) { feedEl.appendChild(card); cards[pd.id] = card; }
+                }
+                lucide.createIcons();
+            });
+            feedEl.appendChild(moreBtn);
         }
         lucide.createIcons();
     });
@@ -9383,12 +9466,16 @@ async function showUserProfile(userId, user) {
     const gridEl = document.getElementById('userPostsGrid');
     feedEl.innerHTML = '';
     gridEl.innerHTML = '';
-    for (const pd of sortedDocs) {
+        // Feed: show only 3 latest, then "More Posts" button
+    const feedDocs = sortedDocs.slice(0, 3);
+    for (const pd of feedDocs) {
         const p = pd.data();
-        // Feed card (real post card — likes/comments work)
         const card = await createPostElement({ id: pd.id, ...p });
         if (card && card.tagName) { feedEl.appendChild(card); builtCards[pd.id] = card; }
-        // Grid tile (only when there's an image, like the main grid)
+    }
+    // Grid: show ALL tiles
+    for (const pd of sortedDocs) {
+        const p = pd.data();
         const thumb = p.images?.[0];
         if (thumb) {
             const tile = document.createElement('div');
@@ -9402,6 +9489,24 @@ async function showUserProfile(userId, user) {
             });
             gridEl.appendChild(tile);
         }
+    }
+    // "More Posts" button (feed only, if more than 3)
+    if (sortedDocs.length > 3) {
+        const moreBtn = document.createElement('button');
+        moreBtn.id = 'userPostsMoreBtn';
+        moreBtn.style.cssText = 'width:100%;padding:14px;background:linear-gradient(135deg,#4338ca,#6366f1);color:white;border:none;border-radius:14px;font-weight:800;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;box-shadow:0 4px 14px rgba(67,56,202,0.25);';
+        moreBtn.innerHTML = '<i data-lucide="chevrons-down" style="width:18px;height:18px;"></i> More Posts (' + sortedDocs.length + ')';
+        moreBtn.addEventListener('click', async () => {
+            moreBtn.remove();
+            const rest = sortedDocs.slice(3);
+            for (const pd of rest) {
+                const p = pd.data();
+                const card = await createPostElement({ id: pd.id, ...p });
+                if (card && card.tagName) { feedEl.appendChild(card); builtCards[pd.id] = card; }
+            }
+            lucide.createIcons();
+        });
+        feedEl.appendChild(moreBtn);
     }
     lucide.createIcons();
 }
@@ -9526,6 +9631,7 @@ async function loadGroups() {
             const g = gd.data();
             const div = document.createElement('div');
             div.className = 'chat-item';
+            div.dataset.chatid = gd.id;
             const gpic = g.groupPic || `https://ui-avatars.com/api/?name=${encodeURIComponent(g.name)}&background=8b5cf6&color=fff&size=128`;
             div.innerHTML = `
                 <div class="avatar-wrapper"><div class="avatar"><img src="${gpic}" style="width:100%;height:100%;object-fit:cover;"></div></div>
