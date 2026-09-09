@@ -139,16 +139,8 @@
         return;
       }
       if (isAvatar) {
-        var avW = img.offsetWidth || img.naturalWidth || 44;
-        var avH = img.offsetHeight || avW;
-        var avWrap = document.createElement('div');
-        avWrap.className = 'bz-avatar-failed';
-        avWrap.style.width = Math.min(avW, 96) + 'px';
-        avWrap.style.height = Math.min(avH, 96) + 'px';
-        avWrap.style.flexShrink = '0';
-        avWrap.style.flex = '0 0 auto';
-        avWrap.innerHTML = AVATAR_SVG;
-        img.replaceWith(avWrap);
+        // Small avatar — tiny gray circle with person silhouette, no text
+        img.outerHTML = '<div class="bz-avatar-failed">' + AVATAR_SVG + '</div>';
       } else {
         // Large image (post image, message image) — compact error box
         img.outerHTML =
@@ -5198,10 +5190,10 @@ const db = firebase.firestore();
     if (typeof showPostsSkeleton === 'function') showPostsSkeleton();
 
     // Default to the Posts tab so the grid skeleton is visible
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    if (!window._bzUserPickedTab) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
-    ['messagesTab','usersTab','groupsTab'].forEach(t => { const el=document.getElementById(t); if(el) el.classList.add('hidden'); });
-    const st=document.getElementById('storiesTab'); if (st) st.classList.remove('hidden');
+    ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
+    document.getElementById('storiesTab').classList.remove('hidden'); }
 })();
 
 let storage = null;
@@ -6214,10 +6206,10 @@ if (auth) {
                     await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
                     document.getElementById('app').classList.add('active');
                     updateProfileButton();
-                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    if (!window._bzUserPickedTab) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                     document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
                     ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
-                    document.getElementById('storiesTab').classList.remove('hidden');
+                    document.getElementById('storiesTab').classList.remove('hidden'); }
                     loadNotifications();
                     window.finishLoading();
                     return;
@@ -6870,6 +6862,7 @@ function updateSearchIconVisibility(tab) {
 document.getElementById('bottomNav').addEventListener('click', e => {
     const ni = e.target.closest('.nav-item');
     if (!ni) return;
+    window._bzUserPickedTab = true;
     // Marketplace has no data-tab — handle it directly
     if (ni.id === 'marketplaceNavBtn') {
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -12313,7 +12306,7 @@ function bzShowUsersEndIndicator() {
   if (!el) {
     el = document.createElement('div');
     el.id = 'bzUsersEndIndicator';
-    el.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:10px;background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;padding:14px 18px;margin:16px 20px 90px;box-shadow:0 8px 28px rgba(15,23,42,0.14);';
+    el.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:10px;background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;padding:12px 18px;margin:8px 4px;box-shadow:0 2px 8px rgba(0,0,0,0.06);';
     document.getElementById('usersList').appendChild(el);
   }
   const total = (typeof BZ_FAKE_TOTAL_USERS !== 'undefined') ? BZ_FAKE_TOTAL_USERS.toLocaleString() : '6,525,243';
