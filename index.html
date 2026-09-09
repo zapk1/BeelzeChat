@@ -67,27 +67,19 @@
 @keyframes mzSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 .bz-img-failed {
-  background: #000;
-  color: #fff;
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  min-height: 80px;
+  background: #e2e8f0;
+  display: block !important;
   width: 100% !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 200px;
   border-radius: 8px;
 }
-.bz-img-failed svg {
-  width: 28px; height: 28px; color: #ef4444;
-}
-.bz-img-failed .bz-fail-title {
-  font-size: 12px; font-weight: 700; color: #fff;
-}
+.bz-img-failed svg,
+.bz-img-failed .bz-fail-title,
 .bz-img-failed .bz-fail-sub {
-  font-size: 10px; color: #94a3b8;
+  display: none !important;
 }
+
+
 /* Small avatar fallback — tiny gray circle, no text */
 .bz-avatar-failed {
   display: flex !important;
@@ -97,6 +89,8 @@
   border-radius: 50%;
   width: 100%;
   height: 100%;
+  max-width: 96px;
+  max-height: 96px;
 }
 .bz-avatar-failed svg {
   width: 60%; height: 60%; color: #94a3b8;
@@ -145,8 +139,16 @@
         return;
       }
       if (isAvatar) {
-        // Small avatar — tiny gray circle with person silhouette, no text
-        img.outerHTML = '<div class="bz-avatar-failed">' + AVATAR_SVG + '</div>';
+        var avW = img.offsetWidth || img.naturalWidth || 44;
+        var avH = img.offsetHeight || avW;
+        var avWrap = document.createElement('div');
+        avWrap.className = 'bz-avatar-failed';
+        avWrap.style.width = Math.min(avW, 96) + 'px';
+        avWrap.style.height = Math.min(avH, 96) + 'px';
+        avWrap.style.flexShrink = '0';
+        avWrap.style.flex = '0 0 auto';
+        avWrap.innerHTML = AVATAR_SVG;
+        img.replaceWith(avWrap);
       } else {
         // Large image (post image, message image) — compact error box
         img.outerHTML =
@@ -1164,12 +1166,33 @@ label[for="postImagesInput"].upload-btn {
             padding: 0 16px 12px; 
         }
         
-        .post-text { 
-            font-size: 16px; 
-            line-height: 1.6; 
-            color: #1e293b; 
-            font-weight: 400; 
-            margin-bottom: 12px; 
+                .post-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #1e293b;
+            font-weight: 400;
+            margin-bottom: 12px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+        }
+        .post-text.expanded {
+            -webkit-line-clamp: initial !important;
+            -webkit-box-orient: initial !important;
+            display: block !important;
+            overflow: visible !important;
+            max-height: none !important;
+        }
+        .see-more-btn {
+            color: #3b82f6;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 4px 0 8px;
+            display: inline-block;
         }
         
         .post-images { 
@@ -7988,7 +8011,12 @@ if (post.commentsEnabled !== false) {
     
 </div>
         <div class="post-content">
-            ${post.text ? `<div class="post-text" style="white-space:pre-wrap;">${formatPostText(post.text)}</div>` : ''}
+                        ${post.text ? (() => {
+                const plain = post.text.replace(/<[^>]*>/g, '');
+                const isLong = plain.length > 200;
+                return `<div class="post-text" style="white-space:pre-wrap;">${formatPostText(post.text)}</div>${isLong ? `<button class="see-more-btn" onclick="event.stopPropagation(); var t=this.closest('.post-content').querySelector('.post-text'); t.classList.toggle('expanded'); this.textContent = t.classList.contains('expanded') ? 'See less' : 'See more';">See more</button>` : ''}`;
+            })() : ''}
+
             ${imgs}
         </div>
         <div class="post-stats" style="justify-content:flex-start;">
@@ -10304,10 +10332,9 @@ window.addEventListener('beforeunload', () => {
     if (currentUser) db.collection('users').doc(currentUser.id).update({ online: false });
 });
 
-// Refresh every 10 minutes
-setInterval(() => {
-    if (currentUser) { loadAllPosts(); }
-}, 600000);
+// Auto-refresh removed — it wiped the whole feed every 10 min and caused the blink.
+// New posts still trigger the "New Posts" button (real-time listener) — tap it to refresh manually.
+
 
 setInterval(cc, 30 * 60 * 1000);
 
