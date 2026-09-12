@@ -2494,12 +2494,14 @@ label[for="postImagesInput"].upload-btn {
 }
 #profileModal .profile-avatar-large img { border-radius: 50% !important; object-fit: cover !important; }
 #profileModal .profile-avatar-camera {
-    background: #4338ca !important;
+    background: #0f172a !important;
     border: 3px solid #ffffff !important;
     border-radius: 50% !important;
-    width: 36px !important;
-    height: 36px !important;
-    box-shadow: 0 4px 10px rgba(67,56,202,0.35) !important;
+    width: 32px !important;
+    height: 32px !important;
+    bottom: 4px !important;
+    right: 4px !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35) !important;
 }
 #profileModal .profile-avatar-camera i {
     color: #ffffff !important;
@@ -4623,10 +4625,9 @@ form input[type="text"] {
     <button id="picUploadBtn" style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;border:none;background:#0f172a;color:#fff;cursor:pointer;font-size:15px;font-weight:600;width:100%;">
       <i data-lucide="upload" style="width:22px;height:22px;"></i> Upload New
     </button>
-    <button id="picCancelBtn" style="padding:12px;border:none;background:none;color:#64748b;cursor:pointer;font-size:14px;border-radius:10px;">Cancel</button>
+        <button id="picCancelBtn" style="padding:12px;border:none;background:none;color:#64748b;cursor:pointer;font-size:14px;border-radius:10px;">Cancel</button>
   </div>
 </div>
-
 
 
 
@@ -6755,10 +6756,22 @@ document.getElementById('profileCameraBtn').addEventListener('click', e => {
     e.stopPropagation();
     if (currentUser?.profilePic) {
         showPicActionPopup(
-    () => viewImage(currentUser.profilePic),
-    () => document.getElementById('profilePicInput').click()
-);
-} else {
+            () => viewImage(currentUser.profilePic),
+            () => document.getElementById('profilePicInput').click()
+        );
+    } else {
+        document.getElementById('profilePicInput').click();
+    }
+});
+// Pressing the whole profile picture shows the same View/Upload popup
+document.getElementById('profileAvatarLarge').addEventListener('click', e => {
+    e.stopPropagation();
+    if (currentUser?.profilePic) {
+        showPicActionPopup(
+            () => viewImage(currentUser.profilePic),
+            () => document.getElementById('profilePicInput').click()
+        );
+    } else {
         document.getElementById('profilePicInput').click();
     }
 });
@@ -8107,74 +8120,8 @@ div.querySelectorAll('.comment-delete-btn').forEach(btn => {
         loadAllPosts();
     });
 });
-div.querySelectorAll('.comment-reply-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-        e.stopPropagation();
-        const cid = btn.dataset.commentid;
-        const area = div.querySelector(`.reply-input-area-${cid}`);
-        if (!area) return;
-        area.style.display = area.style.display === 'none' ? 'flex' : 'none';
-        area.style.flexDirection = 'column';
-        if (area.style.display !== 'none') area.querySelector('.reply-input')?.focus();
-    });
-});
-div.querySelectorAll('.toggle-replies-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-        e.stopPropagation();
-        const cid = btn.dataset.commentid;
-        const container = div.querySelector(`.replies-container-${cid}`);
-        const chevron = div.querySelector(`.reply-chevron-${cid}`);
-        if (!container) return;
-        const isOpen = container.style.display !== 'none';
-        container.style.display = isOpen ? 'none' : 'block';
-        if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
-    });
-});
-div.querySelectorAll('.reply-send-btn').forEach(btn => {
-    btn.addEventListener('click', async e => {
-        e.stopPropagation();
-        const inp = div.querySelector(`.reply-input[data-commentid="${btn.dataset.commentid}"]`);
-        const txt = inp?.value.trim();
-        if (!txt) return;
-        const ref = db.collection('posts').doc(btn.dataset.postid);
-        const snap = await ref.get();
-        const comments = snap.data().comments || [];
-        const ci = comments.findIndex(c => String(c.timestamp) === String(btn.dataset.commentid));
-        if (ci === -1) return;
-        if (!comments[ci].replies) comments[ci].replies = [];
-        
-        
-        comments[ci].replies.push({ userId: currentUser.id, text: txt, timestamp: Date.now() });
-        await ref.update({ comments });
-        inp.value = '';
-        showToast('success', 'Reply sent!', '');
-        // Update replies in-place without page reload
-        const repliesContainer = div.querySelector(`.replies-container-${btn.dataset.commentid}`);
-        if (repliesContainer) {
-            const ru = allUsers[currentUser.id] || {};
-            const rav = ru.profilePic ? `<img src="${ru.profilePic}">` : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(ru.name||'U')}&background=000&color=fff&size=128">`;
-            repliesContainer.insertAdjacentHTML('beforeend', `<div style="display:flex;gap:8px;align-items:flex-start;margin-top:8px;">
-                <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;">${rav}</div>
-                <div style="background:#f1f5f9;border-radius:12px;padding:6px 10px;flex:1;">
-                    <div style="font-weight:800;font-size:12px;color:#0f172a;">${currentUser.name||'User'}</div>
-                    <div style="font-size:13px;color:#334155;">${txt}</div>
-                    <div style="font-size:10px;color:#94a3b8;margin-top:2px;">Just now</div>
-                </div>
-            </div>`);
-            repliesContainer.style.display = 'block';
-        }
-        // Update replies count button
-        const toggleBtn = div.querySelector(`.toggle-replies-btn[data-commentid="${btn.dataset.commentid}"]`);
-        if (toggleBtn) {
-            const newCount = comments[ci].replies.length;
-            toggleBtn.innerHTML = `<i data-lucide="chevron-down" class="reply-chevron-${btn.dataset.commentid}" style="width:14px;height:14px;transition:transform 0.2s;transform:rotate(180deg);"></i> ${newCount} ${newCount===1?'reply':'replies'}`;
-            lucide.createIcons(toggleBtn);
-        }
-    });
-});
-div.querySelectorAll('.reply-input').forEach(inp => {
-    inp.addEventListener('keypress', e => { if (e.key === 'Enter') div.querySelector(`.reply-send-btn[data-commentid="${inp.dataset.commentid}"]`)?.click(); });
-});
+bzWireReplyControls(div);
+
 div.querySelectorAll('.see-more-comments-btn').forEach(btn => {
 
     btn.addEventListener('click', e => {
@@ -8223,14 +8170,16 @@ div.querySelectorAll('.see-more-comments-btn').forEach(btn => {
 async function postComment(postId, text) {
     if (!text) return;
     if (requireAuth('comment on posts') === false) return;
+    const newComment = { userId: currentUser.id, text, timestamp: Date.now() };
+    showToast('success', 'Posted!', 'Comment added');
+    // Save + notify in the background — the UI below updates instantly
+    (async () => {
+    try {
     const ref = db.collection('posts').doc(postId);
     const snap = await ref.get();
-    const postData = snap.data();
-    const newComment = { userId: currentUser.id, text, timestamp: Date.now() };
+    const postData = snap.data() || {};
     const comments = [...(postData.comments || []), newComment];
-    // Don't block the UI on the write — fire it in the background
     ref.update({ comments }).catch(e => console.log('comment save error', e));
-    showToast('success', 'Posted!', 'Comment added');
     // Use postData we already have — NO second Firestore read
     const ownerId = postData.userId;
     if (ownerId && ownerId !== currentUser.id) {
@@ -8247,9 +8196,11 @@ async function postComment(postId, text) {
                 }
             });
         } else {
-            sendPushNotification(opsId, currentUser.name, '💬 Commented on your post: ' + text.substring(0, 50));
+        sendPushNotification(opsId, currentUser.name, '💬 Commented on your post: ' + text.substring(0, 50));
         }
     }
+    } catch(e) { console.log('comment save error', e); }
+    })();
 
         // Add comment in-place without reloading
     const commentsList = document.getElementById(`comments-list-${postId}`);
@@ -8293,7 +8244,11 @@ async function postComment(postId, text) {
 
     // Update comment count badge
     const commentBtn = document.querySelector(`.post-action-btn[data-postid="${postId}"][data-action="comment"] span`);
-    if (commentBtn) commentBtn.textContent = formatCount(comments.length);
+    if (commentBtn) {
+        const prev = parseInt((commentBtn.textContent || '0').replace(/\D/g, ''), 10) || 0;
+        commentBtn.textContent = formatCount(prev + 1);
+    }
+    return newComment;
 }
 
 function getTimeAgo(ts) {
@@ -9274,6 +9229,137 @@ async function dlFile(url, name) {
 // ============================================================
 document.getElementById('profileBtn').addEventListener('click', () => {
     if (requireAuth('open your profile') === false) return;
+    showProfileActionPopup();
+});
+
+function showProfileActionPopup() {
+    const pop = document.getElementById('profileActionPopup');
+    if (!pop) { openMyProfileModal(); return; }
+    pop.style.display = 'flex';
+    lucide.createIcons();
+    document.getElementById('paUploadBtn').onclick = () => {
+        pop.style.display = 'none';
+        document.getElementById('profilePicInput').click();
+    };
+    document.getElementById('paViewFullBtn').onclick = () => {
+        pop.style.display = 'none';
+        showUserProfile(currentUser.id, currentUser);
+    };
+    document.getElementById('paSettingsBtn').onclick = () => {
+        pop.style.display = 'none';
+        openMyProfileModal();
+    };
+    document.getElementById('paCancelBtn').onclick = () => pop.style.display = 'none';
+    pop.onclick = e => { if (e.target === pop) pop.style.display = 'none'; };
+}
+
+// ============================================================
+// REPLY CONTROL WIRING — used by post cards AND the comments overlay
+// ============================================================
+function bzWireReplyControls(scope) {
+    if (!scope || !scope.querySelectorAll) return;
+    scope.querySelectorAll('.comment-reply-btn').forEach(btn => {
+        if (btn.dataset.bzWired) return;
+        btn.dataset.bzWired = '1';
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
+            const cid = btn.dataset.commentid;
+            const item = btn.closest('.comment-item');
+            const area = item ? item.querySelector(`.reply-input-area-${cid}`) : null;
+            if (!area) return;
+            area.style.display = area.style.display === 'none' ? 'flex' : 'none';
+            area.style.flexDirection = 'column';
+            if (area.style.display !== 'none') area.querySelector('.reply-input')?.focus();
+        });
+    });
+    scope.querySelectorAll('.toggle-replies-btn').forEach(btn => {
+        if (btn.dataset.bzWired) return;
+        btn.dataset.bzWired = '1';
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
+            const cid = btn.dataset.commentid;
+            const item = btn.closest('.comment-item');
+            const container = item ? item.querySelector(`.replies-container-${cid}`) : null;
+            const chevron = item ? item.querySelector(`.reply-chevron-${cid}`) : null;
+            if (!container) return;
+            const isOpen = container.style.display !== 'none';
+            container.style.display = isOpen ? 'none' : 'block';
+            if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+        });
+    });
+    scope.querySelectorAll('.reply-input').forEach(inp => {
+        if (inp.dataset.bzWired) return;
+        inp.dataset.bzWired = '1';
+        inp.addEventListener('keypress', e => {
+            if (e.key !== 'Enter') return;
+            inp.closest('.comment-item')?.querySelector(`.reply-send-btn[data-commentid="${inp.dataset.commentid}"]`)?.click();
+        });
+    });
+    scope.querySelectorAll('.reply-send-btn').forEach(btn => {
+        if (btn.dataset.bzWired) return;
+        btn.dataset.bzWired = '1';
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
+            const cid = btn.dataset.commentid;
+            const item = btn.closest('.comment-item');
+            const inp = item ? item.querySelector(`.reply-input[data-commentid="${cid}"]`) : null;
+            const txt = inp ? inp.value.trim() : '';
+            if (!txt) return;
+            const replyEntry = { userId: currentUser.id, text: txt, timestamp: Date.now() };
+            inp.value = '';
+            showToast('success', 'Reply sent!', '');
+            // ── INSTANT UI — reply appears immediately, no waiting ──
+            const ru = allUsers[currentUser.id] || {};
+            const rav = ru.profilePic ? `<img src="${ru.profilePic}">` : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(ru.name||'U')}&background=000&color=fff&size=128">`;
+            let container = item.querySelector(`.replies-container-${cid}`);
+            let toggleBtn = item.querySelector(`.toggle-replies-btn[data-commentid="${cid}"]`);
+            if (!container) {
+                // FIRST reply — the thread box doesn't exist yet, BUILD it now
+                container = document.createElement('div');
+                container.className = `replies-container-${cid}`;
+                container.style.cssText = 'display:block;padding-left:8px;border-left:2px solid #e2e8f0;margin-top:4px;';
+                const area = item.querySelector(`.reply-input-area-${cid}`);
+                if (area) area.insertAdjacentElement('afterend', container);
+                else item.querySelector('.comment-content')?.appendChild(container);
+            }
+            container.insertAdjacentHTML('beforeend', `<div style="display:flex;gap:8px;align-items:flex-start;margin-top:8px;">
+                <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;">${rav}</div>
+                <div style="background:#f1f5f9;border-radius:12px;padding:6px 10px;flex:1;">
+                    <div style="font-weight:800;font-size:12px;color:#0f172a;">${currentUser.name||'User'}</div>
+                    <div style="font-size:13px;color:#334155;">${txt}</div>
+                    <div style="font-size:10px;color:#94a3b8;margin-top:2px;">Just now</div>
+                </div>
+            </div>`);
+            container.style.display = 'block';
+            if (!toggleBtn) {
+                toggleBtn = document.createElement('button');
+                toggleBtn.className = 'toggle-replies-btn';
+                toggleBtn.dataset.commentid = cid;
+                toggleBtn.style.cssText = 'display:flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;color:#3b82f6;font-size:12px;font-weight:800;padding:4px 0;';
+                container.insertAdjacentElement('beforebegin', toggleBtn);
+                bzWireReplyControls(item);
+            }
+            const newCount = container.children.length;
+            toggleBtn.innerHTML = `<i data-lucide="chevron-down" class="reply-chevron-${cid}" style="width:14px;height:14px;transition:transform 0.2s;transform:rotate(180deg);"></i> ${newCount} ${newCount===1?'reply':'replies'}`;
+            lucide.createIcons();
+            // ── BACKGROUND SAVE — never blocks the user ──
+            (async () => {
+                try {
+                    const ref = db.collection('posts').doc(btn.dataset.postid);
+                    const snap = await ref.get();
+                    const comments = snap.data()?.comments || [];
+                    const ci = comments.findIndex(c => String(c.timestamp) === String(cid));
+                    if (ci === -1) return;
+                    if (!comments[ci].replies) comments[ci].replies = [];
+                    comments[ci].replies.push(replyEntry);
+                    await ref.update({ comments });
+                } catch(err) { console.log('reply save error', err); }
+            })();
+        });
+    });
+}
+
+function openMyProfileModal() {
     if (typeof showProfileSkeleton === 'function') showProfileSkeleton();
     const avatarLarge = document.getElementById('profileAvatarLarge');
     if (currentUser?.profilePic) {
@@ -9400,7 +9486,7 @@ document.getElementById('profilePhone').textContent = currentUser.phone || 'Not 
             );
         } else { document.getElementById('profilePicInput').click(); }
     });
-});
+}
 
 document.getElementById('closeProfileBtn').addEventListener('click', () => document.getElementById('profileModal').classList.remove('active'));
 document.getElementById('profileModal').addEventListener('click', e => {
@@ -10448,14 +10534,19 @@ async function openCommentsOverlay(postId) {
         loadAllPosts();
     }));
     lucide.createIcons();
+    bzWireReplyControls(list);
     const sendBtn = document.getElementById('overlayCommentSend');
     const inp = document.getElementById('overlayCommentInput');
     sendBtn.onclick = async () => {
         const txt = inp.value.trim();
         if (!txt) return;
-        await postComment(postId, txt);
+        const nc = await postComment(postId, txt);
         inp.value = '';
-        openCommentsOverlay(postId);
+        if (nc) {
+            list.insertAdjacentHTML('beforeend', renderCommentHTML(nc, postId, allUsers));
+            bzWireReplyControls(list);
+            lucide.createIcons();
+        }
     };
     inp.onkeypress = e => { if (e.key === 'Enter') sendBtn.click(); };
 }
