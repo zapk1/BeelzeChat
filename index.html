@@ -404,7 +404,7 @@
 /* ===== SEARCH BARS - Gradient blue (People & Posts tabs) ===== */
 #userSearch,
 #postSearch {
-    border: 2px solid transparent !important;
+    border: 1px solid transparent !important;
     background-image: linear-gradient(white, white), linear-gradient(135deg, #6366f1, #4338ca) !important;
     background-origin: border-box !important;
     background-clip: padding-box, border-box !important;
@@ -676,8 +676,7 @@ label[for="postImagesInput"].upload-btn {
             display: flex; 
         }
         
-                .app-header { 
-            background: white; 
+                                .app-header { 
             margin: 4px 4px 0; 
             padding: 10px 14px; 
             border-radius: 16px; 
@@ -685,6 +684,10 @@ label[for="postImagesInput"].upload-btn {
             align-items: center; 
             justify-content: space-between; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
+            border: 1px solid transparent;
+            background-image: linear-gradient(white, white), linear-gradient(135deg, #6366f1, #4338ca);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
         }
         
         .header-title { 
@@ -808,14 +811,14 @@ label[for="postImagesInput"].upload-btn {
             color: #94a3b8; 
         }
         
-        .search-input { 
-            width: 100%; 
-            padding: 14px 16px 14px 48px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 14px; 
-            font-size: 15px; 
-            background: #f8fafc; 
-            transition: all 0.3s; 
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 15px;
+            background: #f8fafc;
+            transition: all 0.3s;
         }
         
         .search-input:focus { 
@@ -2063,7 +2066,10 @@ label[for="postImagesInput"].upload-btn {
             display: flex; 
             overflow-x: auto; 
             box-shadow: 0 8px 32px rgba(0,0,0,0.12); 
-            border: 1px solid #e2e8f0; 
+            border: 1px solid transparent; 
+            background-image: linear-gradient(white, white), linear-gradient(135deg, #6366f1, #4338ca); 
+            background-origin: border-box; 
+            background-clip: padding-box, border-box; 
             z-index: 50; 
             -webkit-overflow-scrolling: touch; 
         }
@@ -2727,12 +2733,23 @@ label[for="postImagesInput"].upload-btn {
             display: flex; 
         }
         
-        .viewer-image { 
-            width: 100%; 
-            max-width: 100%; 
-            object-fit: contain; 
-            display: block; 
+        .viewer-image {
+            width: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
         }
+
+        #viewerCarousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            flex: 1;
+            min-height: 0;
+        }
+        #viewerCarousel::-webkit-scrollbar { display: none; }
 
         
         .viewer-actions { 
@@ -7717,8 +7734,13 @@ function openPostDetail(postCardEl) {
     content.appendChild(clone);
     
     // Re-wire image clicks
+        const detailImgs = Array.from(clone.querySelectorAll('.post-image')).map(im => im.dataset.img || im.src);
     clone.querySelectorAll('.post-image').forEach(img => {
-        img.addEventListener('click', e => { e.stopPropagation(); viewImage(e.target.dataset.img || e.target.src); });
+        img.addEventListener('click', e => {
+            e.stopPropagation();
+            const clicked = e.target.dataset.img || e.target.src;
+            viewImage(detailImgs.length ? detailImgs : [clicked], Math.max(0, detailImgs.indexOf(clicked)));
+        });
     });
     
     // Re-wire like button
@@ -8019,7 +8041,8 @@ if (post.commentsEnabled !== false) {
         <div class="post-content">
                         ${post.text ? (() => {
                 const plain = post.text.replace(/<[^>]*>/g, '');
-                const isLong = plain.length > 200;
+            const lineBreaks = (post.text.match(/\n/g) || []).length;
+            const isLong = plain.length > 120 || lineBreaks >= 4;
                 return `<div class="post-text" style="white-space:pre-wrap;">${formatPostText(post.text)}</div>${isLong ? `<button class="see-more-btn" onclick="event.stopPropagation(); var t=this.closest('.post-content').querySelector('.post-text'); t.classList.toggle('expanded'); this.textContent = t.classList.contains('expanded') ? 'See less' : 'See more';">See more</button>` : ''}`;
             })() : ''}
 
@@ -8061,8 +8084,11 @@ if (post.commentsEnabled !== false) {
             carousel.scrollTo({ left: i * carousel.clientWidth, behavior: 'smooth' });
         }));
     }
-    div.querySelectorAll('.post-image').forEach(img => img.addEventListener('click', e => {
-        e.stopPropagation(); viewImage(e.target.dataset.img || e.target.src);
+        div.querySelectorAll('.post-image').forEach(img => img.addEventListener('click', e => {
+        e.stopPropagation();
+        const all = (post.images && post.images.length) ? post.images : [e.target.dataset.img || e.target.src];
+        const clicked = e.target.dataset.img || e.target.src;
+        viewImage(all, Math.max(0, all.indexOf(clicked)));
     }));
     div.querySelector('.post-author-info')?.addEventListener('click', e => {
     e.stopPropagation();
@@ -8087,7 +8113,7 @@ div.querySelector('.post-author-avatar')?.addEventListener('click', e => {
     div.querySelectorAll('.comment-input').forEach(inp => inp.addEventListener('keypress', e => {
         if (e.key === 'Enter') postComment(inp.dataset.postid, inp.value.trim());
     }));
-    div.querySelectorAll('.comment-send-btn').forEach(btn => btn.addEventListener('click', () => {
+        div.querySelectorAll('.comment-send-btn').forEach(btn => btn.addEventListener('pointerdown', () => {
         const inp = div.querySelector(`.comment-input[data-postid="${btn.dataset.postid}"]`);
         postComment(btn.dataset.postid, inp.value.trim());
     }));
@@ -9261,7 +9287,7 @@ function bzWireReplyControls(scope) {
     scope.querySelectorAll('.comment-reply-btn').forEach(btn => {
         if (btn.dataset.bzWired) return;
         btn.dataset.bzWired = '1';
-        btn.addEventListener('click', e => {
+        btn.addEventListener('pointerdown', e => {
             e.stopPropagation();
             const cid = btn.dataset.commentid;
             const item = btn.closest('.comment-item');
@@ -10092,7 +10118,7 @@ document.getElementById('confirmForwardBtn').addEventListener('click', async () 
 // ============================================================
 // IMAGE VIEWER
 // ============================================================
-function viewImage(urlOrArr) {
+function viewImage(urlOrArr, startIndex) {
     if (!urlOrArr) return;
     const imgs = Array.isArray(urlOrArr) ? urlOrArr.filter(Boolean) : [urlOrArr];
     if (!imgs.length) return;
@@ -10105,8 +10131,13 @@ function viewImage(urlOrArr) {
     dotsBox.innerHTML = imgs.length > 1 ? imgs.map((_, i) =>
         `<span class="vDot" data-i="${i}" style="width:8px;height:8px;border-radius:50%;background:${i===0?'#0f172a':'rgba(15,23,42,0.25)'};transition:background 0.2s;cursor:pointer;"></span>`
     ).join('') : '';
-    if (hidden) hidden.src = imgs[0];
-    dotsBox.querySelectorAll('.vDot').forEach((d, i) => d.addEventListener('click', () => carousel.scrollTo({ left: i * carousel.clientWidth, behavior: 'smooth' })));
+    const start = Math.max(0, Math.min(startIndex || 0, imgs.length - 1));
+    if (hidden) hidden.src = imgs[start];
+    dotsBox.querySelectorAll('.vDot').forEach((d, i) => {
+        d.style.background = i === start ? '#0f172a' : 'rgba(15,23,42,0.25)';
+        d.addEventListener('click', () => carousel.scrollTo({ left: i * carousel.clientWidth, behavior: 'smooth' }));
+    });
+    requestAnimationFrame(() => carousel.scrollTo({ left: start * carousel.clientWidth, behavior: 'auto' }));
     let _vTimer = null;
     carousel.addEventListener('scroll', () => {
         clearTimeout(_vTimer);
