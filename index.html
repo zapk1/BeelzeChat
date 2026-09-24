@@ -3431,13 +3431,14 @@ form input[type="text"] {
     <div class="logo-container" style="text-align:center;margin-bottom:22px;">
       <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" alt="BeelzeChat" class="app-logo" style="width:64px;height:64px;border-radius:16px;margin:0 auto 12px;display:block;box-shadow:0 8px 20px rgba(43,43,158,0.25);">
       <div class="app-title" style="font-size:24px;font-weight:800;color:#111827;letter-spacing:-0.5px;">Welcome to BeelzeChat</div>
-      <div class="auth-subtitle" style="color:#9ca3af;font-size:14px;margin-top:6px;font-weight:500;">Free messaging for everyone</div>
+            <div class="auth-subtitle" style="color:#3F51B5;font-size:11px;margin-top:6px;font-weight:700;">Platform for Business and Wealthy People</div>
+      <div style="color:#3F51B5;font-size:11px;margin-top:4px;font-weight:700;">R3,000 per month to access</div>
     </div>
 
     <!-- LOGIN -->
     <form id="loginForm">
       <!-- Google -->
-      <button type="button" class="btn" id="googleSignInBtn" style="background:#ffffff;color:#111827;border:1.5px solid #D1D1D1;border-radius:10px;padding:13px 16px;font-size:15px;font-weight:600;margin-bottom:10px;position:relative;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+      <button type="button" class="btn" id="googleSignInBtn" style="background:#ffffff;color:#111827;border:1px solid #3F51B5;border-radius:10px;padding:13px 16px;font-size:15px;font-weight:600;margin-bottom:10px;position:relative;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
         <svg width="20" height="20" viewBox="0 0 24 24" style="flex-shrink:0;">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -3457,12 +3458,12 @@ form input[type="text"] {
 
       <!-- Inputs -->
       <div class="form-group" style="margin-bottom:12px;">
-                <input type="email" class="form-input" id="loginIdentifier" placeholder="Enter your email" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+                <input type="email" class="form-input" id="loginIdentifier" placeholder="Enter your email" required style="width:100%;padding:13px 14px;border: 1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:14px;">
         <div style="position:relative;">
-          <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required style="width:100%;padding:13px 44px 13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
-          <button type="button" onclick="togglePw('loginPassword','loginEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
+          <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required style="width:100%;padding:13px 44px 13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+<button type="button" onmousedown="event.preventDefault()" onclick="togglePw('loginPassword','loginEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
             <i data-lucide="eye" id="loginEye" style="width:20px;height:20px;color:#9ca3af;"></i>
           </button>
         </div>
@@ -3500,14 +3501,14 @@ form input[type="text"] {
     <!-- SIGNUP -->
     <form id="signupForm" class="hidden">
       <div class="form-group" style="margin-bottom:12px;">
-        <input type="text" class="form-input" id="signupName" placeholder="Full name" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+        <input type="text" class="form-input" id="signupName" placeholder="Full name" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:12px;">
-          <input type="email" class="form-input" id="signupIdentifier" placeholder="Email" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+          <input type="email" class="form-input" id="signupIdentifier" placeholder="Email" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:12px;">
         <div style="position:relative;">
-          <input type="password" class="form-input" id="signupPassword" placeholder="Create a password" required style="width:100%;padding:13px 44px 13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+          <input type="password" class="form-input" id="signupPassword" placeholder="Create a password" required style="width:100%;padding:13px 44px 13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
           <button type="button" onclick="togglePw('signupPassword','signupEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
             <i data-lucide="eye" id="signupEye" style="width:20px;height:20px;color:#9ca3af;"></i>
           </button>
@@ -3515,7 +3516,7 @@ form input[type="text"] {
       </div>
       <div class="form-group" style="margin-bottom:14px;">
         <div style="position:relative;">
-          <input type="password" class="form-input" id="signupConfirmPassword" placeholder="Confirm password" required style="width:100%;padding:13px 44px 13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+          <input type="password" class="form-input" id="signupConfirmPassword" placeholder="Confirm password" required style="width:100%;padding:13px 44px 13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
           <button type="button" onclick="togglePw('signupConfirmPassword','confirmEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
             <i data-lucide="eye" id="confirmEye" style="width:20px;height:20px;color:#9ca3af;"></i>
           </button>
@@ -3536,14 +3537,14 @@ form input[type="text"] {
     <!-- FORGOT -->
     <form id="forgotForm" class="hidden">
       <div class="form-group" style="margin-bottom:12px;">
-   <input type="email" class="form-input" id="forgotIdentifier" placeholder="Email" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+   <input type="email" class="form-input" id="forgotIdentifier" placeholder="Email" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:12px;">
-        <input type="text" class="form-input" id="resetCode" placeholder="6-digit reset code" maxlength="6" required style="width:100%;padding:13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+        <input type="text" class="form-input" id="resetCode" placeholder="6-digit reset code" maxlength="6" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:14px;">
         <div style="position:relative;">
-          <input type="password" class="form-input" id="newPassword" placeholder="New password" required style="width:100%;padding:13px 44px 13px 14px;border:1.5px solid #D1D1D1;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+          <input type="password" class="form-input" id="newPassword" placeholder="New password" required style="width:100%;padding:13px 44px 13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
           <button type="button" onclick="togglePw('newPassword','newPwEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
             <i data-lucide="eye" id="newPwEye" style="width:20px;height:20px;color:#9ca3af;"></i>
           </button>
@@ -3553,7 +3554,7 @@ form input[type="text"] {
         <i data-lucide="check-circle" style="width:20px;height:20px;"></i>
         Reset password
       </button>
-      <button type="button" class="btn btn-secondary" id="backToLoginBtn" style="background:#fff;color:#6b7280;border:1.5px solid #D1D1D1;border-radius:10px;padding:13px;font-size:15px;font-weight:600;margin-top:10px;">
+      <button type="button" class="btn btn-secondary" id="backToLoginBtn" style="background:#fff;color:#6b7280;border:1px solid #3F51B5;border-radius:10px;padding:13px;font-size:15px;font-weight:600;margin-top:10px;">
         <i data-lucide="arrow-left" style="width:20px;height:20px;"></i>
         Back to login
       </button>
@@ -6274,7 +6275,8 @@ if (auth) {
                 profilePic: firebaseUser.photoURL || null,
                 bio: '',
                 userAgent: navigator.userAgent,
-                googleAuth: !!firebaseUser.providerData.find(p => p.providerId === 'google.com')
+                googleAuth: !!firebaseUser.providerData.find(p => p.providerId === 'google.com'),
+                richVerified: false
             });
             ud = await db.collection('users').doc(firebaseUserId).get();
         }
@@ -6539,14 +6541,11 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
 
 
 
+// ===== RICH ACCOUNT SIGNUP — pay R3,000 first, then create the account =====
+const RICH_SUBSCRIPTION_AMOUNT = '3000.00';
+
 document.getElementById('signupForm').addEventListener('submit', async e => {
     e.preventDefault();
-    showToast('info', 'Creating', 'Wait...');
-    // Show loading screen immediately to prevent white screen
-    const ls = document.getElementById('loadingScreen');
-    ls.style.display = 'flex';
-    ls.classList.remove('hide');
-    showLoadingScreen();
     const name = document.getElementById('signupName').value.trim();
     const identifier = document.getElementById('signupIdentifier').value.trim();
     const password = document.getElementById('signupPassword').value;
@@ -6556,58 +6555,258 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     if (password.length < 6) { showToast('error', 'Error', 'Password 6+ chars'); return; }
     if (password !== confirmPassword) { showToast('error', 'Passwords do not match!', 'Try again'); return; }
 
-        // Create the Firebase Auth account first — email is the single source of truth
-    window._bzSignupPending = true;
-    localStorage.removeItem('sxchatUser');   // never load the OLD account into a NEW signup
-    try { await auth.createUserWithEmailAndPassword(identifier, password); }
-    catch (err) { window._bzSignupPending = false; showToast('error', 'Error', err.message || 'Could not create account'); restoreAuthScreen(); return; }
+    // Save the pending signup details so the PayFast return handler can finish creating the account
+    localStorage.setItem('bz_pendingRichSignup', JSON.stringify({
+        name, identifier, password, at: Date.now()
+    }));
 
-
-    const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
-    const rc = Math.floor(100000 + Math.random() * 900000).toString();
-    const ud = await db.collection('users').doc(userId).get();
-    if (ud.exists) { showToast('error', 'Error', 'Account exists'); return; }
-
-        // Generate unique BeelzeChatID
-    const beelzeId = 'BeelzeChatID-' + Math.random().toString(36).substring(2, 6).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
-
-    // Create Firestore user
-    await db.collection('users').doc(userId).set({
-        name, identifier, password, resetCode: rc,
-        beelzeId,
-        createdAt: Date.now(), online: false,
-        blockedUsers: [], profilePic: null, bio: '',
-        userAgent: navigator.userAgent
-    });
-
-    showToast('success', 'Done!', `Your reset code: ${rc}`);
-    // Auto-login the new account so it's never treated as a guest
-    currentUser = { id: userId, name, identifier, profilePic: null, bio: '', blockedUsers: [], resetCode: rc, beelzeId };
-    currentUser.userAgent = navigator.userAgent;
-    allUsers[currentUser.id] = { ...(allUsers[currentUser.id] || {}), ...currentUser };
-    localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
-    let _accs = JSON.parse(localStorage.getItem('sxchatAccounts') || '[]');
-    if (!_accs.find(a => a.id === userId)) {
-        _accs.push({ id: userId, name, identifier, profilePic: null });
-        localStorage.setItem('sxchatAccounts', JSON.stringify(_accs));
-    }
-    await db.collection('users').doc(userId).update({ online: true });
-    window._justLoggedIn = true;
-    document.getElementById('authScreen').style.display = 'none';
-    await initializeApp();
-    await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
-    document.getElementById('app').classList.add('active');
-    updateProfileButton();
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
-    ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
-    document.getElementById('storiesTab').classList.remove('hidden');
-    loadNotifications();
-    window.finishLoading();
-        // In-app "Welcome back" toast removed — the OneSignal welcome push (fired in onAuthStateChanged) handles it instead.
-    window._bzSignupPending = false;
-    document.getElementById('signupForm').reset();
+    // Show the full-screen RED Rich Account subscription page
+    showRichAccountPayScreen(name, identifier);
 });
+
+// ===== Full-screen RED page with the white Rich Account box =====
+function showRichAccountPayScreen(name, email) {
+    // Remove any existing one
+    const old = document.getElementById('richPayScreen');
+    if (old) old.remove();
+
+    const screen = document.createElement('div');
+    screen.id = 'richPayScreen';
+    screen.style.cssText = 'position:fixed;inset:0;z-index:9999999;background:#ffffff;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:16px 12px;';
+
+    screen.innerHTML = `
+        <div style="background:#ffffff;border-radius:20px;width:100%;max-width:360px;max-height:calc(100vh - 32px);padding:0;box-shadow:0 8px 30px rgba(0,0,0,0.12);overflow-y:auto;position:relative;border:1px solid #f1f5f9;">
+        <!-- King logo top-left corner of the box -->
+        <div style="position:absolute;top:14px;left:14px;z-index:5;width:34px;height:34px;background:#fef2f2;border-radius:9px;display:flex;align-items:center;justify-content:center;border:1px solid #fecaca;">
+            <i data-lucide="crown" style="width:18px;height:18px;color:#dc2626;"></i>
+        </div>
+        <!-- Close (X) top-right -->
+        <button onclick="document.getElementById('richPayScreen').remove();document.getElementById('authScreen').style.display='flex';" style="position:absolute;top:14px;right:14px;z-index:5;background:#f1f5f9;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+            <i data-lucide="x" style="width:18px;height:18px;color:#64748b;"></i>
+        </button>
+
+        <!-- Top: app logo + app name -->
+        <div style="padding:26px 20px 10px;text-align:center;background:linear-gradient(135deg,#fff,#fef2f2);">
+            <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:56px;height:56px;border-radius:14px;margin:0 auto 10px;display:block;box-shadow:0 6px 18px rgba(220,38,38,0.25);">
+            <div style="font-weight:900;font-size:20px;color:#0f172a;letter-spacing:-0.5px;">BeelzeChat</div>
+        </div>
+
+        <div style="padding:16px 22px 24px;">
+            <!-- Red heading -->
+            <div style="color:#dc2626;font-weight:900;font-size:17px;text-align:center;line-height:1.3;margin-bottom:12px;">
+               Rich Account Subscription 
+            </div>
+
+            <!-- Sliding belt of full square images -->
+            <div id="richPayCarousel" style="width:100%;overflow:hidden;margin-bottom:12px;border-radius:12px;background:#f8fafc;">
+                <div id="richPayTrack" style="display:flex;transition:transform 0.5s ease;">
+                    <img src="https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/7765672e5_instagram_1790271173897.jpg" class="richPaySlide" style="width:100%;flex-shrink:0;aspect-ratio:1;object-fit:cover;">
+                    <img src="https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/dc8ec6cd2_instagram_1790271182281.jpg" class="richPaySlide" style="width:100%;flex-shrink:0;aspect-ratio:1;object-fit:cover;">
+                    <img src="https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/285401ebb_instagram_1790271177432.jpg" class="richPaySlide" style="width:100%;flex-shrink:0;aspect-ratio:1;object-fit:cover;">
+                    <img src="https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/f85c42a79_instagram_1790271163744.jpg" class="richPaySlide" style="width:100%;flex-shrink:0;aspect-ratio:1;object-fit:cover;">
+                    <img src="https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/df2843057_instagram_1790271121630.jpg" class="richPaySlide" style="width:100%;flex-shrink:0;aspect-ratio:1;object-fit:cover;">
+                </div>
+            </div>
+
+            <!-- Benefits heading -->
+            <div style="font-weight:800;font-size:14px;color:#0f172a;margin-bottom:10px;text-align:center;">
+                The benefits of creating a Rich Account with BeelzeChat
+            </div>
+
+            <!-- Green-tick benefits -->
+            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
+                <div style="display:flex;align-items:flex-start;gap:8px;"><i data-lucide="check-circle" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12.5px;color:#334155;line-height:1.4;">You control the social media — you control this app, you control everything. No rules, no AI that can ban you.</span></div>
+                <div style="display:flex;align-items:flex-start;gap:8px;"><i data-lucide="check-circle" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12.5px;color:#334155;line-height:1.4;">You access wealthy users and business people.</span></div>
+                <div style="display:flex;align-items:flex-start;gap:8px;"><i data-lucide="check-circle" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12.5px;color:#334155;line-height:1.4;">You can sell to rich people.</span></div>
+                <div style="display:flex;align-items:flex-start;gap:8px;"><i data-lucide="check-circle" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12.5px;color:#334155;line-height:1.4;">You can access big jobs and serious opportunities.</span></div>
+                <div style="display:flex;align-items:flex-start;gap:8px;"><i data-lucide="check-circle" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12.5px;color:#334155;line-height:1.4;">Provide a service to rich users and business people.</span></div>
+                <div style="display:flex;align-items:flex-start;gap:8px;"><i data-lucide="check-circle" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12.5px;color:#334155;line-height:1.4;">Talk to your rich friends without any interruptions.</span></div>
+                <div style="display:flex;align-items:flex-start;gap:8px;"><i data-lucide="check-circle" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12.5px;color:#334155;line-height:1.4;">Connect and network with wealthy people — make friendships and build things together.</span></div>
+                <div style="display:flex;align-items:flex-start;gap:8px;"><i data-lucide="check-circle" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12.5px;color:#334155;line-height:1.4;">Find your right partner — meet people with the right mindset.</span></div>
+                <div style="display:flex;align-items:flex-start;gap:8px;"><i data-lucide="check-circle" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12.5px;color:#334155;line-height:1.4;">No chaotic posts.</span></div>
+                <div style="display:flex;align-items:flex-start;gap:8px;"><i data-lucide="check-circle" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12.5px;color:#334155;line-height:1.4;">No chaotic people.</span></div>
+            </div>
+
+            <!-- Pay button with King icon -->
+            <button id="richPayBtn" onclick="startRichPayment()" style="width:100%;padding:16px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:14px;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 18px rgba(220,38,38,0.35);">
+                <i data-lucide="crown" style="width:20px;height:20px;"></i> Pay Rich Account
+            </button>
+
+            <!-- Price + monthly note -->
+            <div style="text-align:center;margin-top:12px;">
+                <div style="font-size:22px;font-weight:900;color:#dc2626;">R3,000</div>
+                <div style="font-size:11px;color:#64748b;font-weight:600;margin-top:4px;line-height:1.4;">It takes R3,000 every month to use it and to access the users inside this app.</div>
+            </div>
+        </div>
+    </div>`;
+
+    document.body.appendChild(screen);
+    document.getElementById('authScreen').style.display = 'none';
+    lucide.createIcons();
+    // Auto-rotate the luxury images every 2.5 seconds
+    var _richTrack = document.getElementById('richPayTrack');
+    var _richSlides = _richTrack ? _richTrack.querySelectorAll('.richPaySlide') : [];
+    var _richIdx = 0;
+    if (_richTrack && _richSlides.length > 1) {
+        setInterval(function(){
+            _richIdx = (_richIdx + 1) % _richSlides.length;
+            _richTrack.style.transform = 'translateX(-' + (_richIdx * 100) + '%)';
+        }, 2500);
+    }
+}
+
+// ===== Send the R3,000 payment to PayFast, then the return handler finishes creating the account =====
+async function startRichPayment() {
+    const btn = document.getElementById('richPayBtn');
+    const pending = JSON.parse(localStorage.getItem('bz_pendingRichSignup') || '{}');
+    if (!pending.identifier) { showToast('error', 'Error', 'Signup details missing — go back and fill the form'); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-circle" style="width:20px;height:20px;animation:spin 0.8s linear infinite;"></i> Redirecting to PayFast...';
+    lucide.createIcons();
+
+    try {
+        const orderRef = 'BZRICH-' + pending.identifier.replace(/[^a-zA-Z0-9]/g, '') + '-' + Date.now();
+        localStorage.setItem('bz_pendingRichSignup', JSON.stringify({ ...pending, orderRef }));
+
+        const res = await fetch(PAYFAST_WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: RICH_SUBSCRIPTION_AMOUNT,
+                itemName: 'BeelzeChat Rich Account Subscription',
+                itemDesc: 'R3,000/month — Rich Account access',
+                nameFirst: (pending.name || '').split(' ')[0],
+                email: pending.identifier,
+                orderRef: orderRef
+            })
+        });
+        const data = await res.json();
+        if (!data.url || !data.fields) { showToast('error', 'Payment error', 'Could not start payment'); resetRichPayBtn(btn); return; }
+
+        // POST a hidden form to PayFast (PayFast needs a form submit, not a redirect)
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = data.url;
+        Object.entries(data.fields).forEach(([k, v]) => {
+            const i = document.createElement('input');
+            i.type = 'hidden'; i.name = k; i.value = v;
+            form.appendChild(i);
+        });
+        document.body.appendChild(form);
+        form.submit();
+    } catch (e) {
+        showToast('error', 'Payment failed', e.message || 'Check your connection');
+        resetRichPayBtn(btn);
+    }
+}
+
+function resetRichPayBtn(btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="crown" style="width:20px;height:20px;"></i> Pay Rich Account';
+    lucide.createIcons();
+}
+
+// ===== PayFast return — finish creating the Rich Account after payment =====
+(async function handleRichSignupReturn() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('pf') !== 'return') return;
+    const pending = JSON.parse(localStorage.getItem('bz_pendingRichSignup') || 'null');
+    if (!pending || !pending.identifier) return;
+
+    // Clean the URL
+    history.replaceState({}, document.title, window.location.pathname);
+
+    (async () => {
+        // Show a loading screen while the account is being created
+        const ls = document.getElementById('loadingScreen');
+        if (ls) { ls.style.display = 'flex'; ls.classList.remove('hide'); }
+        if (typeof showLoadingScreen === 'function') showLoadingScreen();
+
+        const name = pending.name;
+        const identifier = pending.identifier;
+        const password = pending.password;
+
+        try {
+            window._bzSignupPending = true;
+            localStorage.removeItem('sxchatUser');
+
+            // 1. Firebase Auth account
+            try { await auth.createUserWithEmailAndPassword(identifier, password); }
+            catch (err) {
+                // If it already exists (e.g. they retried), sign in instead
+                try { await auth.signInWithEmailAndPassword(identifier, password); } catch(e2) {}
+            }
+
+            const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
+            const rc = Math.floor(100000 + Math.random() * 900000).toString();
+            const beelzeId = 'BeelzeChatID-' + Math.random().toString(36).substring(2, 6).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
+
+            // 2. Firestore user — richVerified = true automatically (paid R3,000)
+            const ud = await db.collection('users').doc(userId).get();
+            if (!ud.exists) {
+                await db.collection('users').doc(userId).set({
+                    name, identifier, password, resetCode: rc, beelzeId,
+                    createdAt: Date.now(), online: false,
+                    blockedUsers: [], profilePic: null, bio: '',
+                    userAgent: navigator.userAgent,
+                    richVerified: true,            // ← auto-verified as a Rich user
+                    richSubscribedAt: Date.now(),
+                    richSubscriptionAmount: 3000
+                });
+                // Record the payment in a subscriptions collection for the admin panel
+                await db.collection('richSubscriptions').add({
+                    userId, userName: name, userEmail: identifier,
+                    amount: 3000, orderRef: pending.orderRef || '',
+                    paidAt: Date.now(), status: 'paid'
+                });
+            } else {
+                // Existing user who just paid — upgrade them to Rich
+                await db.collection('users').doc(userId).update({
+                    richVerified: true,
+                    richSubscribedAt: Date.now(),
+                    richSubscriptionAmount: 3000
+                });
+            }
+
+            // 3. Auto-login
+            currentUser = { id: userId, name, identifier, profilePic: null, bio: '', blockedUsers: [], resetCode: rc, beelzeId, richVerified: true };
+            currentUser.userAgent = navigator.userAgent;
+            allUsers[currentUser.id] = { ...(allUsers[currentUser.id] || {}), ...currentUser };
+            localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
+            let _accs = JSON.parse(localStorage.getItem('sxchatAccounts') || '[]');
+            if (!_accs.find(a => a.id === userId)) {
+                _accs.push({ id: userId, name, identifier, profilePic: null });
+                localStorage.setItem('sxchatAccounts', JSON.stringify(_accs));
+            }
+            await db.collection('users').doc(userId).update({ online: true });
+            window._justLoggedIn = true;
+
+            // 4. Remove the red screen + load the app
+            const rps = document.getElementById('richPayScreen');
+            if (rps) rps.remove();
+            document.getElementById('authScreen').style.display = 'none';
+            await initializeApp();
+            await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
+            document.getElementById('app').classList.add('active');
+            updateProfileButton();
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
+            ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
+            document.getElementById('storiesTab').classList.remove('hidden');
+            loadNotifications();
+            window.finishLoading();
+            window._bzSignupPending = false;
+            localStorage.removeItem('bz_pendingRichSignup');
+            showToast('success', 'Rich Account Created!', 'Welcome to BeelzeChat 🤝');
+        } catch (e) {
+            console.error('Rich signup finish error:', e);
+            window._bzSignupPending = false;
+            restoreAuthScreen();
+            showToast('error', 'Account error', e.message || 'Email support@beelzechat.co.za with your payment reference');
+        }
+    })();
+})();
 
 document.getElementById('forgotForm').addEventListener('submit', async e => {
     e.preventDefault();
@@ -6971,18 +7170,17 @@ function togglePw(inputId, iconId) {
     if (!input) return;
     const isPw = input.type === 'password';
     input.type = isPw ? 'text' : 'password';
-
-    // Lucide replaces <i data-lucide> with <svg> and drops the id,
-    // so find the icon by its wrapper button and re-create it.
     const wrapper = input.parentElement;
-    const oldSvg = wrapper.querySelector('svg, i[data-lucide]');
-    const newIcon = document.createElement('i');
-    newIcon.setAttribute('data-lucide', isPw ? 'eye-off' : 'eye');
-    newIcon.style.width = '20px';
-    newIcon.style.height = '20px';
-    newIcon.style.color = '#94a3b8';
-    if (oldSvg) oldSvg.replaceWith(newIcon);
-    lucide.createIcons();
+    const oldIcon = wrapper.querySelector('svg, i[data-lucide]');
+    if (!oldIcon) return;
+    // Swap the icon SVG directly — avoids lucide.createIcons() which scans
+    // the whole DOM, gets blocked by the typing-safe wrapper while the input
+    // is focused, and freezes the keyboard.
+    const eyeSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+    const eyeOffSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>';
+    const tmp = document.createElement('span');
+    tmp.innerHTML = isPw ? eyeOffSvg : eyeSvg;
+    oldIcon.replaceWith(tmp.firstChild);
 }
 
 
