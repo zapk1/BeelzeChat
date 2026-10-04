@@ -7708,20 +7708,104 @@ document.querySelectorAll('.category-btn').forEach(b => b.addEventListener('clic
     filterPosts();
 }));
 
+let _searchDebounceTimer = null;
+let _allPostsCache = null;
+let _allPostsPromise = null;
+let _searchRenderToken = 0;
+let _searchWasActive = false;
+
+// Pull the WHOLE posts collection once so search reaches every post, not just the loaded ones
+function _loadAllPostsCache() {
+    if (_allPostsCache) return Promise.resolve(_allPostsCache);
+    if (_allPostsPromise) return _allPostsPromise;
+    _allPostsPromise = (async () => {
+        try {
+            const snap = await db.collection('posts').orderBy('timestamp', 'desc').limit(500).get();
+            _allPostsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        } catch (e) { _allPostsCache = []; }
+        _allPostsPromise = null;
+        return _allPostsCache;
+    })();
+    return _allPostsPromise;
+}
+
+// Match against the post text, hashtag, category AND author name
+function _postMatchesSearch(post, term) {
+    const txt = (post.text || '').replace(/<[^>]*>/g, '').toLowerCase();
+    const cat = (post.category || '').toLowerCase();
+    const author = allUsers[post.userId];
+    const authorName = author ? (author.name || '').toLowerCase() : '';
+    return (txt + ' ' + cat + ' ' + authorName).includes(term);
+}
+
 document.getElementById('postSearch')?.addEventListener('input', function() {
-    currentPostSearchTerm = this.value.toLowerCase();
-    filterPosts();
+    clearTimeout(_searchDebounceTimer);
+    const val = this.value;
+    _searchDebounceTimer = setTimeout(() => {
+        currentPostSearchTerm = val.toLowerCase().trim();
+        filterPosts();
+    }, 250); // debounce so typing/clearing never freezes the page
 });
 
-function filterPosts() {
-    document.querySelectorAll('.post-card').forEach(p => {
-        const cat = p.dataset.category || 'other';
-        const txt = p.querySelector('.post-text')?.textContent.toLowerCase() || '';
-        const cm = currentPostCategory === 'all' || cat === currentPostCategory;
-        const sm = !currentPostSearchTerm || txt.includes(currentPostSearchTerm);
-        p.style.display = (cm && sm) ? 'block' : 'none';
-    });
+async function filterPosts() {
+    const term = (currentPostSearchTerm || '').trim();
+    const pl = document.getElementById('postsList');
+    if (!pl) return;
+
+    // ----- NO SEARCH: restore the normal feed -----
+    if (!term) {
+        pl.querySelectorAll('.search-no-results').forEach(el => el.remove());
+        pl.querySelectorAll('.banner-ad-card').forEach(el => el.style.display = '');
+        if (_searchWasActive) {
+            _searchWasActive = false;
+            _allPostsCache = null;
+            loadAllPosts(); // restart the regular paginated feed
+            return;
+        }
+        document.querySelectorAll('.post-card').forEach(p => {
+            const cat = p.dataset.category || 'other';
+            p.style.display = (currentPostCategory === 'all' || cat === currentPostCategory) ? '' : 'none';
+        });
+        injectFeedBanners();
+        return;
+    }
+
+    // ----- SEARCH: query the full collection, match everything, hide ads -----
+    _searchWasActive = true;
+    const myToken = ++_searchRenderToken;
+    pl.querySelectorAll('.banner-ad-card').forEach(el => el.style.display = 'none'); // ads hidden while searching
+
+    if (!_allPostsCache) {
+        pl.innerHTML = '<div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;gap:14px;border:1px solid #e2e8f0;border-radius:16px;margin:12px 0;background:#fff;">' +
+            '<i data-lucide="search" style="width:30px;height:30px;color:#3F51B5;"></i>' +
+            '<div style="width:36px;height:36px;border:2px solid #e2e8f0;border-top-color:#3F51B5;border-radius:50%;animation:spin 0.8s linear infinite;"></div>' +
+            '<span style="font-size:14px;font-weight:700;color:#0f172a;">Searching posts…</span>' +
+            '</div>';
+        lucide.createIcons();
+    }
+
+    await _loadAllPostsCache();
+    if (myToken !== _searchRenderToken) return; // a newer keystroke took over
+
+    let matched = _allPostsCache.filter(p => _postMatchesSearch(p, term));
+    if (currentPostCategory && currentPostCategory !== 'all') {
+        matched = matched.filter(p => (p.category || 'other') === currentPostCategory);
+    }
+
+    pl.innerHTML = '';
+    if (matched.length === 0) {
+        pl.innerHTML = '<div class="search-no-results" style="grid-column:1/-1;text-align:center;padding:54px 20px;color:#94a3b8;font-weight:700;font-size:15px;">No results for &ldquo;' + term.replace(/[<>&"']/g, '') + '&rdquo;</div>';
+        return;
+    }
+
+    for (const p of matched) {
+        const el = await createPostElement(p);
+        if (myToken !== _searchRenderToken) return; // stale, let the newer search render
+        if (el && el.tagName) pl.appendChild(el);
+    }
+    lucide.createIcons();
 }
+
 
 
 
@@ -7781,6 +7865,7 @@ async function _loadOlderPool() {
 
 async function loadMorePosts() {
     if (_postsLoading) return;
+    if (currentPostSearchTerm) return; // searching uses its own full result set — don't paginate
     if (_recentDone && _olderPool.length && _olderServed >= _olderPool.length) _postsHasMore = false;
     if (!_postsHasMore) return;
     _postsLoading = true;
@@ -8031,8 +8116,8 @@ function openPostDetail(postCardEl) {
 
 // Also rebuild grid when posts get filtered
 const _origFilterPosts = filterPosts;
-filterPosts = function() {
-    _origFilterPosts();
+filterPosts = async function() {
+    await _origFilterPosts();
     if (currentViewMode === 'grid') buildGridView();
 };
 
@@ -12698,7 +12783,7 @@ function bzShowPostsEndIndicator() {
     }
     if (storiesTab && !storiesTab.classList.contains('hidden') && !postsShown) {
       postsShown = true;
-      bzShowPostsEndIndicator();
+      // "Loading millions of remaining posts" box removed — it left a big empty gap in the feed
     }
   });
 })();
