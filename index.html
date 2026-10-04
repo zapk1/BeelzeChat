@@ -819,9 +819,9 @@ label[for="postImagesInput"].upload-btn {
         
         .search-input {
             width: 100%;
-            padding: 14px 16px 14px 48px;
+            padding: 16px 22px 16px 50px;
             border: 1px solid #e2e8f0;
-            border-radius: 14px;
+            border-radius: 999px;
             font-size: 15px;
             background: #f8fafc;
             transition: all 0.3s;
@@ -1232,9 +1232,12 @@ label[for="postImagesInput"].upload-btn {
             gap: 6px; 
         }
         
-        .post-stat i { 
-            width: 18px; 
-            height: 18px; 
+        .post-stat i, .post-stat svg { 
+            width: 18px !important; 
+            height: 18px !important; 
+            flex-shrink: 0; 
+            display: inline-block; 
+            vertical-align: middle; 
         }
         
                 .post-actions {
@@ -1275,9 +1278,12 @@ label[for="postImagesInput"].upload-btn {
             background: #fee2e2 !important; 
         }
         
-        .post-action-btn i { 
-            width: 18px; 
-            height: 18px; 
+        .post-action-btn i, .post-action-btn svg { 
+            width: 18px !important; 
+            height: 18px !important; 
+            flex-shrink: 0; 
+            display: inline-block; 
+            vertical-align: middle; 
         }
         
         .post-comments { 
@@ -7916,6 +7922,7 @@ async function loadMorePosts() {
                 if (el && el.tagName) {
                     if (existingCards[p.id]) existingCards[p.id].replaceWith(el);
                     else pl.appendChild(el);
+                    if (window.lucide) lucide.createIcons();
                 }
             }
         } else if (_recentDone && _olderServed >= _olderPool.length) {
@@ -8616,7 +8623,7 @@ async function togglePostLike(postId) {
         const span = b.querySelector('span');
         if (span) { const n = parseInt(span.dataset.likes || '0') || 0; if (n) cur = n; }
         b.classList.toggle('liked', nowLiked);
-        const ic = b.querySelector('i'); if (ic) ic.style.color = nowLiked ? '#ef4444' : '#94a3b8';
+        const ic = b.querySelector('i, svg'); if (ic) ic.style.color = nowLiked ? '#ef4444' : '#94a3b8';
         if (span) { const nv = nowLiked ? cur + 1 : Math.max(cur - 1, 0); span.dataset.likes = nv; span.textContent = formatCount(nv); }
     });
     showToast(nowLiked ? 'success' : 'info', nowLiked ? 'Liked!' : 'Unliked', nowLiked ? 'Added' : 'Removed');
