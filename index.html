@@ -3444,8 +3444,8 @@ form input[type="text"] {
     <div class="logo-container" style="text-align:center;margin-bottom:22px;">
       <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" alt="BeelzeChat" class="app-logo" style="width:64px;height:64px;border-radius:16px;margin:0 auto 12px;display:block;box-shadow:0 8px 20px rgba(43,43,158,0.25);">
       <div class="app-title" style="font-size:24px;font-weight:800;color:#111827;letter-spacing:-0.5px;">Welcome to BeelzeChat</div>
-            <div class="auth-subtitle" style="color:#3F51B5;font-size:11px;margin-top:6px;font-weight:700;"> Dark  Platform For Winning and Richness</div>
-      <div style="color:#3F51B5;font-size:11px;margin-top:4px;font-weight:700;">R3,000 per month to access</div>
+            <div class="auth-subtitle" style="color:#3F51B5;font-size:11px;margin-top:6px;font-weight:700;">Platform for Marketing your Business and Learning</div>
+      <div style="color:#16a34a;font-size:11px;margin-top:4px;font-weight:700;">Free to create your account</div>
     </div>
 
     <!-- LOGIN -->
@@ -3496,7 +3496,12 @@ form input[type="text"] {
       <!-- Primary purple CTA -->
       <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);">
         <i data-lucide="log-in" style="width:20px;height:20px;"></i>
-        Continue with email
+        Log in
+      </button>
+
+      <button type="button" onclick="showSignup()" style="width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:1px solid #dc2626;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;box-sizing:border-box;">
+        <i data-lucide="crown" style="width:20px;height:20px;"></i>
+        Create Account
       </button>
 
       <div id="loginError" class="error-message"></div>
@@ -3535,9 +3540,9 @@ form input[type="text"] {
           </button>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);">
-        <i data-lucide="user-check" style="width:20px;height:20px;"></i>
-        Create account
+      <button type="submit" id="signupSubmitBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:1px solid #dc2626;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;box-sizing:border-box;">
+        <i data-lucide="crown" style="width:20px;height:20px;"></i>
+        Create Account
       </button>
       <div id="signupError" class="error-message"></div>
       <div id="signupSuccess" class="success-message"></div>
@@ -6568,13 +6573,72 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     if (password.length < 6) { showToast('error', 'Error', 'Password 6+ chars'); return; }
     if (password !== confirmPassword) { showToast('error', 'Passwords do not match!', 'Try again'); return; }
 
-    // Save the pending signup details so the PayFast return handler can finish creating the account
-    localStorage.setItem('bz_pendingRichSignup', JSON.stringify({
-        name, identifier, password, at: Date.now()
-    }));
+    // ===== FREE SIGNUP — create the account instantly, no payment =====
+    try {
+        if (typeof showLoadingScreen === 'function') showLoadingScreen();
+        window._bzSignupPending = true;
+        localStorage.removeItem('sxchatUser');
 
-    // Show the full-screen RED Rich Account subscription page
-    showRichAccountPayScreen(name, identifier);
+        // Hide the signup screen IMMEDIATELY — it must never flash back while the account loads
+        document.getElementById('authScreen').style.display = 'none';
+
+
+        // 1. Firebase Auth account
+        try { await auth.createUserWithEmailAndPassword(identifier, password); }
+        catch (err) {
+            try { await auth.signInWithEmailAndPassword(identifier, password); } catch(e2) {}
+        }
+
+        const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
+        const rc = Math.floor(100000 + Math.random() * 900000).toString();
+        const beelzeId = 'BeelzeChatID-' + Math.random().toString(36).substring(2, 6).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
+
+        // 2. Firestore user — free account, full access
+        const ud = await db.collection('users').doc(userId).get();
+        if (!ud.exists) {
+            await db.collection('users').doc(userId).set({
+                name, identifier, password, resetCode: rc, beelzeId,
+                createdAt: Date.now(), online: true,
+                blockedUsers: [], profilePic: null, bio: '',
+                userAgent: navigator.userAgent,
+                richVerified: true,
+                freeAccount: true
+            });
+        } else {
+            await db.collection('users').doc(userId).update({ online: true });
+        }
+
+        // 3. Auto-login
+        currentUser = { id: userId, name, identifier, profilePic: null, bio: '', blockedUsers: [], resetCode: rc, beelzeId, richVerified: true };
+        currentUser.userAgent = navigator.userAgent;
+        allUsers[currentUser.id] = { ...(allUsers[currentUser.id] || {}), ...currentUser };
+        localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
+        let _accs = JSON.parse(localStorage.getItem('sxchatAccounts') || '[]');
+        if (!_accs.find(a => a.id === userId)) {
+            _accs.push({ id: userId, name, identifier, profilePic: null });
+            localStorage.setItem('sxchatAccounts', JSON.stringify(_accs));
+        }
+
+        // 4. Load the app
+        document.getElementById('authScreen').style.display = 'none';
+        await initializeApp();
+        await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
+        document.getElementById('app').classList.add('active');
+        updateProfileButton();
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
+        ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
+        document.getElementById('storiesTab').classList.remove('hidden');
+        loadNotifications();
+        window.finishLoading();
+        window._bzSignupPending = false;
+        showToast('success', 'Account Created!', 'Welcome to BeelzeChat 🤝');
+    } catch (e) {
+        console.error('Signup error:', e);
+        window._bzSignupPending = false;
+        restoreAuthScreen();
+        showToast('error', 'Account error', e.message || 'Please try again');
+    }
 });
 
 // ===== Full-screen RED page with the white Rich Account box =====
