@@ -3444,8 +3444,8 @@ form input[type="text"] {
     <div class="logo-container" style="text-align:center;margin-bottom:22px;">
       <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" alt="BeelzeChat" class="app-logo" style="width:64px;height:64px;border-radius:16px;margin:0 auto 12px;display:block;box-shadow:0 8px 20px rgba(43,43,158,0.25);">
       <div class="app-title" style="font-size:24px;font-weight:800;color:#111827;letter-spacing:-0.5px;">Welcome to BeelzeChat</div>
-            <div class="auth-subtitle" style="color:#3F51B5;font-size:11px;margin-top:6px;font-weight:700;">Platform for Marketing your Business and Learning</div>
-      <div style="color:#16a34a;font-size:11px;margin-top:4px;font-weight:700;">Free to create your account</div>
+            <div class="auth-subtitle" style="color:#3F51B5;font-size:11px;margin-top:6px;font-weight:700;">Rich Platform for Marketing and Uniting</div>
+      <div style="color:#dc2626;font-size:11px;margin-top:4px;font-weight:700;">R3000 to create account</div>
     </div>
 
     <!-- LOGIN -->
@@ -4906,7 +4906,10 @@ form input[type="text"] {
       <div style="font-weight:900;font-size:18px;color:#0f172a;">Post Management</div>
       <div style="font-size:12px;color:#64748b;">BeelzeChat Admin</div>
     </div>
-    <button onclick="document.getElementById('postMgmtOverlay').style.display='none';" style="margin-left:auto;background:#f1f5f9;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">
+    <button onclick="openPaidSignups()" style="margin-left:auto;display:flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;border:none;border-radius:10px;padding:8px 12px;font-weight:700;font-size:12px;cursor:pointer;flex-shrink:0;">
+      <i data-lucide="crown" style="width:14px;height:14px;"></i> Paid Signups
+    </button>
+    <button onclick="document.getElementById('postMgmtOverlay').style.display='none';" style="background:#f1f5f9;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">
       <i data-lucide="x" style="width:18px;height:18px;"></i>
     </button>
   </div>
@@ -5089,6 +5092,46 @@ form input[type="text"] {
   </div>
 </div>
 
+
+<!-- ===== PAID SIGNUPS DASHBOARD (ADMIN) ===== -->
+<div id="paidSignupsOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:white;flex-direction:column;overflow-y:auto;">
+  <!-- Header -->
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #e2e8f0;background:white;position:sticky;top:0;z-index:10;">
+    <button onclick="document.getElementById('paidSignupsOverlay').style.display='none';document.getElementById('postMgmtOverlay').style.display='flex';" style="background:#f1f5f9;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <i data-lucide="arrow-left" style="width:18px;height:18px;"></i>
+    </button>
+    <div>
+      <div style="font-weight:900;font-size:18px;color:#0f172a;">Paid Signups</div>
+      <div style="font-size:12px;color:#64748b;">People who paid R3,000 for a Rich Account</div>
+    </div>
+    <button onclick="document.getElementById('paidSignupsOverlay').style.display='none';" style="margin-left:auto;background:#f1f5f9;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+      <i data-lucide="x" style="width:18px;height:18px;"></i>
+    </button>
+  </div>
+
+  <!-- Stats cards -->
+  <div style="padding:14px 16px;display:flex;gap:10px;">
+    <div style="flex:1;background:#fef2f2;border:1px solid #fecaca;border-radius:14px;padding:14px;">
+      <div style="font-size:11px;color:#94a3b8;font-weight:700;">PAID SIGNUPS</div>
+      <div id="paidStatsCount" style="font-weight:900;font-size:22px;color:#dc2626;">—</div>
+    </div>
+    <div style="flex:1;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:14px;">
+      <div style="font-size:11px;color:#94a3b8;font-weight:700;">TOTAL COLLECTED</div>
+      <div id="paidStatsRevenue" style="font-weight:900;font-size:22px;color:#16a34a;">—</div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div style="padding:0 16px 12px;">
+    <div style="display:flex;align-items:center;gap:8px;background:white;border:1.5px solid #e2e8f0;border-radius:12px;padding:10px 14px;">
+      <i data-lucide="search" style="width:16px;height:16px;color:#94a3b8;flex-shrink:0;"></i>
+      <input id="paidSearchInput" type="text" placeholder="Search name, email or ID..." oninput="filterPaidSignups()" style="border:none;outline:none;width:100%;font-size:14px;background:transparent;">
+    </div>
+  </div>
+
+  <!-- List -->
+  <div id="paidSignupsList" style="padding:0 16px 30px;display:flex;flex-direction:column;gap:10px;"></div>
+</div>
 
 <!-- Password Modal -->
 <div id="postMgmtPasswordModal" style="display:none;position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;">
@@ -6573,69 +6616,16 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     if (password.length < 6) { showToast('error', 'Error', 'Password 6+ chars'); return; }
     if (password !== confirmPassword) { showToast('error', 'Passwords do not match!', 'Try again'); return; }
 
-    // ===== FREE SIGNUP — create the account instantly, no payment =====
+        // ===== RICH ACCOUNT — pay first, account is created after payment =====
     try {
-        if (typeof showLoadingScreen === 'function') showLoadingScreen();
-        window._bzSignupPending = true;
+        // Save the pending signup so the PayFast return handler can finish creating the account
         localStorage.removeItem('sxchatUser');
+        localStorage.setItem('bz_pendingRichSignup', JSON.stringify({ name, identifier, password }));
 
-        // Hide the signup screen IMMEDIATELY — it must never flash back while the account loads
-        document.getElementById('authScreen').style.display = 'none';
-
-
-        // 1. Firebase Auth account
-        try { await auth.createUserWithEmailAndPassword(identifier, password); }
-        catch (err) {
-            try { await auth.signInWithEmailAndPassword(identifier, password); } catch(e2) {}
-        }
-
-        const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
-        const rc = Math.floor(100000 + Math.random() * 900000).toString();
-        const beelzeId = 'BeelzeChatID-' + Math.random().toString(36).substring(2, 6).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
-
-        // 2. Firestore user — free account, full access
-        const ud = await db.collection('users').doc(userId).get();
-        if (!ud.exists) {
-            await db.collection('users').doc(userId).set({
-                name, identifier, password, resetCode: rc, beelzeId,
-                createdAt: Date.now(), online: true,
-                blockedUsers: [], profilePic: null, bio: '',
-                userAgent: navigator.userAgent,
-                richVerified: true,
-                freeAccount: true
-            });
-        } else {
-            await db.collection('users').doc(userId).update({ online: true });
-        }
-
-        // 3. Auto-login
-        currentUser = { id: userId, name, identifier, profilePic: null, bio: '', blockedUsers: [], resetCode: rc, beelzeId, richVerified: true };
-        currentUser.userAgent = navigator.userAgent;
-        allUsers[currentUser.id] = { ...(allUsers[currentUser.id] || {}), ...currentUser };
-        localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
-        let _accs = JSON.parse(localStorage.getItem('sxchatAccounts') || '[]');
-        if (!_accs.find(a => a.id === userId)) {
-            _accs.push({ id: userId, name, identifier, profilePic: null });
-            localStorage.setItem('sxchatAccounts', JSON.stringify(_accs));
-        }
-
-        // 4. Load the app
-        document.getElementById('authScreen').style.display = 'none';
-        await initializeApp();
-        await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
-        document.getElementById('app').classList.add('active');
-        updateProfileButton();
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
-        ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
-        document.getElementById('storiesTab').classList.remove('hidden');
-        loadNotifications();
-        window.finishLoading();
-        window._bzSignupPending = false;
-        showToast('success', 'Account Created!', 'Welcome to BeelzeChat 🤝');
+        // Open the Rich Account payment screen
+        showRichAccountPayScreen(name, identifier);
     } catch (e) {
         console.error('Signup error:', e);
-        window._bzSignupPending = false;
         restoreAuthScreen();
         showToast('error', 'Account error', e.message || 'Please try again');
     }
@@ -6719,7 +6709,8 @@ function showRichAccountPayScreen(name, email) {
                 <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">You can also sell to rich people</span></div>
                 <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">No blood posts, no fighting posts</span></div>
                 <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">Access the information on how to make money in the real world</span></div>
-                <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">Access big jobs and big opportunities</span></div>
+                <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">Access big jobs and big opportunities</span></div>  
+                <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">Run Free Ads — limit 1 ad daily to avoid spam (pay extra to run more in a day)</span></div>
             </div>
 
             <!-- Pay button with King icon -->
@@ -11920,6 +11911,109 @@ async function checkPostMgmtPw() {
 }
 
 let _mgmtAllPosts = [];
+
+// ===== PAID SIGNUPS DASHBOARD — only people who paid R3,000 for a Rich Account =====
+let _paidAllRows = [];
+
+async function openPaidSignups() {
+  document.getElementById('paidSignupsOverlay').style.display = 'flex';
+  lucide.createIcons();
+  const list = document.getElementById('paidSignupsList');
+  list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">Loading paid members...</div>';
+
+  try {
+    // Real paid people only — every successful R3,000 Rich Account payment is recorded here
+    const snap = await db.collection('richSubscriptions').orderBy('paidAt', 'desc').get();
+    const subs = snap.docs.map(d => d.data()).filter(s => s.status === 'paid' && s.amount === 3000);
+
+    // Enrich each payment with the person's profile from the users collection
+    const userCache = {};
+    await Promise.all(subs.map(async s => {
+      const uid = s.userId;
+      if (!uid || (uid in userCache)) return;
+      try {
+        const ud = await db.collection('users').doc(uid).get();
+        userCache[uid] = ud.exists ? ud.data() : null;
+      } catch (e) { userCache[uid] = null; }
+    }));
+
+    _paidAllRows = subs.map(s => {
+      const u = userCache[s.userId] || {};
+      return {
+        userId: s.userId,
+        name: u.name || s.userName || 'Unknown',
+        email: u.identifier || s.userEmail || '',
+        profilePic: u.profilePic || null,
+        beelzeId: u.beelzeId || '',
+        orderRef: s.orderRef || '',
+        paidAt: s.paidAt || null
+      };
+    });
+
+    // Stats
+    const total = _paidAllRows.length;
+    document.getElementById('paidStatsCount').textContent = total;
+    document.getElementById('paidStatsRevenue').textContent = 'R ' + (total * 3000).toLocaleString('en-ZA');
+    document.getElementById('paidSearchInput').value = '';
+    renderPaidSignups(_paidAllRows);
+  } catch (e) {
+    console.error('Paid signups load error:', e);
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">Could not load paid signups. Check your connection and try again.</div>';
+  }
+}
+
+function renderPaidSignups(rows) {
+  const list = document.getElementById('paidSignupsList');
+  list.innerHTML = '';
+  if (!rows.length) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">No paid signups yet — people who pay R3,000 will appear here.</div>';
+    return;
+  }
+  rows.forEach(r => {
+    const initials = (r.name || '?').trim().charAt(0).toUpperCase();
+    const avatar = r.profilePic
+      ? '<img src="' + r.profilePic + '" style="width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;">'
+      : '<div style="width:46px;height:46px;border-radius:50%;background:#3F51B5;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;flex-shrink:0;">' + initials + '</div>';
+    const dateStr = r.paidAt ? new Date(r.paidAt).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+    const safeId = (r.beelzeId || '').replace(/'/g, "\\'");
+    const card = document.createElement('div');
+    card.style.cssText = 'display:flex;align-items:center;gap:12px;background:white;border:1px solid #e2e8f0;border-radius:14px;padding:12px;';
+    card.innerHTML =
+      avatar +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
+          '<span style="font-weight:800;font-size:14px;color:#0f172a;">' + r.name + '</span>' +
+          '<span style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:800;display:inline-flex;align-items:center;gap:4px;">PAID R3,000</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + r.email + '</div>' +
+        '<button onclick="copyBzId(\'' + safeId + '\')" title="Copy BeelzeChat ID" style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;background:#0f172a;color:white;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">' +
+          '<i data-lucide="copy" style="width:12px;height:12px;"></i>' + (r.beelzeId || 'No ID') +
+        '</button>' +
+        (dateStr ? '<div style="font-size:10px;color:#94a3b8;margin-top:4px;">Paid ' + dateStr + (r.orderRef ? ' • Ref ' + r.orderRef : '') + '</div>' : '') +
+      '</div>';
+    list.appendChild(card);
+  });
+  lucide.createIcons();
+}
+
+function filterPaidSignups() {
+  const t = document.getElementById('paidSearchInput').value.trim().toLowerCase();
+  if (!t) { renderPaidSignups(_paidAllRows); return; }
+  renderPaidSignups(_paidAllRows.filter(r =>
+    (r.name + ' ' + r.email + ' ' + r.beelzeId + ' ' + r.orderRef).toLowerCase().includes(t)
+  ));
+}
+
+function copyBzId(id) {
+  if (!id) { showToast('error', 'Error', 'No BeelzeChat ID found'); return; }
+  const done = () => showToast('success', 'Copied!', id);
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(id).then(done, done);
+  else {
+    const ta = document.createElement('textarea');
+    ta.value = id; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); ta.remove(); done();
+  }
+}
 
 async function openPostMgmt() {
   const overlay = document.getElementById('postMgmtOverlay');
