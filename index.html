@@ -231,6 +231,24 @@
     return _orig.apply(this, arguments);
   };
 })();
+
+// ── ONE-DRAW ICONS — this is the freeze fix ────────────────────────────────────
+// lucide keeps data-lucide on every <svg> it builds, so each of the 140+ createIcons()
+// calls here rebuilt EVERY icon on the page (400+ nodes = full-page restyle, about a
+// second of frozen UI). Removing the marker after each draw means a call only builds
+// icons that are genuinely new — e.g. the redraw that fires the moment you tap away
+// from a text box (why your own-profile button felt dead and needed two taps).
+(function(){
+  if (!window.lucide || lucide._bzOneDraw) return;
+  var _draw = lucide.createIcons.bind(lucide);
+  lucide._bzOneDraw = true;
+  lucide.createIcons = function(opts){
+    _draw(opts);
+    var root = (opts && opts.root) || document;
+    var drawn = root.querySelectorAll('svg[data-lucide]');
+    for (var i = 0; i < drawn.length; i++) drawn[i].removeAttribute('data-lucide');
+  };
+})();
 </script>
 
 
@@ -683,17 +701,15 @@ label[for="postImagesInput"].upload-btn {
         }
         
                                 .app-header { 
-            margin: 4px 4px 0; 
-            padding: 10px 14px; 
-            border-radius: 16px; 
+            margin: 0; 
+            padding: 8px 12px; 
+            border-radius: 0; 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
-            border: 1px solid transparent;
-            background-image: linear-gradient(white, white), linear-gradient(135deg, #6366f1, #4338ca);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
+            box-shadow: none; 
+            border-bottom: 1px solid #e5e7eb; 
+            background: #ffffff; 
         }
         
         .header-title { 
@@ -969,7 +985,7 @@ label[for="postImagesInput"].upload-btn {
             font-size: 15px; 
         }
         
-        .user-item { 
+                .user-item { 
             padding: 16px 20px; 
             border-bottom: 1px solid #f1f5f9; 
             display: flex; 
@@ -983,6 +999,43 @@ label[for="postImagesInput"].upload-btn {
             min-width: 0; 
             cursor: pointer; 
         }
+
+        /* ===== PEOPLE 2x2 CARDS (compact — nothing cut off, dots have their own room) ===== */
+        #usersList.bz-people-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 10px 26px; align-items: stretch; }
+        .bz-user-card { background: #fff; border: 1px solid #f1f5f9; border-radius: 18px; padding: 26px 8px 14px; text-align: center; position: relative; box-shadow: 0 2px 14px rgba(0,0,0,0.06); cursor: pointer; min-width: 0; }
+        .bz-king { position: absolute; top: 10px; right: 10px; width: 16px; height: 16px; color: #dc2626; stroke-width: 1.5; z-index: 3; }
+        .bz-card-avatar { width: 112px; height: 112px; margin: 0 auto 14px; position: relative; border-radius: 50%; }
+        .bz-card-avatar .avatar { width: 112px; height: 112px; border-radius: 50% !important; overflow: hidden; }
+        .bz-card-name { font-weight: 800; font-size: 13px; color: #0f172a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .bz-card-bio { display: flex; align-items: center; gap: 4px; justify-content: center; font-size: 11px; color: #64748b; margin-top: 3px; }
+        .bz-card-bio span { max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .bz-card-loc { display: inline-flex; align-items: center; gap: 4px; background: #f1f5f9; border-radius: 20px; padding: 3px 9px; font-size: 10px; font-weight: 700; color: #334155; margin-top: 6px; }
+        .bz-card-msg { margin-top: 10px; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #e2e8f0; background: #fff; color: #000; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+
+
+                /* ===== APPLE-STYLE DOTTED HALO — static (no rotation), smaller dots, colors flash around the ring ===== */
+        /* Spaced halo: fixed dots, no flashing or continuous animation. */
+        /* Halo removed — plain profile pictures */
+        .profile-avatar-large, #userProfileAvatar {
+            position: relative !important;
+        }
+        .bz-card-avatar .avatar,
+        #profileModal #profileAvatarLarge,
+        #userProfileAvatar {
+            border: 1px solid #e5e7eb !important;
+        }
+                        /* ===== BOTTOM NAV: different colored 3D lucide icons per tab ===== */
+        .nav-item i { stroke-width: 2 !important; filter: drop-shadow(0 2px 0 rgba(0,0,0,0.35)) drop-shadow(0 0 1px rgba(0,0,0,0.15)) !important; }
+        .nav-item[data-tab="messages"] i { color: #2563eb !important; }   /* Chats — blue */
+        .nav-item[data-tab="users"] i { color: #16a34a !important; }       /* People — green */
+        .nav-item[data-tab="groups"] i { color: #a855f7 !important; }      /* Groups — purple */
+        .nav-item[data-tab="stories"] i { color: #ea580c !important; }    /* Posts — orange */
+        #createPostNavBtn i { color: #facc15 !important; }                 /* Create — yellow */
+        #marketplaceNavBtn i { color: #dc2626 !important; }               /* Market — red */
+                .nav-item.active i { filter: drop-shadow(0 2px 0 rgba(0,0,0,0.4)) !important; }
+
+
+
         
         
         
@@ -1103,21 +1156,38 @@ label[for="postImagesInput"].upload-btn {
 }
 
 .post-menu-dropdown {
-    position: absolute;
-    top: 50px;
-    right: 16px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    padding: 8px;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     display: none;
-    z-index: 100;
-    min-width: 180px;
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
-
 .post-menu-dropdown.active {
-    display: block;
+    display: flex;
 }
+.post-menu-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    padding: 18px 14px 10px;
+    width: 100%;
+    max-width: 300px;
+    position: relative;
+}
+.post-menu-logo {
+    position: relative;
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+}
+.post-menu-logo i.msg { position:absolute; width:48px; height:48px; color:#000; stroke-width:1.5; }
+.post-menu-logo i.king { position:relative; width:24px; height:24px; color:#000; stroke-width:1.5; z-index:2; }
+
 
 .post-menu-option {
     padding: 12px 16px;
@@ -2069,25 +2139,24 @@ label[for="postImagesInput"].upload-btn {
         
         .bottom-nav { 
             position: fixed; 
-            bottom: 16px; 
-            left: 16px; 
-            right: 16px; 
-            background: white; 
-            border-radius: 28px; 
-            padding: 8px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: #ffffff; 
+            border-radius: 0; 
+            padding: 8px 4px calc(8px + env(safe-area-inset-bottom)); 
             display: flex; 
             overflow-x: auto; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12); 
-            border: 1px solid transparent; 
-            background-image: linear-gradient(white, white), linear-gradient(135deg, #6366f1, #4338ca); 
-            background-origin: border-box; 
-            background-clip: padding-box, border-box; 
+            box-shadow: none; 
+            border-top: 1px solid #e5e7eb; 
             z-index: 50; 
             -webkit-overflow-scrolling: touch; 
         }
-        
-        .bottom-nav::-webkit-scrollbar { 
-            display: none; 
+        .nav-item i { 
+            width: 20px; 
+            height: 20px; 
+            color: #000000; 
+            stroke-width: 1.5; 
         }
         
         .nav-item { 
@@ -2107,16 +2176,27 @@ label[for="postImagesInput"].upload-btn {
             position: relative; 
         }
         
-        .nav-item.active { 
-            background: rgba(0,0,0,0.08); 
+                .nav-item.active { 
+            background: rgba(0,0,0,0.04); 
             color: #000; 
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+            border-radius: 12px;
         }
+        .nav-item.active[data-tab="messages"] i { color: #2563eb; stroke-width: 2; filter: drop-shadow(0 1px 1px rgba(37,99,235,0.3)); }
+        .nav-item.active[data-tab="users"] i { color: #059669; stroke-width: 2; filter: drop-shadow(0 1px 1px rgba(5,150,105,0.3)); }
+        .nav-item.active[data-tab="groups"] i { color: #7c3aed; stroke-width: 2; filter: drop-shadow(0 1px 1px rgba(124,58,237,0.3)); }
+        .nav-item.active[data-tab="stories"] i { color: #ea580c; stroke-width: 2; filter: drop-shadow(0 1px 1px rgba(234,88,12,0.3)); }
+        .nav-item.active#createPostNavBtn i { color: #dc2626; stroke-width: 2; filter: drop-shadow(0 1px 1px rgba(220,38,38,0.3)); }
+        .nav-item.active#marketplaceNavBtn i { color: #0891b2; stroke-width: 2; filter: drop-shadow(0 1px 1px rgba(8,145,178,0.3)); }
         
         nav-item i { 
             width: 18px; 
             height: 18px; 
         }
         
+        .app-content { 
+            padding-bottom: 72px; 
+        }
         .nav-item span { 
             font-size: 10px; 
             font-weight: 700; 
@@ -2240,7 +2320,10 @@ label[for="postImagesInput"].upload-btn {
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
+            border-radius: 50%;
         }
+        #userProfileAvatar img { border-radius: 50% !important; object-fit: cover !important; }
+        .bz-card-avatar .avatar img { border-radius: 50% !important; object-fit: cover !important; }
         
         .profile-avatar-camera {
             position: absolute;
@@ -2391,7 +2474,7 @@ label[for="postImagesInput"].upload-btn {
     width: 56px;
     height: 56px;
     background: transparent;
-    background-image: url('https://i.postimg.cc/mD0dbHM0/1000287857.png');
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7.9 20A9 9 0 1 0 4 16.1L2 22Z'/%3E%3Cpath d='M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.735H5.81a1 1 0 0 1-.957-.735L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z'/%3E%3Cpath d='M5 21h14'/%3E%3C/svg%3E");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -2504,11 +2587,14 @@ label[for="postImagesInput"].upload-btn {
     height: 110px !important;
     border-radius: 50% !important;
     margin: 0 auto 14px !important;
-    background: linear-gradient(135deg, #4338ca, #6366f1) !important;
+    background: #000000 !important;
     color: #ffffff !important;
     font-size: 36px !important;
     font-weight: 800 !important;
-    animation: avatarGlow 3600s ease infinite !important;
+    animation: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
 }
 #profileModal .profile-avatar-large img { border-radius: 50% !important; object-fit: cover !important; }
 #profileModal .profile-avatar-camera {
@@ -2615,16 +2701,12 @@ label[for="postImagesInput"].upload-btn {
         
         
         
-        @keyframes avatarGlow {
-    0%   { box-shadow: 0 0 0 4px #8b5cf6, 0 0 24px rgba(139,92,246,0.6); }
-    25%  { box-shadow: 0 0 0 4px #a855f7, 0 0 24px rgba(168,85,247,0.6); }
-    50%  { box-shadow: 0 0 0 4px #6366f1, 0 0 24px rgba(99,102,241,0.6); }
-    75%  { box-shadow: 0 0 0 4px #d946ef, 0 0 24px rgba(217,70,239,0.6); }
-    100% { box-shadow: 0 0 0 4px #8b5cf6, 0 0 24px rgba(139,92,246,0.6); }
-}
+                /* Purple glow removed */
 #profileModal .profile-avatar-large {
-    animation: avatarGlow 3600s ease infinite !important;
+    animation: none !important;
+    box-shadow: none !important;
 }
+
         
         
         
@@ -3389,8 +3471,11 @@ form input[type="text"] {
     <!-- Loading screen — shown right after login, stays purple/white until the account is fully loaded -->
     <div id="loadingScreen" style="display:none;position:fixed;inset:0;z-index:9999999;background:#e8eaf6;flex-direction:column;align-items:center;justify-content:center;">
     <div style="background:#ffffff;border-radius:24px;padding:32px 28px;width:300px;text-align:center;box-shadow:0 20px 60px rgba(63,81,181,0.25);">
-        <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:64px;height:64px;border-radius:16px;margin:0 auto 14px;display:block;box-shadow:0 8px 20px rgba(63,81,181,0.25);">
-        <div style="font-size:20px;font-weight:800;color:#3F51B5;letter-spacing:0.5px;margin-bottom:6px;">BeelzeChat</div>
+                <div style="position:relative;width:64px;height:64px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;">
+            <i data-lucide="message-circle" style="position:absolute;width:64px;height:64px;color:#0f172a;stroke-width:1.5;"></i>
+            <i data-lucide="crown" style="position:relative;width:32px;height:32px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
+        </div>
+        <div style="font-size:20px;font-weight:800;color:#0f172a;letter-spacing:0.5px;margin-bottom:6px;">BeelzeChat</div>
         <div id="loadingStatusText" style="font-size:13px;color:#9ca3af;font-weight:500;margin-bottom:18px;">Loading your account…</div>
         <div style="width:48px;height:48px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;color:#3F51B5;animation:spin 1s linear infinite;">
             <i data-lucide="loader-circle" style="width:44px;height:44px;"></i>
@@ -3494,13 +3579,13 @@ form input[type="text"] {
       </label>
 
       <!-- Primary purple CTA -->
-      <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);">
-        <i data-lucide="log-in" style="width:20px;height:20px;"></i>
+            <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="background:#ffffff;color:#1d4ed8;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px;font-size:15px;font-weight:800;box-shadow:0 8px 22px rgba(255,255,255,0.95),0 2px 10px rgba(0,0,0,0.06);">
+        <i data-lucide="crown" style="width:18px;height:18px;color:#1d4ed8;stroke-width:1.5;"></i>
         Log in
       </button>
 
-      <button type="button" onclick="showSignup()" style="width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:1px solid #dc2626;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;box-sizing:border-box;">
-        <i data-lucide="crown" style="width:20px;height:20px;"></i>
+      <button type="button" onclick="showAccountChoice()" style="width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:1px solid #dc2626;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;box-sizing:border-box;">
+        <i data-lucide="crown" style="width:20px;height:20px;color:#dc2626;"></i>
         Create Account
       </button>
 
@@ -3513,6 +3598,13 @@ form input[type="text"] {
       <div class="auth-toggle" style="text-align:center;margin-top:16px;color:#6b7280;font-size:14px;">
         Don't have an account?
         <a id="showSignupLink" style="color:#3F51B5;font-weight:700;text-decoration:underline;cursor:pointer;margin-left:4px;">Sign up</a>
+      </div>
+      <button type="button" onclick="bzEnterVisitorMode()" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;box-sizing:border-box;">
+        <i data-lucide="eye" style="width:17px;height:17px;color:#0f172a;stroke-width:1.5;"></i> Browse as Visitor (no account)
+      </button>
+      <div style="text-align:center;margin-top:14px;padding-top:12px;border-top:1px solid #f1f5f9;display:flex;justify-content:center;gap:18px;">
+        <a onclick="showAccountChoice()" style="color:#1d4ed8;font-weight:800;font-size:13px;text-decoration:underline;cursor:pointer;">Free account</a>
+        <a onclick="showSignup()" style="color:#dc2626;font-weight:800;font-size:13px;text-decoration:underline;cursor:pointer;">Paid (Rich) account</a>
       </div>
     </form>
 
@@ -3594,23 +3686,21 @@ form input[type="text"] {
 <!-- WHERE THE APP BEGINS -->
 
 <div id="app" class="app-container">
-    <div class="app-header" style="position:relative;">
-        <!-- LEFT SIDE ICONS: search + account switcher -->
-        <div style="display:flex;align-items:center;gap:8px;">
-            <button class="icon-btn" id="headerSearchBtn" onclick="toggleHeaderSearch()" title="Search" style="position:relative;display:none;">
-                <i data-lucide="search"></i>
-            </button>
+    <div class="app-header">
+        <!-- LOGO + APP NAME ON THE LEFT -->
+                        <div style="display:flex;align-items:center;gap:1px;min-width:0;">
+            <!-- King icon inside a Lucide message-circle outline -->
+            <div id="headerBrandLogo" style="position:relative;width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i data-lucide="message-circle" style="position:absolute;inset:0;width:32px;height:32px;color:#000;stroke-width:1.5;"></i>
+                <i data-lucide="crown" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;color:#000;stroke-width:1.5;z-index:2;"></i>
+            </div>
+            <h1 class="header-title" id="headerTitle" style="margin:0 0 0 1px;font-size:18px;font-weight:800;color:#0f172a;letter-spacing:-0.3px;white-space:nowrap;">BeelzeChat</h1>
+        </div>
+        <!-- ALL ACTION ICONS ON THE RIGHT -->
+        <div class="header-actions">
             <button class="icon-btn" id="accountSwitcherBtn" title="Switch Account">
                 <i data-lucide="users-round"></i>
             </button>
-        </div>
-        <!-- CENTERED APP NAME WITH LOGO (smaller to prevent overlap) -->
-                <h1 class="header-title" id="headerTitle" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;font-size:24px;white-space:nowrap;">
-    <img id="headerLogoImg" src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698a063d7a95f71fa9ac96d7/5b4f163f7_1000287857.png" onerror="this.style.display='none'" style="width:42px;height:42px;border-radius:8px;position:absolute;left:-50px;top:50%;transform:translateY(-50%);">
-    BeelzeChat
-</h1>
-        <!-- RIGHT SIDE ICONS: bell + profile -->
-        <div class="header-actions">
             <button class="icon-btn" id="notificationsBtn" style="position:relative;">
                 <i data-lucide="bell"></i>
                 <span id="notifBadge" style="display:none;position:absolute;top:2px;right:2px;background:#ef4444;color:white;border-radius:10px;font-size:10px;font-weight:800;padding:1px 5px;min-width:16px;text-align:center;"></span>
@@ -3669,11 +3759,15 @@ form input[type="text"] {
         </div>
 
         
-        <div id="usersTab" class="hidden">
-            <div class="search-container">
-                <div class="search-wrapper">
-                    <i data-lucide="search" class="search-icon"></i>
-                    <input type="text" class="search-input" id="userSearch" placeholder="Search people...">
+                <div id="usersTab" class="hidden">
+            <div style="display:flex;align-items:center;gap:8px;margin:4px 4px 0;padding:10px 12px;background:white;border-radius:16px;position:sticky;top:4px;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                <div class="search-wrapper" style="flex:1;min-width:0;">
+                    <i data-lucide="search" class="search-icon" style="width:15px;height:15px;left:12px;"></i>
+                    <input type="text" class="search-input" id="userSearch" placeholder="Search people..." style="padding:9px 12px 9px 34px;font-size:13px;">
+                </div>
+                <div style="display:flex;gap:4px;background:#f1f5f9;border-radius:12px;padding:3px;flex-shrink:0;">
+                    <button id="peopleViewGridBtn" onclick="setPeopleViewMode('grid')" title="2×2 boxes" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:none;border-radius:9px;background:#000;color:#fff;cursor:pointer;"><i data-lucide="layout-grid" style="width:16px;height:16px;stroke-width:1.5;"></i></button>
+                    <button id="peopleViewListBtn" onclick="setPeopleViewMode('list')" title="List" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:none;border-radius:9px;background:transparent;color:#64748b;cursor:pointer;"><i data-lucide="list" style="width:16px;height:16px;stroke-width:1.5;"></i></button>
                 </div>
             </div>
             <div id="usersList">
@@ -3686,50 +3780,63 @@ form input[type="text"] {
         </div>
         
         <div id="storiesTab" class="hidden">
-            <div class="search-container">
+<div id="postsQuickBar" style="display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 20px 4px;">
+                <div style="display:flex;gap:4px;background:#f1f5f9;border-radius:12px;padding:4px;">
+                    <button id="viewModeFeed" onclick="setPostViewMode('feed')" title="Feed" style="width:38px;height:34px;display:flex;align-items:center;justify-content:center;border:none;border-radius:9px;background:#000;color:#fff;cursor:pointer;"><i data-lucide="list" style="width:16px;height:16px;stroke-width:1.5;"></i></button>
+                    <button id="viewModeGrid" onclick="setPostViewMode('grid')" title="Grid" style="width:38px;height:34px;display:flex;align-items:center;justify-content:center;border:none;border-radius:9px;background:transparent;color:#64748b;cursor:pointer;"><i data-lucide="grid-3x3" style="width:16px;height:16px;stroke-width:1.5;"></i></button>
+                </div>
+                <button id="postsCategoryBtn" onclick="openCategoryPopup()" title="Categories" style="width:38px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e2e8f0;border-radius:10px;background:#fff;color:#0f172a;cursor:pointer;"><i data-lucide="sliders-horizontal" style="width:16px;height:16px;stroke-width:1.5;"></i></button>
+                <button id="postsSearchToggleBtn" onclick="togglePostsSearch()" title="Search" style="width:38px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e2e8f0;border-radius:10px;background:#fff;color:#0f172a;cursor:pointer;"><i data-lucide="search" style="width:16px;height:16px;stroke-width:1.5;"></i></button>
+            </div>
+            <div id="postsSearchBar" style="display:none;margin:8px 20px 4px;">
                 <div class="search-wrapper">
                     <i data-lucide="search" class="search-icon"></i>
                     <input type="text" class="search-input" id="postSearch" placeholder="Search posts...">
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
-                    <span style="font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;">Filter by Category</span>
-                    <button id="toggleCategoryFilter" onclick="
-                        const cf = document.getElementById('categoryFilterWrap');
-                        const open = cf.style.display !== 'none';
-                        cf.style.display = open ? 'none' : 'flex';
-                        const oldIcon = this.querySelector('svg, i[data-lucide]');
-                        const newIcon = document.createElement('i');
-                        newIcon.setAttribute('data-lucide', open ? 'chevron-down' : 'chevron-up');
-                        newIcon.style.width = '16px';
-                        newIcon.style.height = '16px';
-                        newIcon.style.color = '#64748b';
-                        if (oldIcon) oldIcon.replaceWith(newIcon);
-                        lucide.createIcons();
-                    " style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;padding:4px 8px;border-radius:8px;background:#f1f5f9;">
-                        <i data-lucide="chevron-down" style="width:16px;height:16px;color:#64748b;"></i>
-                    </button>
-                </div>
-                <div class="category-filter" id="categoryFilterWrap" style="display:none;">
-                    <button class="category-btn active" data-category="all">All</button>
-                    <button class="category-btn" data-category="entertainment">Entertainment</button>
-                    <button class="category-btn" data-category="music">Music</button>
-                    <button class="category-btn" data-category="fun">Fun</button>
-                    <button class="category-btn" data-category="breaking_news">Breaking News</button>
-                    <button class="category-btn" data-category="business">Business / Companies</button>
-                    <button class="category-btn" data-category="lifestyle">Lifestyle</button>
-                    <button class="category-btn" data-category="sports">Sports</button>
+                    <button onclick="togglePostsSearch()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:#f1f5f9;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:15px;height:15px;color:#64748b;"></i></button>
                 </div>
             </div>
+            <div id="categoryPopup" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)closeCategoryPopup()">
+                <div style="background:white;border-radius:24px;width:100%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,0.35);overflow:hidden;" onclick="event.stopPropagation()">
+                    <div style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid #f1f5f9;">
+                        <div style="position:relative;width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i data-lucide="message-circle" style="position:absolute;width:34px;height:34px;color:#0f172a;stroke-width:1.5;"></i>
+                            <i data-lucide="crown" style="position:relative;width:17px;height:17px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
+                        </div>
+                        <span style="font-weight:900;font-size:16px;color:#0f172a;flex:1;">Categories</span>
+                        <button onclick="closeCategoryPopup()" style="background:#f1f5f9;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:17px;height:17px;color:#64748b;"></i></button>
+                    </div>
+                    <div style="padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="categoryPopupBtns">
+                        <button class="category-btn active" data-category="all" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="layout-grid" style="width:14px;height:14px;"></i> All</button>
+                        <button class="category-btn" data-category="entertainment" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="clapperboard" style="width:14px;height:14px;"></i> Entertainment</button>
+                        <button class="category-btn" data-category="music" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="music" style="width:14px;height:14px;"></i> Music</button>
+                        <button class="category-btn" data-category="fun" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="smile" style="width:14px;height:14px;"></i> Fun</button>
+                        <button class="category-btn" data-category="breaking_news" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="newspaper" style="width:14px;height:14px;"></i> Breaking News</button>
+                        <button class="category-btn" data-category="business" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="briefcase" style="width:14px;height:14px;"></i> Business</button>
+                        <button class="category-btn" data-category="lifestyle" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="sparkles" style="width:14px;height:14px;"></i> Lifestyle</button>
+                        <button class="category-btn" data-category="sports" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="trophy" style="width:14px;height:14px;"></i> Sports</button>
+                        <button class="category-btn" data-category="beautiful_women" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="flower-2" style="width:14px;height:14px;"></i> Beautiful Women</button>
+                        <button class="category-btn" data-category="beautiful_men" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="user" style="width:14px;height:14px;"></i> Beautiful Men</button>
+                        <button class="category-btn" data-category="small_business" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="store" style="width:14px;height:14px;"></i> Small Business</button>
+                        <button class="category-btn" data-category="flexxing" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="gem" style="width:14px;height:14px;"></i> Flexxing</button>
+                        <button class="category-btn" data-category="celebration" style="display:flex;align-items:center;gap:7px;justify-content:center;"><i data-lucide="party-popper" style="width:14px;height:14px;"></i> Celebration</button>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function openCategoryPopup(){ var p=document.getElementById('categoryPopup'); p.style.display='flex'; lucide.createIcons(); }
+                function closeCategoryPopup(){ document.getElementById('categoryPopup').style.display='none'; }
+                document.getElementById('categoryPopupBtns').addEventListener('click', function(){ setTimeout(closeCategoryPopup, 120); });
+                function togglePostsSearch(){
+                    var b=document.getElementById('postsSearchBar'); var open=b.style.display==='none';
+                    b.style.display=open?'block':'none';
+                    var i=document.getElementById('postSearch');
+                    if(open){ if(i){ i.value=''; setTimeout(function(){ i.focus(); },80); } }
+                    else if(i){ i.value=''; i.dispatchEvent(new Event('input')); }
+                }
+            </script>
             
-            <!-- VIEW TOGGLE: Feed vs Grid — always visible on Posts tab -->
-<div style="display:flex;align-items:center;justify-content:center;gap:4px;margin:10px 20px 6px;background:#f1f5f9;border-radius:14px;padding:4px;">
-        <button id="viewModeFeed" onclick="setPostViewMode('feed')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;border:none;border-radius:10px;background:#000;color:white;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.2s;">
-        <i data-lucide="list" style="width:16px;height:16px;"></i> Feed
-    </button>
-    <button id="viewModeGrid" onclick="setPostViewMode('grid')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;border:none;border-radius:10px;background:transparent;color:#64748b;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.2s;">
-        <i data-lucide="grid-3x3" style="width:16px;height:16px;"></i> Grid
-    </button>
-</div>
+            <!-- Old feed/grid toggle removed — the small icon toggle at the top of Posts is the only one now -->
+
 
 <!-- ⚠️ EXPIRY WARNING BANNER (Posts) -->
 <div style="margin:8px 20px 12px;background:linear-gradient(135deg,#dc2626,#ef4444);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 14px rgba(220,38,38,0.25);">
@@ -4068,7 +4175,10 @@ form input[type="text"] {
             <button class="close-btn" id="closeProfileBtn" style="position:absolute;top:16px;right:16px;">
                 <i data-lucide="x"></i>
             </button>
-            <div class="fs-logo"></div>
+            <div style="position:relative;width:56px;height:56px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+                <i data-lucide="message-circle" style="position:absolute;inset:0;width:56px;height:56px;color:#0f172a;stroke-width:1.5;"></i>
+                <i data-lucide="crown" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:28px;height:28px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
+            </div>
             <div class="fs-heading">My Profile</div>
             <div class="fs-sub">Manage your account</div>
         </div>
@@ -4177,10 +4287,25 @@ form input[type="text"] {
                 <span id="profilePhone" style="flex:1;color:#334155;font-size:14px;">Not set</span>
                 <button onclick="editProfileField('phone')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
+                     <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
                 <i data-lucide="globe" style="width:20px;height:20px;color:#3b82f6;flex-shrink:0;"></i>
                 <span id="profileWebsite" style="flex:1;color:#334155;font-size:14px;">Not set</span>
                 <button onclick="editProfileField('website')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
+                <i data-lucide="cake" style="width:20px;height:20px;color:#0f172a;flex-shrink:0;"></i>
+                <span id="profileAge" style="flex:1;color:#334155;font-size:14px;">Not set</span>
+                <button onclick="editProfileField('age')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
+                <i data-lucide="map-pin" style="width:20px;height:20px;color:#0f172a;flex-shrink:0;"></i>
+                <span id="profileLocation" style="flex:1;color:#334155;font-size:14px;">Not set</span>
+                <button onclick="editProfileField('location')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
+                <i data-lucide="briefcase" style="width:20px;height:20px;color:#0f172a;flex-shrink:0;"></i>
+                <span id="profileJob" style="flex:1;color:#334155;font-size:14px;">Not set</span>
+                <button onclick="editProfileField('job')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
             </div>
             <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
                 <i data-lucide="mail" style="width:20px;height:20px;color:#3b82f6;flex-shrink:0;"></i>
@@ -4188,6 +4313,9 @@ form input[type="text"] {
                 <button onclick="editProfileField('email')" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:16px;height:16px;color:#64748b;"></i></button>
             </div>
         </div>
+        <button onclick="showBlockedUsers()" style="margin:0 24px 12px;width:calc(100% - 48px);box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px;background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:12px;font-weight:800;font-size:14px;color:#dc2626;cursor:pointer;">
+            <i data-lucide="shield-off" style="width:17px;height:17px;stroke-width:1.5;"></i> Blocked Users
+        </button>
      
                                 <!-- ===== BEELZECHAT ADS SECTION (visible to everyone) ===== -->
 <div style="margin-top:18px;background:linear-gradient(135deg,#1a237e,#283593);border-radius:18px;padding:18px;border:1px solid #3949ab;box-shadow:0 8px 24px rgba(26,35,126,0.25);">
@@ -4355,13 +4483,16 @@ form input[type="text"] {
         </div>
 
         <!-- Actions (under bio) -->
-        <div class="profile-actions" style="padding:0 16px 16px;">
-            <button class="action-btn chat-btn" id="startChatFromProfileBtn" style="display:flex;">
-                <i data-lucide="message-circle"></i> Send Message
-            </button>
-            <button class="action-btn block-btn" id="blockBtn" style="display:flex;">
-                <i data-lucide="ban"></i> <span id="blockBtnText">Block User</span>
-            </button>
+                <div class="profile-actions" style="padding:0 16px 16px;">
+            <div style="display:flex;gap:8px;">
+                <button class="action-btn chat-btn" id="startChatFromProfileBtn" style="display:flex;flex:1;padding:10px 8px;font-size:13px;">
+                    <i data-lucide="message-circle" style="width:16px;height:16px;"></i> Message
+                </button>
+                <button class="action-btn block-btn" id="blockBtn" style="display:flex;flex:1;padding:10px 8px;font-size:13px;">
+                    <i data-lucide="ban" style="width:16px;height:16px;"></i> <span id="blockBtnText">Block</span>
+                </button>
+            </div>
+                        <div id="userInfoRow" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;margin-top:12px;justify-content:center;"></div>
         </div>
 
         <!-- PUBLIC BeelzeChat ID (visible to everyone) -->
@@ -4424,6 +4555,11 @@ form input[type="text"] {
                     <option value="business">Business / Companies</option>
                     <option value="lifestyle">Lifestyle</option>
                     <option value="sports">Sports</option>
+                    <option value="beautiful_women">Beautiful Women</option>
+                    <option value="beautiful_men">Beautiful Men</option>
+                    <option value="small_business">Small Business</option>
+                    <option value="flexxing">Flexxing</option>
+                    <option value="celebration">Celebration</option>
                     <option value="other">Other</option>
                 </select>
             </div>
@@ -4858,35 +4994,43 @@ form input[type="text"] {
         
         
         
+                <style>
+        .dms-field{width:100%;padding:12px 14px;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;font-size:14px;color:#0f172a;outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit;box-sizing:border-box;}
+        .dms-field:focus{border-color:#0f172a;box-shadow:0 0 0 3px rgba(15,23,42,0.06);}
+        .dms-field::placeholder{color:#94a3b8;}
+        .dms-icon-input{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;}
+        .dms-icon-input input{border:none;background:transparent;padding:0;margin:0;font-size:14px;flex:1;outline:none;font-family:inherit;color:#0f172a;}
+        .dms-icon-input input::placeholder{color:#94a3b8;}
+        </style>
         <form id="sellForm" style="padding:0 20px 24px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:75vh;">
-    
     <input type="file" id="sellImagesInput" accept="image/*" multiple style="display:none;">
-    <label for="sellImagesInput" style="display:flex;align-items:center;gap:8px;padding:12px;background:#f1f5f9;border:2px dashed #cbd5e1;border-radius:12px;cursor:pointer;font-weight:700;font-size:14px;color:#64748b;">
-        <i data-lucide="image" style="color:#3b82f6;width:18px;height:18px;"></i> Add Photos (Max 5)
+    <label for="sellImagesInput" style="display:flex;align-items:center;gap:10px;padding:16px;background:#fff;border:2px dashed #ef4444;border-radius:14px;cursor:pointer;font-weight:700;font-size:14px;color:#dc2626;">
+        <span style="width:34px;height:34px;border-radius:9px;background:#fef2f2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="image" style="color:#ef4444;width:18px;height:18px;stroke-width:1.5;"></i></span>
+        Add Photos <span style="color:#94a3b8;font-weight:600;font-size:12px;">(max 5)</span>
     </label>
     <div id="sellImagesPreview" style="display:flex;gap:8px;flex-wrap:wrap;min-height:0;"></div>
 
-    <input type="text" class="form-input" id="sellTitle" placeholder="What are you selling?" required>
-    <textarea class="form-input" id="sellDescription" placeholder="Describe your item..." style="min-height:80px;resize:vertical;font-family:inherit;"></textarea>
-    <input type="text" class="form-input" id="sellPrice" placeholder="Price in ZAR (e.g. 500)" required>
-    <input type="text" class="form-input" id="sellHashtags" placeholder="#electronics #phones #secondhand">
-    <div style="display:flex;align-items:center;gap:10px;padding:10px;background:#f0fdf4;border-radius:10px;border:1px solid #bbf7d0;">
-        <i data-lucide="message-circle" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;"></i>
-        <input type="text" class="form-input" id="sellWhatsapp" placeholder="WhatsApp number" style="border:none;background:transparent;padding:0;margin:0;font-size:14px;flex:1;">
-        <button type="button" onclick="document.getElementById('sellWhatsapp').value=''" style="background:none;border:none;cursor:pointer;"><i data-lucide="x" style="width:14px;height:14px;color:#94a3b8;"></i></button>
+    <input type="text" class="dms-field" id="sellTitle" placeholder="What are you selling?" required>
+    <textarea class="dms-field" id="sellDescription" placeholder="Describe your item..." style="min-height:80px;resize:vertical;"></textarea>
+    <input type="text" class="dms-field" id="sellPrice" placeholder="Price in ZAR (e.g. 500)" required>
+    <input type="text" class="dms-field" id="sellHashtags" placeholder="#electronics #phones #secondhand">
+    <div class="dms-icon-input">
+        <i data-lucide="message-circle" style="width:18px;height:18px;color:#ef4444;flex-shrink:0;stroke-width:1.5;"></i>
+        <input type="text" id="sellWhatsapp" placeholder="WhatsApp number">
+        <button type="button" onclick="document.getElementById('sellWhatsapp').value=''" style="background:none;border:none;cursor:pointer;display:flex;"><i data-lucide="x" style="width:15px;height:15px;color:#94a3b8;stroke-width:1.5;"></i></button>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;padding:10px;background:#eff6ff;border-radius:10px;border:1px solid #bfdbfe;">
-        <i data-lucide="mail" style="width:18px;height:18px;color:#3b82f6;flex-shrink:0;"></i>
-        <input type="text" class="form-input" id="sellEmail" placeholder="Email address" style="border:none;background:transparent;padding:0;margin:0;font-size:14px;flex:1;">
-        <button type="button" onclick="document.getElementById('sellEmail').value=''" style="background:none;border:none;cursor:pointer;"><i data-lucide="x" style="width:14px;height:14px;color:#94a3b8;"></i></button>
+    <div class="dms-icon-input">
+        <i data-lucide="mail" style="width:18px;height:18px;color:#ef4444;flex-shrink:0;stroke-width:1.5;"></i>
+        <input type="text" id="sellEmail" placeholder="Email address">
+        <button type="button" onclick="document.getElementById('sellEmail').value=''" style="background:none;border:none;cursor:pointer;display:flex;"><i data-lucide="x" style="width:15px;height:15px;color:#94a3b8;stroke-width:1.5;"></i></button>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;padding:10px;background:#f5f3ff;border-radius:10px;border:1px solid #ddd6fe;">
-        <i data-lucide="globe" style="width:18px;height:18px;color:#8b5cf6;flex-shrink:0;"></i>
-        <input type="text" class="form-input" id="sellWebsite" placeholder="Website URL" style="border:none;background:transparent;padding:0;margin:0;font-size:14px;flex:1;">
-        <button type="button" onclick="document.getElementById('sellWebsite').value=''" style="background:none;border:none;cursor:pointer;"><i data-lucide="x" style="width:14px;height:14px;color:#94a3b8;"></i></button>
+    <div class="dms-icon-input">
+        <i data-lucide="globe" style="width:18px;height:18px;color:#ef4444;flex-shrink:0;stroke-width:1.5;"></i>
+        <input type="text" id="sellWebsite" placeholder="Website URL">
+        <button type="button" onclick="document.getElementById('sellWebsite').value=''" style="background:none;border:none;cursor:pointer;display:flex;"><i data-lucide="x" style="width:15px;height:15px;color:#94a3b8;stroke-width:1.5;"></i></button>
     </div>
-    <button type="submit" style="width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,#ef4444,#dc2626);color:white;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-        <i data-lucide="shopping-cart" style="width:18px;height:18px;"></i>List for Sale
+    <button type="submit" style="width:100%;padding:15px;border:3px solid #0f172a;border-radius:14px;background:#ffffff;color:#0f172a;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 22px rgba(255,255,255,0.95),0 10px 30px rgba(255,255,255,0.6),0 2px 8px rgba(0,0,0,0.08);">
+        <i data-lucide="crown" style="width:20px;height:20px;color:#0f172a;stroke-width:1.5;"></i> List for Sale
     </button>
 </form>
         
@@ -4900,32 +5044,36 @@ form input[type="text"] {
 <!-- ===== BEELZE POST MANAGEMENT ===== -->
 <div id="postMgmtOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:white;flex-direction:column;overflow-y:auto;">
   <!-- Header -->
-  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #e2e8f0;background:white;position:sticky;top:0;z-index:10;">
-    <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:36px;height:36px;border-radius:10px;">
+    <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #e2e8f0;background:white;position:sticky;top:0;z-index:10;">
+    <div style="width:36px;height:36px;position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <i data-lucide="message-circle" style="position:absolute;width:36px;height:36px;color:#0f172a;stroke-width:1.5;"></i>
+      <i data-lucide="crown" style="position:relative;width:18px;height:18px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
+    </div>
     <div>
       <div style="font-weight:900;font-size:18px;color:#0f172a;">Post Management</div>
       <div style="font-size:12px;color:#64748b;">BeelzeChat Admin</div>
     </div>
-    <button onclick="openPaidSignups()" style="margin-left:auto;display:flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;border:none;border-radius:10px;padding:8px 12px;font-weight:700;font-size:12px;cursor:pointer;flex-shrink:0;">
-      <i data-lucide="crown" style="width:14px;height:14px;"></i> Paid Signups
-    </button>
+        <!-- Paid Signups moved to the scrollable action bar below -->
+
     <button onclick="document.getElementById('postMgmtOverlay').style.display='none';" style="background:#f1f5f9;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">
       <i data-lucide="x" style="width:18px;height:18px;"></i>
     </button>
   </div>
 
-<!-- Search + Bulk Delete Bar -->
-  <div style="padding:12px 16px;border-bottom:1px solid #e2e8f0;background:#f8fafc;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-    <div style="display:flex;align-items:center;gap:8px;background:white;border:1.5px solid #e2e8f0;border-radius:12px;padding:8px 14px;flex:1;min-width:160px;">
-      <i data-lucide="search" style="width:16px;height:16px;color:#94a3b8;flex-shrink:0;"></i>
+<!-- Search + scrollable Action Bar -->
+  <div style="padding:12px 16px;border-bottom:1px solid #e2e8f0;background:#f8fafc;display:flex;flex-direction:column;gap:10px;">
+    <div style="display:flex;align-items:center;gap:8px;background:white;border:1.5px solid #e2e8f0;border-radius:12px;padding:8px 14px;flex:1;min-width:0;">
+      <i data-lucide="search" style="width:16px;height:16px;color:#94a3b8;flex-shrink:0;stroke-width:1.5;"></i>
       <input id="postMgmtSearch" type="text" placeholder="Search posts..." oninput="filterMgmtPosts()" style="border:none;outline:none;width:100%;font-size:14px;background:transparent;">
     </div>
-    <button onclick="selectAllMgmtPosts()" style="display:flex;align-items:center;gap:6px;background:#eff6ff;color:#3b82f6;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;">
-      <i data-lucide="check-square" style="width:15px;height:15px;"></i> Select All
-    </button>
-    <button onclick="bulkDeleteMgmtPosts()" style="display:flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;">
-      <i data-lucide="trash-2" style="width:15px;height:15px;"></i> Delete Selected
-    </button>
+    <div style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch;padding-bottom:4px;">
+      <button onclick="selectAllMgmtPosts()" style="display:flex;align-items:center;gap:6px;background:#eff6ff;color:#3b82f6;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="check-square" style="width:15px;height:15px;stroke-width:1.5;"></i> Select All</button>
+      <button onclick="bulkDeleteMgmtPosts()" style="display:flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="trash-2" style="width:15px;height:15px;stroke-width:1.5;"></i> Delete Selected</button>
+      <button onclick="openPaidSignups()" style="display:flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="crown" style="width:15px;height:15px;stroke-width:1.5;"></i> Paid Signups</button>
+      <button onclick="openNormalSignups()" style="display:flex;align-items:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="user-plus" style="width:15px;height:15px;stroke-width:1.5;"></i> Free Signups</button>
+      <button onclick="openMktMgmt()" style="display:flex;align-items:center;gap:6px;background:#fff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="store" style="width:15px;height:15px;color:#0f172a;stroke-width:1.5;"></i> Marketplace Products</button>
+      <button onclick="openStoragePayers()" style="display:flex;align-items:center;gap:6px;background:#f0fdf4;color:#15803d;border:1.5px solid #bbf7d0;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="database" style="width:15px;height:15px;color:#15803d;stroke-width:1.5;"></i> Storage Payers</button>
+    </div>
   </div>
 
   <!-- ===== AUTO-DELETE CONTROL CARD ===== -->
@@ -5093,6 +5241,59 @@ form input[type="text"] {
 </div>
 
 
+<!-- ===== MARKETPLACE PRODUCT MANAGEMENT (ADMIN) — protect / allow-delete ===== -->
+<div id="mktMgmtOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:white;flex-direction:column;overflow-y:auto;">
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #e2e8f0;background:white;position:sticky;top:0;z-index:10;">
+    <div style="position:relative;width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <i data-lucide="message-circle" style="position:absolute;width:36px;height:36px;color:#0f172a;stroke-width:1.5;"></i>
+      <i data-lucide="crown" style="position:relative;width:18px;height:18px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:32px;height:32px;position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i data-lucide="message-circle" style="position:absolute;width:32px;height:32px;color:#0f172a;stroke-width:1.5;"></i>
+        <i data-lucide="crown" style="position:relative;width:16px;height:16px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
+      </div>
+      <div><div style="font-weight:900;font-size:18px;color:#0f172a;">Marketplace Products</div><div style="font-size:12px;color:#64748b;">BeelzeChat Admin</div></div>
+    </div>
+    <button onclick="document.getElementById('mktMgmtOverlay').style.display='none';" style="margin-left:auto;background:#f1f5f9;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:18px;height:18px;stroke-width:1.5;"></i></button>
+  </div>
+  <div style="padding:12px 16px;border-bottom:1px solid #e2e8f0;background:#f8fafc;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:8px;background:white;border:1.5px solid #e2e8f0;border-radius:12px;padding:8px 14px;flex:1;min-width:160px;">
+      <i data-lucide="search" style="width:16px;height:16px;color:#94a3b8;flex-shrink:0;stroke-width:1.5;"></i>
+      <input id="mktMgmtSearch" type="text" placeholder="Search products..." oninput="filterMktMgmt()" style="border:none;outline:none;width:100%;font-size:14px;background:transparent;">
+    </div>
+    <button onclick="bulkDeleteMktListings()" style="display:flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;"><i data-lucide="trash-2" style="width:15px;height:15px;stroke-width:1.5;"></i> Delete Selected</button>
+  </div>
+  <div id="mktMgmtList" style="padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px;"></div>
+</div>
+
+<!-- ===== NORMAL (FREE) SIGNUPS DASHBOARD (ADMIN) ===== -->
+<div id="normalSignupsOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:white;flex-direction:column;overflow-y:auto;">
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #e2e8f0;background:white;position:sticky;top:0;z-index:10;">
+    <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#64748b,#475569);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="user-plus" style="width:20px;height:20px;color:white;stroke-width:1.5;"></i></div>
+    <div><div style="font-weight:900;font-size:18px;color:#0f172a;">Free Signups</div><div style="font-size:12px;color:#64748b;">Users who signed up without paying</div></div>
+    <button onclick="document.getElementById('normalSignupsOverlay').style.display='none';" style="margin-left:auto;background:#f1f5f9;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:18px;height:18px;stroke-width:1.5;"></i></button>
+  </div>
+  <div style="padding:12px 16px;border-bottom:1px solid #e2e8f0;background:#f8fafc;display:flex;gap:10px;align-items:center;">
+    <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:8px 14px;"><span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;">Total</span> <span id="normalStatsCount" style="font-weight:900;color:#0f172a;">0</span></div>
+  </div>
+  <div id="normalSignupsList" style="padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px;"></div>
+</div>
+
+<!-- ===== STORAGE PAYERS DASHBOARD (ADMIN) — R100/mo, never auto-deleted ===== -->
+<div id="storagePayersOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:white;flex-direction:column;overflow-y:auto;">
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #e2e8f0;background:white;position:sticky;top:0;z-index:10;">
+    <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="database" style="width:20px;height:20px;color:white;stroke-width:1.5;"></i></div>
+    <div><div style="font-weight:900;font-size:18px;color:#0f172a;">Storage Payers</div><div style="font-size:12px;color:#64748b;">R100/month — posts &amp; marketplace never auto-deleted</div></div>
+    <button onclick="document.getElementById('storagePayersOverlay').style.display='none';" style="margin-left:auto;background:#f1f5f9;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:18px;height:18px;stroke-width:1.5;"></i></button>
+  </div>
+  <div style="padding:12px 16px;border-bottom:1px solid #e2e8f0;background:#f8fafc;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <input id="storagePayerEmailInput" type="email" placeholder="Payer email (manual add)" style="flex:1;min-width:180px;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:14px;outline:none;background:white;">
+    <button onclick="addStorageSubscriber()" style="display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,#22c55e,#16a34a);color:white;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;"><i data-lucide="shield-check" style="width:15px;height:15px;stroke-width:1.5;"></i> Add &amp; Protect</button>
+  </div>
+  <div id="storagePayersList" style="padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px;"></div>
+</div>
+
 <!-- ===== PAID SIGNUPS DASHBOARD (ADMIN) ===== -->
 <div id="paidSignupsOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:white;flex-direction:column;overflow-y:auto;">
   <!-- Header -->
@@ -5135,8 +5336,11 @@ form input[type="text"] {
 
 <!-- Password Modal -->
 <div id="postMgmtPasswordModal" style="display:none;position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;">
-  <div style="background:white;border-radius:24px;padding:32px;width:300px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
-    <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:56px;height:56px;border-radius:14px;margin-bottom:12px;">
+    <div style="background:white;border-radius:24px;padding:32px;width:300px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+    <div style="width:56px;height:56px;position:relative;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+      <i data-lucide="message-circle" style="position:absolute;width:56px;height:56px;color:#0f172a;stroke-width:1.5;"></i>
+      <i data-lucide="crown" style="position:relative;width:28px;height:28px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
+    </div>
     <div style="font-weight:900;font-size:18px;color:#0f172a;margin-bottom:4px;">Admin Access</div>
     <div style="font-size:13px;color:#64748b;margin-bottom:20px;">Post Management Panel</div>
     <div style="position:relative;margin-bottom:12px;">
@@ -5447,6 +5651,7 @@ function hideGroupsSkeleton() {
 function showUsersSkeleton() {
     const list = document.getElementById('usersList');
     if (!list) return;
+    list.classList.remove('bz-people-grid');   // skeleton rows are lines — never put them inside the 2-column grid
     let html = '';
     for (let i = 0; i < 8; i++) {
         html += `
@@ -7195,28 +7400,39 @@ document.getElementById('bottomNav').addEventListener('click', e => {
 
         
         const titles = {
-    messages: { logo: true, text: 'BeelzeChat' },
-    users: { logo: true, text: 'BeelzeChat' },
-    stories: { logo: true, text: 'BeelzeChat' },
-    groups: { logo: true, text: 'BeelzeChat' }
+    messages: { text: 'BeelzeChat' },
+    users: { text: 'BeelzeChat' },
+    stories: { text: 'BeelzeChat' },
+    groups: { text: 'BeelzeChat' }
 };
 
 
         const ti = titles[tab];
         if (ti) {
-            document.getElementById('headerTitle').innerHTML = ti.logo ?
-                `<img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698a063d7a95f71fa9ac96d7/5b4f163f7_1000287857.png" onerror="this.style.display='none'" style="width:32px;height:32px;border-radius:8px;">${ti.text}` :
-                `<i data-lucide="${ti.icon}"></i>${ti.text}`;
+            document.getElementById('headerTitle').innerHTML = ti.text;
         }
         const tabMap = { messages: 'messagesTab', users: 'usersTab', stories: 'storiesTab', groups: 'groupsTab' };
         if (tabMap[tab]) document.getElementById(tabMap[tab]).classList.remove('hidden');
         // Only show a skeleton when the tab is empty — never overwrite users/groups already loaded on login
-        if (tab === 'users' && document.getElementById('usersList').children.length === 0) { if (typeof showUsersSkeleton === 'function') showUsersSkeleton(); }
+        if (tab === 'users') {
+            if (typeof ensurePeopleGridDefault === 'function') ensurePeopleGridDefault();
+            if (document.getElementById('usersList').children.length === 0) { if (typeof showUsersSkeleton === 'function') showUsersSkeleton(); }
+        }
         if (tab === 'groups' && document.getElementById('groupsList').children.length === 0) { if (typeof showGroupsSkeleton === 'function') showGroupsSkeleton(); }
         updateSearchIconVisibility(tab);
-        lucide.createIcons();
+        // Draw icons ONLY inside the tab being opened — not every icon in the app
+        bzIconsIn(document.getElementById(tabMap[tab]));
     }
 });
+
+// Draws only the icons that still need drawing inside ONE container.
+// A full lucide.createIcons() re-draws every icon on the page (the finished svg
+// keeps its data-lucide attribute), which is what made each tap hang for ~1s.
+function bzIconsIn(root) {
+    if (!root || typeof lucide === 'undefined') return;
+    if (!root.querySelector('i[data-lucide]')) return;   // nothing new in here — do nothing
+    lucide.createIcons({ root: root });
+}
 
 // ============================================================
 // LOAD CHATS — FULL, NO LIMIT
@@ -7366,7 +7582,7 @@ const unread = (chat.lastMessageTime > lastSeen && lastSenderId !== currentUser.
 
 
 async function editProfileField(field) {
-    const labels = { phone: 'Phone Number', website: 'Website', email: 'Contact Email' };
+    const labels = { phone: 'Phone Number', website: 'Website', email: 'Contact Email', age: 'Age', location: 'Location', job: 'What you do for a living' };
     const val = prompt(`Enter your ${labels[field]}:`);
     if (val === null) return;
     await db.collection('users').doc(currentUser.id).update({ [field]: val.trim() });
@@ -7589,45 +7805,15 @@ async function loadMoreUsers() {
                 document.getElementById('loadMoreUsersBtn').style.display = 'none';
             }
 
+            const gridNow = window._peopleViewMode === 'grid';
+            ul.classList.toggle('bz-people-grid', gridNow);
+            const frag = document.createDocumentFragment();
             pageIds.forEach(uid => {
                 _loadedUserIds.add(uid);
-                const user = allUsers[uid];
-
-                const div = document.createElement('div');
-
-                
-                
-                div.className = 'user-item';
-                const av = user.profilePic ?
-                    `<img src="${user.profilePic}">` :
-                    `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}&background=000&color=fff&size=128">`;
-                div.innerHTML = `
-                    <div class="avatar-wrapper">
-                        <div class="avatar">${av}</div>
-                        ${user.online ? '<div class="online-indicator"></div>' : ''}
-                    </div>
-                    <div class="user-info">
-                        <div class="user-name">${user.name}</div>
-                          <div class="user-bio" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw;">${user.bio || (user.online ? 'Online' : 'Offline')}</div>
-                    </div>
-                    <button class="message-icon-user" style="background:transparent;color:#000;border:2px solid #e2e8f0;"><i data-lucide="message-circle"></i></button>
-                `;
-                div.querySelector('.message-icon-user').addEventListener('click', e => {
-                    e.stopPropagation();
-                    const t = document.createElement('div');
-                    t.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999999;background:white;border-radius:20px;padding:24px 32px;box-shadow:0 20px 60px rgba(0,0,0,0.3);display:flex;flex-direction:column;align-items:center;gap:12px;border:2px solid #3b82f6;min-width:260px;';
-                    t.innerHTML = `<img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:60px;height:60px;border-radius:16px;"><div style="font-weight:800;font-size:16px;color:#0f172a;">Opening Messenger</div><div style="font-size:13px;color:#64748b;">Redirecting to this user's messenger...</div><div style="width:40px;height:4px;background:#3b82f6;border-radius:2px;"></div>`;
-                    document.body.appendChild(t);
-                    setTimeout(() => { t.remove(); startChatDirectly(uid); }, 1500);
-                });
-                div.querySelector('.user-info').addEventListener('click', () => showUserProfile(uid, user));
-                div.querySelector('.avatar-wrapper').addEventListener('click', e => {
-                    e.stopPropagation();
-                    viewImage(user.profilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=000&color=fff&size=256`);
-                });
-                ul.appendChild(div);
+                frag.appendChild(bzMakeUserEl(uid, allUsers[uid], gridNow));
             });
-            lucide.createIcons();
+            ul.appendChild(frag);
+            bzIconsIn(ul);
         }
     } catch(e) {
         console.error('Users load error:', e);
@@ -7687,16 +7873,91 @@ if (appContent) {
 
 
 
+window._peopleViewMode = 'grid';
+function bzPaintPeopleToggle(mode) {
+    const g = document.getElementById('peopleViewGridBtn'), l = document.getElementById('peopleViewListBtn');
+    if (g) { g.style.background = mode === 'grid' ? '#000' : 'transparent'; g.style.color = mode === 'grid' ? '#fff' : '#64748b'; }
+    if (l) { l.style.background = mode === 'list' ? '#000' : 'transparent'; l.style.color = mode === 'list' ? '#fff' : '#64748b'; }
+}
+function setPeopleViewMode(mode) {
+    bzPaintPeopleToggle(mode);
+    if (window._peopleViewMode === mode) return;   // already in this view — nothing to rebuild
+    window._peopleViewMode = mode;
+    window._peopleViewTouched = true;
+    const ul = document.getElementById('usersList');
+    ul.style.opacity = '0.4';                       // instant feedback so the tap never feels frozen
+    requestAnimationFrame(function() {
+        setTimeout(function() { renderUsers(); ul.style.opacity = ''; }, 0);
+    });
+}
+// Force grid mode every time the People tab is shown
+function ensurePeopleGridDefault() {
+    const ul = document.getElementById('usersList');
+    if (!ul) return;
+    // Only force grid the very first time People opens — after that, respect the choice the user made.
+    if (!window._peopleViewTouched) {
+        window._peopleViewMode = 'grid';
+    }
+    bzPaintPeopleToggle(window._peopleViewMode);
+    const wantGrid = window._peopleViewMode === 'grid';
+    const hasRealRows = ul.querySelector('.bz-user-card, .user-item');
+    const showingGrid = ul.classList.contains('bz-people-grid');
+    // Rebuild ONLY if real rows exist in the wrong layout (never on a plain tab open).
+    if (hasRealRows && showingGrid !== wantGrid && typeof renderUsers === 'function') renderUsers();
+}
+function bzUserHue(id) { let h = 0; for (const c of String(id || '')) h = (h * 31 + c.charCodeAt(0)) % 360; return h; }
+
+// ONE builder for a person — used by the first load, scroll-load, search and the grid/list toggle.
+function bzMakeUserEl(uid, user, grid) {
+    const div = document.createElement('div');
+    const av = user.profilePic ?
+        `<img src="${user.profilePic}">` :
+        `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}&background=000&color=fff&size=256">`;
+    const bio = (user.bio || '').trim();
+    const loc = (user.location || '').trim();
+    div.dataset.uid = uid;
+    if (grid) {
+        div.className = 'bz-user-card';
+        div.innerHTML = `
+            <i data-lucide="crown" class="bz-king"></i>
+            <div class="avatar-wrapper bz-card-avatar"><div class="avatar">${av}</div>${user.online ? '<div class="online-indicator"></div>' : ''}</div>
+            <div class="bz-card-name">${user.name || 'User'}</div>
+            <div class="bz-card-bio"><i data-lucide="info" style="width:12px;height:12px;flex-shrink:0;stroke-width:1.5;"></i><span>${bio || '—'}</span></div>
+            <div class="bz-card-loc"><i data-lucide="map-pin" style="width:11px;height:11px;stroke-width:1.5;"></i><span>${loc || '—'}</span></div>
+            <button class="bz-card-msg" title="Message"><i data-lucide="message-circle" style="width:16px;height:16px;stroke-width:1.5;"></i></button>
+        `;
+        div.querySelector('.bz-card-msg').addEventListener('click', e => { e.stopPropagation(); startChatDirectly(uid); });
+        div.addEventListener('click', () => showUserProfile(uid, user));
+    } else {
+        div.className = 'user-item';
+        div.innerHTML = `
+            <div class="avatar-wrapper"><div class="avatar">${av}</div>${user.online ? '<div class="online-indicator"></div>' : ''}</div>
+            <div class="user-info">
+                <div class="user-name">${user.name || 'User'}</div>
+                <div class="user-bio" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw;">${bio || (user.online ? 'Online' : 'Offline')}</div>
+            </div>
+            <button class="message-icon-user" style="background:transparent;color:#000;border:2px solid #e2e8f0;"><i data-lucide="message-circle"></i></button>
+        `;
+        div.querySelector('.message-icon-user').addEventListener('click', e => { e.stopPropagation(); startChatDirectly(uid); });
+        div.querySelector('.user-info').addEventListener('click', () => showUserProfile(uid, user));
+    }
+    return div;
+}
+
 function renderUsers() {
     const ul = document.getElementById('usersList');
+    if (ul._bzRendering) { ul._bzRenderAgain = true; return; }   // a tap mid-rebuild must never be lost
+    ul._bzRendering = true;
+    ul._bzRenderAgain = false;
     ul.innerHTML = '';
-    if (!currentUser) return;
+    const me = currentUser || { id: '', blockedUsers: [] };
     
     const term = (document.getElementById('userSearch')?.value || '').toLowerCase();
-    const blocked = currentUser.blockedUsers || [];
+    const blocked = me.blockedUsers || [];
     const defaultIds = DEFAULT_USERS.map(u => u.id);
     const filtered = Object.entries(allUsers).filter(([id, u]) => {
-        if (id === currentUser.id || blocked.includes(id)) return false;
+        if (currentUser && id === currentUser.id) return false;
+        if (blocked.includes(id)) return false;
         return !term || u.name?.toLowerCase().includes(term) || u.identifier?.toLowerCase().includes(term) || u.beelzeId?.toLowerCase().includes(term);
     });
         // Real users first (sorted by createdAt desc — newest at top), default users at bottom
@@ -7704,39 +7965,16 @@ function renderUsers() {
         .sort(([, a], [, b]) => (b.createdAt || 0) - (a.createdAt || 0));
     const demoUsers = filtered.filter(([id]) => defaultIds.includes(id));
     const sorted = [...realUsers, ...demoUsers];
-    sorted.forEach(([uid, user]) => {
-        const div = document.createElement('div');
-        div.className = 'user-item';
-        const av = user.profilePic ?
-            `<img src="${user.profilePic}">` :
-            `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}&background=000&color=fff&size=128">`;
-        div.innerHTML = `
-    <div class="avatar-wrapper">
-        <div class="avatar">${av}</div>
-        ${user.online ? '<div class="online-indicator"></div>' : ''}
-    </div>
-    <div class="user-info">
-        <div class="user-name">${user.name}</div>
-        <div class="user-bio">${user.bio || (user.online ? 'Online' : 'Offline')}</div>
-    </div>
-    <button class="message-icon-user" style="background:transparent;color:#000;border:2px solid #e2e8f0;"><i data-lucide="message-circle"></i></button>
-`;
-    div.querySelector('.message-icon-user').addEventListener('click', e => {
-    e.stopPropagation();
-    const t = document.createElement('div');
-    t.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999999;background:white;border-radius:20px;padding:24px 32px;box-shadow:0 20px 60px rgba(0,0,0,0.3);display:flex;flex-direction:column;align-items:center;gap:12px;border:2px solid #3b82f6;min-width:260px;';
-    t.innerHTML = `<img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:60px;height:60px;border-radius:16px;"><div style="font-weight:800;font-size:16px;color:#0f172a;">Opening Messenger</div><div style="font-size:13px;color:#64748b;">Redirecting to this user's messenger...</div><div style="width:40px;height:4px;background:#3b82f6;border-radius:2px;"></div>`;
-    document.body.appendChild(t);
-    setTimeout(() => { t.remove(); startChatDirectly(uid); }, 1500);
-});
-        div.querySelector('.user-info').addEventListener('click', () => showUserProfile(uid, user));
-        div.querySelector('.avatar-wrapper').addEventListener('click', e => {
-            e.stopPropagation();
-            viewImage(user.profilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=000&color=fff&size=256`);
-        });
-        ul.appendChild(div);
+        const grid = window._peopleViewMode === 'grid';
+    ul.classList.toggle('bz-people-grid', grid);
+    const frag = document.createDocumentFragment();
+    sorted.forEach(([uid, user]) => frag.appendChild(bzMakeUserEl(uid, user, grid)));
+    ul.appendChild(frag);
+    requestAnimationFrame(function() {
+        bzIconsIn(ul);
+        ul._bzRendering = false;
+        if (ul._bzRenderAgain) { ul._bzRenderAgain = false; renderUsers(); }
     });
-    lucide.createIcons();
 }
 
 
@@ -7848,7 +8086,8 @@ async function filterPosts() {
     await _loadAllPostsCache();
     if (myToken !== _searchRenderToken) return; // a newer keystroke took over
 
-    let matched = _allPostsCache.filter(p => _postMatchesSearch(p, term));
+    const _bl = (currentUser?.blockedUsers || []);
+    let matched = _allPostsCache.filter(p => _postMatchesSearch(p, term) && !_bl.includes(p.userId));
     if (currentPostCategory && currentPostCategory !== 'all') {
         matched = matched.filter(p => (p.category || 'other') === currentPostCategory);
     }
@@ -7972,7 +8211,9 @@ async function loadMorePosts() {
                 const pid = c.querySelector('[data-postid]')?.dataset?.postid;
                 if (pid) existingCards[pid] = c;
             });
+            const _bl = (currentUser?.blockedUsers || []);
             for (const p of batch) {
+                if (_bl.includes(p.userId)) continue;
                 const el = await createPostElement(p);
                 if (el && el.tagName) {
                     if (existingCards[p.id]) existingCards[p.id].replaceWith(el);
@@ -7985,7 +8226,7 @@ async function loadMorePosts() {
         }
 
         filterPosts();
-        if (currentViewMode === 'grid') buildGridView();
+        if (currentViewMode === 'grid') { clearTimeout(_gridRebuildTimer); _gridRebuildTimer = setTimeout(function(){ if (currentViewMode === 'grid') buildGridView(); }, 150); }
         injectFeedBanners();
         lucide.createIcons();
     } catch(e) {
@@ -8176,11 +8417,15 @@ function openPostDetail(postCardEl) {
     lucide.createIcons();
 }
 
-// Also rebuild grid when posts get filtered
+// Also rebuild grid when posts get filtered — DEBOUNCED so the app never freezes
 const _origFilterPosts = filterPosts;
+let _gridRebuildTimer = null;
 filterPosts = async function() {
     await _origFilterPosts();
-    if (currentViewMode === 'grid') buildGridView();
+    if (currentViewMode === 'grid') {
+        clearTimeout(_gridRebuildTimer);
+        _gridRebuildTimer = setTimeout(function(){ if (currentViewMode === 'grid') buildGridView(); }, 150);
+    }
 };
 
 
@@ -8394,18 +8639,25 @@ if (post.commentsEnabled !== false) {
     
     
     
-    <div class="post-menu-dropdown" id="menu-${post.id}">
+        <div class="post-menu-dropdown" id="menu-${post.id}" onclick="if(event.target===this)this.classList.remove('active')">
+      <div class="post-menu-card" onclick="event.stopPropagation()">
+        <div class="post-menu-logo">
+            <i data-lucide="message-circle" class="msg"></i>
+            <i data-lucide="crown" class="king"></i>
+        </div>
+        <button onclick="document.getElementById('menu-${post.id}').classList.remove('active')" style="position:absolute;top:10px;right:10px;background:#f1f5f9;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:18px;height:18px;color:#0f172a;stroke-width:1.5;"></i></button>
         ${post.userId === currentUser.id ? 
-            `<div class="post-menu-option edit" data-postid="${post.id}" data-action="edit" style="display:flex;align-items:center;gap:8px;padding:12px 16px;cursor:pointer;color:#3b82f6;font-weight:700;border-bottom:1px solid #f1f5f9;">
-                <i data-lucide="pencil" style="width:15px;height:15px;color:#3b82f6;"></i> Edit Post
+            `<div class="post-menu-option edit" data-postid="${post.id}" data-action="edit" style="display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;color:#0f172a;font-weight:700;border-radius:10px;">
+                <i data-lucide="pencil" style="width:18px;height:18px;color:#0f172a;stroke-width:1.5;"></i> Edit Post
             </div>
-            <div class="post-menu-option delete" data-postid="${post.id}" data-action="delete" style="display:flex;align-items:center;gap:8px;padding:12px 16px;cursor:pointer;color:#dc2626;font-weight:700;">
-                <i data-lucide="trash-2" style="width:15px;height:15px;color:#dc2626;"></i> Delete Post
+            <div class="post-menu-option delete" data-postid="${post.id}" data-action="delete" style="display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;color:#dc2626;font-weight:700;border-radius:10px;">
+                <i data-lucide="trash-2" style="width:18px;height:18px;color:#dc2626;stroke-width:1.5;"></i> Delete Post
             </div>` : 
-            `<div class="post-menu-option message" data-postid="${post.id}" data-userid="${post.userId}" data-action="message" style="display:flex;align-items:center;gap:8px;padding:12px 16px;cursor:pointer;color:#3b82f6;font-weight:700;">
-                <i data-lucide="message-circle" style="width:15px;height:15px;color:#3b82f6;"></i> Message ${author.name}
+            `<div class="post-menu-option message" data-postid="${post.id}" data-userid="${post.userId}" data-action="message" style="display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;color:#0f172a;font-weight:700;border-radius:10px;">
+                <i data-lucide="message-circle" style="width:18px;height:18px;color:#0f172a;stroke-width:1.5;"></i> Message ${author.name}
             </div>`
         }
+      </div>
     </div>
     
     
@@ -8941,6 +9193,7 @@ document.getElementById('createPostForm').addEventListener('submit', async e => 
 // CHAT
 // ============================================================
 async function startChatDirectly(userId) {
+    if (window._bzVisitor) { bzRequireAccount('chat with people'); return; }
     let user = allUsers[userId];
     if (!user) {
         const ud = await db.collection('users').doc(userId).get();
@@ -8958,7 +9211,7 @@ async function startChatDirectly(userId) {
     document.querySelectorAll('.nav-item')[0].classList.add('active');
     ['usersTab', 'storiesTab', 'groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
     document.getElementById('messagesTab').classList.remove('hidden');
-    document.getElementById('headerTitle').innerHTML = `<img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698a063d7a95f71fa9ac96d7/5b4f163f7_1000287857.png" onerror="this.style.display='none'" style="width:32px;height:32px;border-radius:8px;">BeelzeChat`;
+    document.getElementById('headerTitle').innerHTML = 'BeelzeChat';
     updateSearchIconVisibility('messages');
     lucide.createIcons();
     openChat(chatId, user, userId);
@@ -9924,8 +10177,19 @@ async function showUserProfile(userId, user) {
         });
     }
     if (bidEl) bidEl.textContent = ud.beelzeId || 'Not assigned yet';
-    const blocked = (currentUser.blockedUsers || []).includes(userId);
+        const blocked = (currentUser.blockedUsers || []).includes(userId);
     document.getElementById('blockBtnText').textContent = blocked ? 'Unblock' : 'Block';
+    const _infoRow = document.getElementById('userInfoRow');
+    if (_infoRow) {
+        const rows = [
+            ['cake', 'Age', ud.age],
+            ['map-pin', 'Location', ud.location],
+            ['briefcase', 'Work', ud.job]
+        ];
+        _infoRow.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:6px;margin-top:12px;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;';
+        _infoRow.innerHTML = rows.map(([ic, lb, v]) => `<div style="display:inline-flex;align-items:center;gap:4px;background:#f1f5f9;border-radius:16px;padding:4px 10px;font-size:11px;color:#334155;flex-shrink:0;white-space:nowrap;"><i data-lucide="${ic}" style="width:13px;height:13px;color:#3b82f6;stroke-width:2;flex-shrink:0;"></i><strong>${v ? String(v).replace(/</g, '&lt;') : '—'}</strong></div>`).join('');
+        lucide.createIcons();
+    }
 
     // Contact info
     let contactHTML = '';
@@ -10088,6 +10352,204 @@ document.getElementById('blockBtn')?.addEventListener('click', async () => {
     renderUsers();
 });
 
+// ============================================================
+// VISITOR MODE + ACCOUNT GATE + FREE/PAID ACCOUNT CHOICE
+// ============================================================
+window._bzVisitor = false;
+
+function bzBrandLogo(size) {
+    const s = size || 44;
+    return `<div style="position:relative;width:${s}px;height:${s}px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i data-lucide="message-circle" style="position:absolute;width:${s}px;height:${s}px;color:#0f172a;stroke-width:1.5;"></i>
+        <i data-lucide="crown" style="position:relative;width:${Math.round(s * 0.5)}px;height:${Math.round(s * 0.5)}px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
+    </div>`;
+}
+function bzTick(t) { return `<div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check" style="width:15px;height:15px;color:#22c55e;stroke-width:2;flex-shrink:0;margin-top:2px;"></i><span>${t}</span></div>`; }
+
+// Centered, smooth, curved gate popup with the King logo (no full-screen blur)
+window.bzRequireAccount = function(what) {
+    const old = document.getElementById('bzGatePopup'); if (old) old.remove();
+    const ov = document.createElement('div');
+    ov.id = 'bzGatePopup';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:9999998;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;padding:20px;';
+    ov.innerHTML = `<div style="background:white;border-radius:22px;width:100%;max-width:320px;padding:22px 18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.35);position:relative;" onclick="event.stopPropagation()">
+        <button onclick="document.getElementById('bzGatePopup').remove()" style="position:absolute;top:12px;right:12px;background:#f1f5f9;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:17px;height:17px;color:#64748b;"></i></button>
+        ${bzBrandLogo(52)}
+        <div style="font-weight:900;font-size:17px;color:#0f172a;margin-top:8px;">Create an account</div>
+        <div style="font-size:13px;color:#64748b;margin:6px 0 16px;">To ${what} you need a BeelzeChat account.</div>
+        <button onclick="document.getElementById('bzGatePopup').remove();showAccountChoice();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;margin-bottom:8px;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Free Account</button>
+        <button onclick="document.getElementById('bzGatePopup').remove();document.getElementById('authScreen').style.display='flex';" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="log-in" style="width:16px;height:16px;color:#0f172a;stroke-width:1.5;"></i> Log in instead</button>
+    </div>`;
+    document.body.appendChild(ov);
+    lucide.createIcons();
+};
+
+// One capture-phase listener gates every visitor action — no handler was touched
+document.addEventListener('click', function(e) {
+    if (!window._bzVisitor) return;
+    const hit = e.target.closest('#createPostNavBtn, .mkt-msg-btn, .mkt-like-btn, #blockBtn, #startChatFromProfileBtn, [data-action="message"], [class*="like-btn"]');
+    if (hit) { e.stopPropagation(); e.preventDefault(); bzRequireAccount('do that'); }
+}, true);
+
+// VISITOR MODE — land on the feed, see posts and marketplace, gated actions popup
+window.bzEnterVisitorMode = async function() {
+    window._bzVisitor = true;
+    const a = document.getElementById('authScreen'); if (a) a.style.display = 'none';
+    const ls = document.getElementById('loadingScreen'); if (ls) ls.style.display = 'none';
+    document.getElementById('app').classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
+    ['messagesTab', 'usersTab', 'groupsTab'].forEach(t => document.getElementById(t)?.classList.add('hidden'));
+    document.getElementById('storiesTab')?.classList.remove('hidden');
+    showToast('info', 'Visitor mode', 'Browsing as a guest — create an account to join in');
+    try { await loadAllPosts(); } catch (e) { console.error(e); }
+    lucide.createIcons();
+};
+
+// FREE / PAID CHOICE SCREEN — logo + name, two boxes, read-more, close
+window.showAccountChoice = function() {
+    const old = document.getElementById('bzChoiceScreen'); if (old) old.remove();
+    const scr = document.createElement('div');
+    scr.id = 'bzChoiceScreen';
+    scr.style.cssText = 'position:fixed;inset:0;z-index:9999999;background:#ffffff;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:24px 14px;';
+    scr.innerHTML = `
+    <div style="width:100%;max-width:420px;">
+        <div style="text-align:center;padding:10px 0 18px;">
+            ${bzBrandLogo(56)}
+            <div style="font-weight:900;font-size:22px;color:#0f172a;margin-top:8px;">BeelzeChat</div>
+            <div style="font-size:13px;color:#64748b;">Choose the account you want</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 4px 16px rgba(0,0,0,0.05);">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                    <div style="width:38px;height:38px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;"><i data-lucide="crown" style="width:19px;height:19px;color:#1d4ed8;stroke-width:1.5;"></i></div>
+                    <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Free Account</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#334155;">
+                    ${bzTick('Access People, chat, posts and Marketplace')}
+                    ${bzTick('Sell and buy')}
+                    ${bzTick('No reach limit')}
+                    <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="phone" style="width:15px;height:15px;color:#22c55e;stroke-width:2;flex-shrink:0;margin-top:2px;"></i><span>Sign up with your email + phone number</span></div>
+                </div>
+                <a onclick="document.getElementById('bzFreePointsFull').style.display='flex';this.style.display='none';" style="display:block;margin-top:8px;font-size:12px;font-weight:800;color:#1d4ed8;cursor:pointer;text-decoration:underline;">Read more…</a>
+                <div id="bzFreePointsFull" style="display:none;flex-direction:column;gap:6px;font-size:13px;color:#334155;margin-top:6px;">
+                    ${bzTick('Pay for storage any time')}
+                    ${bzTick('Pay for ads any time')}
+                    <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="x" style="width:15px;height:15px;color:#94a3b8;stroke-width:2;flex-shrink:0;margin-top:2px;"></i><span>Cannot run free ads (paid accounts can)</span></div>
+                </div>
+                <button onclick="bzShowFreeSignup()" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Free Account</button>
+            </div>
+            <div style="background:#fff;border:1.5px solid #fecaca;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 4px 16px rgba(0,0,0,0.05);">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                    <div style="width:38px;height:38px;border-radius:10px;background:#fef2f2;display:flex;align-items:center;justify-content:center;"><i data-lucide="crown" style="width:19px;height:19px;color:#dc2626;stroke-width:1.5;"></i></div>
+                    <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Paid (Rich) Account</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#334155;">
+                    ${bzTick('Everything in Free')}
+                    ${bzTick('Run free ads — one free ad every day')}
+                    ${bzTick('No storage fee — permanent storage')}
+                    ${bzTick('Account protected from negativity tracking')}
+                </div>
+                <a onclick="document.getElementById('bzPaidPointsFull').style.display='flex';this.style.display='none';" style="display:block;margin-top:8px;font-size:12px;font-weight:800;color:#dc2626;cursor:pointer;text-decoration:underline;">Read more…</a>
+                <div id="bzPaidPointsFull" style="display:none;flex-direction:column;gap:6px;font-size:13px;color:#334155;margin-top:6px;">
+                    ${bzTick('Rich verified badge on your profile')}
+                    ${bzTick('Full marketing and uniting platform access')}
+                </div>
+                <button onclick="document.getElementById('bzChoiceScreen').remove();showSignup();" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#dc2626;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Paid Account</button>
+            </div>
+        </div>
+        <button onclick="document.getElementById('bzChoiceScreen').remove();document.getElementById('authScreen').style.display='flex';" style="width:100%;margin-top:14px;padding:12px;border:none;background:none;color:#64748b;font-weight:800;cursor:pointer;">Close</button>
+    </div>`;
+    document.body.appendChild(scr);
+    lucide.createIcons();
+};
+
+// FREE SIGNUP — creates the account immediately (no payment), phone box instead of picture
+window.bzShowFreeSignup = function() {
+    const old = document.getElementById('bzFreeSignup'); if (old) old.remove();
+    const scr = document.createElement('div');
+    scr.id = 'bzFreeSignup';
+    scr.style.cssText = 'position:fixed;inset:0;z-index:9999999;background:#ffffff;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:24px 14px;';
+    scr.innerHTML = `
+    <div style="width:100%;max-width:380px;">
+        <div style="text-align:center;padding:10px 0 16px;">
+            ${bzBrandLogo(52)}
+            <div style="font-weight:900;font-size:19px;color:#0f172a;margin-top:8px;">Create Free Account</div>
+            <div style="font-size:13px;color:#64748b;">Free forever — no payment needed</div>
+        </div>
+        <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px;">
+            <input type="text" id="bzFreeName" placeholder="Full name" style="width:100%;padding:13px 14px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:15px;outline:none;box-sizing:border-box;">
+            <input type="email" id="bzFreeEmail" placeholder="Email" style="width:100%;padding:13px 14px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:15px;outline:none;box-sizing:border-box;">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;">
+                <i data-lucide="phone" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;stroke-width:1.5;"></i>
+                <input type="tel" id="bzFreePhone" placeholder="Phone number" style="border:none;background:transparent;padding:0;font-size:14px;flex:1;outline:none;">
+            </div>
+            <input type="password" id="bzFreePw" placeholder="Create a password (6+ chars)" style="width:100%;padding:13px 14px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:15px;outline:none;box-sizing:border-box;">
+            <input type="password" id="bzFreePw2" placeholder="Confirm password" style="width:100%;padding:13px 14px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:15px;outline:none;box-sizing:border-box;">
+            <button onclick="bzCreateFreeAccount()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;"><i data-lucide="crown" style="width:17px;height:17px;color:#fff;stroke-width:1.5;"></i> Create My Free Account</button>
+            <button onclick="document.getElementById('bzFreeSignup').remove();showAccountChoice();" style="width:100%;padding:10px;border:none;background:none;color:#64748b;font-weight:800;cursor:pointer;">Back</button>
+        </div>
+    </div>`;
+    document.body.appendChild(scr);
+    lucide.createIcons();
+};
+
+window.bzCreateFreeAccount = async function() {
+    const name = (document.getElementById('bzFreeName').value || '').trim();
+    const email = (document.getElementById('bzFreeEmail').value || '').trim();
+    const phone = (document.getElementById('bzFreePhone').value || '').trim();
+    const pw = document.getElementById('bzFreePw').value;
+    const pw2 = document.getElementById('bzFreePw2').value;
+    if (!name || !email || !pw) { showToast('error', 'Error', 'Fill all fields'); return; }
+    if (!email.includes('@')) { showToast('error', 'Invalid', 'Enter a valid email'); return; }
+    if (pw.length < 6) { showToast('error', 'Error', 'Password 6+ chars'); return; }
+    if (pw !== pw2) { showToast('error', 'Error', 'Passwords do not match'); return; }
+    try {
+        localStorage.removeItem('sxchatUser');
+        const cred = await auth.createUserWithEmailAndPassword(email, pw);
+        const uid = (cred.user.email || email).replace(/[.#$[\]@+]/g, '_');
+        await db.collection('users').doc(uid).set({
+            name, identifier: email, phone, password: '',
+            resetCode: Math.floor(100000 + Math.random() * 900000).toString(),
+            beelzeId: 'BeelzeChatID-' + Math.random().toString(36).substring(2, 6).toUpperCase() + Math.floor(1000 + Math.random() * 9000),
+            createdAt: Date.now(), online: true, blockedUsers: [], profilePic: null, bio: '',
+            userAgent: navigator.userAgent, googleAuth: false, richVerified: false, accountType: 'free'
+        });
+        document.getElementById('bzFreeSignup')?.remove();
+        showToast('success', 'Account created', 'Welcome to BeelzeChat!');
+        // onAuthStateChanged finishes loading the app automatically
+    } catch (err) {
+        showToast('error', 'Signup failed', err.message || 'Try again');
+    }
+};
+
+
+
+// Real Lucide King logo (message-circle + crown)
+function bzKingLogoHTML(s) {
+    var half = Math.round(s / 2);
+    return '<div style="position:relative;width:' + s + 'px;height:' + s + 'px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+        '<i data-lucide="message-circle" style="position:absolute;inset:0;width:' + s + 'px;height:' + s + 'px;color:#0f172a;stroke-width:1.5;"></i>' +
+        '<i data-lucide="crown" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:' + half + 'px;height:' + half + 'px;color:#0f172a;stroke-width:1.5;z-index:2;"></i></div>';
+}
+
+// Every old picture logo anywhere (toasts, popups, loading, account screens) becomes the real logo
+function bzSwapOldLogos() {
+    document.querySelectorAll('img[src*="i.postimg.cc/mD0dbHM0"]').forEach(img => {
+        const s = parseInt(img.style.width) || parseInt(img.getAttribute('width')) || 40;
+        const tmp = document.createElement('div');
+        tmp.innerHTML = bzKingLogoHTML(s);
+        const logo = tmp.firstElementChild;
+        logo.style.margin = img.style.margin || '';
+        logo.style.boxShadow = img.style.boxShadow || '';
+        img.replaceWith(logo);
+    });
+    lucide.createIcons();
+}
+// Run once on load — no MutationObserver (it was freezing the app on every scroll/tab switch)
+window.addEventListener('load', bzSwapOldLogos);
+setTimeout(bzSwapOldLogos, 1000);
+
 
 
 
@@ -10223,10 +10685,9 @@ document.getElementById('deleteConvoOption').addEventListener('click', async (e)
 
 function showBlockedUsers() {
     const blocked = currentUser.blockedUsers || [];
-    if (blocked.length === 0) { showToast('info', 'No Blocked Users', 'Your block list is empty'); return; }
     const modal = document.createElement('div');
-    modal.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;';
-    const list = blocked.map(uid => {
+    modal.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;padding:20px;';
+    const list = blocked.length ? blocked.map(uid => {
         const u = allUsers[uid] || { name: uid };
         const av = u.profilePic ? `<img src="${u.profilePic}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=000&color=fff&size=128" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
         return `<div style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid #f1f5f9;">
@@ -10234,10 +10695,11 @@ function showBlockedUsers() {
             <div style="flex:1;font-weight:600;font-size:14px;color:#0f172a;">${u.name}</div>
             <button onclick="unblockUser('${uid}',this)" style="padding:8px 14px;background:#22c55e;color:white;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;">Unblock</button>
         </div>`;
-    }).join('');
-    modal.innerHTML = `<div style="background:white;border-radius:24px;width:320px;max-height:80vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
-        <div style="padding:20px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-weight:800;font-size:17px;">Blocked Users</span>
+    }).join('') : '<div style="padding:40px;text-align:center;color:#94a3b8;font-weight:700;">No blocked users yet</div>';
+    modal.innerHTML = `<div style="background:white;border-radius:22px;width:100%;max-width:420px;height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+        <div style="padding:18px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:10px;">
+            <i data-lucide="shield-off" style="width:20px;height:20px;color:#dc2626;stroke-width:1.5;"></i>
+            <span style="font-weight:900;font-size:17px;flex:1;">Blocked Users</span>
               <button onclick="this.closest('[style*=fixed]').remove()" style="background:#f1f5f9;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:16px;height:16px;color:#64748b;"></i></button>
         </div>
         <div style="overflow-y:auto;">${list}</div>
@@ -11396,7 +11858,8 @@ async function loadMoreMarketplace() {
             // Clear initial loader on first load
             if (!_mktLastDoc) grid.innerHTML = '';
             _mktLastDoc = snap.docs[snap.docs.length - 1];
-            snap.docs.forEach(doc => grid.appendChild(renderListingCard({ id: doc.id, ...doc.data() })));
+            const _bl = (currentUser?.blockedUsers || []);
+            snap.docs.forEach(doc => { const d = doc.data(); if (_bl.includes(d.sellerId)) return; grid.appendChild(renderListingCard({ id: doc.id, ...d })); });
             lucide.createIcons();
             injectMarketplaceBanners();
         }
@@ -11425,7 +11888,7 @@ function renderListingCard(listing) {
         `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(seller.name)}&background=000&color=fff&size=64" style="width:20px;height:20px;border-radius:50%;">`;
     div.innerHTML = `
         <div style="position:relative;">
-            <img src="${img}" style="width:100%;height:130px;object-fit:cover;display:block;" onerror="this.src='https://via.placeholder.com/300x130?text=No+Image'">
+            <div style="width:100%;height:130px;display:flex;align-items:center;justify-content:center;background:#e2e8f0;"><img src="${img}" style="width:100%;height:130px;object-fit:cover;display:block;" onerror="this.style.display='none';"></div>
             <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.72);color:white;border-radius:8px;padding:3px 8px;font-size:11px;font-weight:900;">R ${listing.price || '0'}</div>
         </div>
                 <div style="padding:6px 8px 8px;flex:1;display:flex;flex-direction:column;gap:3px;">
@@ -11759,25 +12222,206 @@ function updateAutoDeleteDays() {
 }
 async function runAutoDeleteNow() {
     showToast('info', 'Auto-Delete', 'Running purge...');
+    window._storageSubIds = await _getStorageSubscriberUserIds();
     await purgeOldData(true);
     showToast('success', 'Auto-Delete Done', 'Check the log below');
 }
 
+async function _getStorageSubscriberUserIds() {
+  try {
+    const snap = await db.collection('storageSubscribers').get();
+    return new Set(snap.docs.map(d => d.data().userId).filter(Boolean));
+  } catch (e) { return new Set(); }
+}
+
 async function purgeOldMarketplaceListings() {
     const cutoff = Date.now() - getAutoDeleteMs();
+    const protectedIds = await _getStorageSubscriberUserIds();
     try {
         const snap = await db.collection('marketplace')
             .where('createdAt', '<', cutoff).limit(100).get();
         if (snap.empty) return 0;
         const batch = db.batch();
-        let count = 0;
+        let count = 0, skipped = 0;
         snap.docs.forEach(d => {
-            const created = d.data().createdAt || 0;
-            if (created && created < cutoff) { batch.delete(d.ref); count++; }
+            const data = d.data();
+            const created = data.createdAt || 0;
+            if (!(created && created < cutoff)) return;
+            if (data.protectedFromAutoDelete === true || protectedIds.has(data.sellerId)) { skipped++; return; }
+            batch.delete(d.ref); count++;
         });
-        if (count > 0) { await batch.commit(); console.log(`🧹 Market: purged ${count} listings`); }
+        if (count > 0) { await batch.commit(); console.log(`🧹 Market: purged ${count} listings (skipped ${skipped} protected)`); }
         return count;
     } catch (e) { console.error('Marketplace cleanup error:', e); return 0; }
+}
+
+// ===== MARKETPLACE PRODUCT ADMIN (protect / allow-delete), matches admin styling =====
+async function openMktMgmt() {
+  document.getElementById('mktMgmtOverlay').style.display = 'flex';
+  lucide.createIcons();
+  const list = document.getElementById('mktMgmtList');
+  list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">Loading marketplace products...</div>';
+  try {
+    const snap = await db.collection('marketplace').orderBy('createdAt','desc').limit(200).get();
+    window._mktMgmtAll = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderMktMgmt(window._mktMgmtAll);
+  } catch (e) {
+    console.error('Mkt mgmt load error', e);
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">Could not load marketplace products.</div>';
+  }
+}
+function renderMktMgmt(rows) {
+  const list = document.getElementById('mktMgmtList');
+  list.innerHTML = '';
+  if (!rows.length) { list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">No marketplace products yet</div>'; return; }
+  rows.forEach(p => {
+    const seller = allUsers[p.sellerId] || { name: p.sellerName || 'Seller' };
+    const selAv = seller.profilePic
+      ? `<img src="${seller.profilePic}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';">`
+      : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(seller.name||'U')}&background=000&color=fff&size=128" style="width:40px;height:40px;border-radius:50%;flex-shrink:0;">`;
+    const img = p.images?.[0] ? `<div style="width:64px;height:64px;border-radius:10px;overflow:hidden;background:#e2e8f0;flex-shrink:0;"><img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';"></div>` : '';
+    const time = p.createdAt ? new Date(p.createdAt).toLocaleString() : '';
+    const protectedNow = p.protectedFromAutoDelete === true;
+    const div = document.createElement('div');
+    div.dataset.listingid = p.id;
+    div.style.cssText = 'background:white;border:1.5px solid #e2e8f0;border-radius:16px;padding:14px;display:flex;align-items:flex-start;gap:12px;';
+    div.innerHTML = `
+      <input type="checkbox" class="mkt-check" data-listingid="${p.id}" style="width:18px;height:18px;margin-top:4px;accent-color:#3b82f6;flex-shrink:0;cursor:pointer;">
+      ${selAv}
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+          <span style="font-weight:800;font-size:14px;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title || 'Untitled'}</span>
+        </div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:4px;">${seller.name || ''} · ${time}</div>
+        ${p.description ? `<div style="font-size:13px;color:#334155;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.description}</div>` : ''}
+        ${protectedNow ? '<span style="margin-top:8px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:800;display:inline-flex;align-items:center;gap:3px;"><i data-lucide="shield-check" style="width:11px;height:11px;"></i>PROTECTED</span>' : ''}
+      </div>
+      ${img}
+      <button onclick="toggleProtectListing('${p.id}',this)" title="${protectedNow ? 'Remove protection' : 'Protect from delete'}" style="background:${protectedNow ? '#f0fdf4' : '#f8fafc'};border:1.5px solid ${protectedNow ? '#bbf7d0' : '#e2e8f0'};border-radius:10px;padding:8px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+        <i data-lucide="${protectedNow ? 'shield-check' : 'shield'}" style="width:18px;height:18px;color:${protectedNow ? '#15803d' : '#94a3b8'};stroke-width:1.5;"></i>
+      </button>
+      <button onclick="deleteMktListing('${p.id}',this)" style="background:#fef2f2;border:none;border-radius:10px;padding:8px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+        <i data-lucide="trash-2" style="width:18px;height:18px;color:#dc2626;stroke-width:1.5;"></i>
+      </button>
+    `;
+    list.appendChild(div);
+  });
+  lucide.createIcons();
+}
+function filterMktMgmt() {
+  const term = (document.getElementById('mktMgmtSearch').value || '').toLowerCase();
+  renderMktMgmt((window._mktMgmtAll||[]).filter(p => (p.title||'').toLowerCase().includes(term) || (p.sellerName||'').toLowerCase().includes(term) || (p.description||'').toLowerCase().includes(term)));
+}
+async function toggleProtectListing(listingId, btn) {
+  const p = (window._mktMgmtAll||[]).find(x => x.id === listingId);
+  if (!p) return;
+  const nowProtected = !(p.protectedFromAutoDelete === true);
+  await db.collection('marketplace').doc(listingId).update({ protectedFromAutoDelete: nowProtected });
+  p.protectedFromAutoDelete = nowProtected;
+  showToast('success', nowProtected ? 'Protected' : 'Unprotected', nowProtected ? 'Product safe from auto-delete' : 'Product can be auto-deleted');
+  renderMktMgmt(window._mktMgmtAll);
+}
+async function deleteMktListing(listingId, btn) {
+  if (!confirm('Delete this marketplace product permanently?')) return;
+  await db.collection('marketplace').doc(listingId).delete();
+  window._mktMgmtAll = (window._mktMgmtAll||[]).filter(x => x.id !== listingId);
+  renderMktMgmt(window._mktMgmtAll);
+  showToast('success', 'Deleted', 'Marketplace product removed');
+}
+async function bulkDeleteMktListings() {
+  const ids = Array.from(document.querySelectorAll('.mkt-check:checked')).map(c => c.dataset.listingid);
+  if (!ids.length) { showToast('error','None selected','Tick products first'); return; }
+  if (!confirm('Delete ' + ids.length + ' selected products?')) return;
+  for (const id of ids) { try { await db.collection('marketplace').doc(id).delete(); } catch(e){} }
+  window._mktMgmtAll = (window._mktMgmtAll||[]).filter(x => !ids.includes(x.id));
+  renderMktMgmt(window._mktMgmtAll);
+  showToast('success','Deleted', ids.length + ' products removed');
+}
+
+// ===== STORAGE PAYERS ADMIN (R100/mo — their posts + marketplace never auto-deleted) =====
+async function openStoragePayers() {
+  document.getElementById('storagePayersOverlay').style.display = 'flex';
+  lucide.createIcons();
+  const list = document.getElementById('storagePayersList');
+  list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">Loading storage payers...</div>';
+  try {
+    const snap = await db.collection('storageSubscribers').orderBy('createdAt','desc').get();
+    window._storagePayers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderStoragePayers(window._storagePayers);
+  } catch(e){ console.error(e); list.innerHTML='<div style="text-align:center;padding:40px;color:#dc2626;">Could not load storage payers.</div>'; }
+}
+function renderStoragePayers(rows) {
+  const list = document.getElementById('storagePayersList');
+  list.innerHTML = '';
+  if (!rows.length){ list.innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;">No storage payers yet — add one above or people who pay R100/month appear here.</div>'; return; }
+  rows.forEach(s => {
+    const div = document.createElement('div');
+    div.style.cssText='background:white;border:1.5px solid #e2e8f0;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;';
+    div.innerHTML=`<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(s.userName||s.email||'U')}&background=000&color=fff&size=64" style="width:36px;height:36px;border-radius:50%;"><div style="flex:1;min-width:0;"><div style="font-weight:800;font-size:13px;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.userName||'Unknown'}</div><div style="font-size:11px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.email||''}</div></div><span style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;padding:3px 8px;border-radius:8px;font-size:10px;font-weight:800;">R100/mo</span><button onclick="removeStoragePayer('${s.id}')" style="background:#fef2f2;border:none;border-radius:8px;padding:8px;cursor:pointer;"><i data-lucide="trash-2" style="width:16px;height:16px;color:#dc2626;stroke-width:1.5;"></i></button>`;
+    list.appendChild(div);
+  });
+  lucide.createIcons();
+}
+async function addStorageSubscriber() {
+  const email = (document.getElementById('storagePayerEmailInput').value||'').trim();
+  if(!email){ showToast('error','Email required','Enter the payer email'); return; }
+  let userId = null, userName = null;
+  try {
+    const us = await db.collection('users').where('email','==',email).limit(1).get();
+    if(!us.empty){ const d=us.docs[0].data(); userId=us.docs[0].id; userName=d.name||d.fullName||email; }
+  } catch(e){}
+  await db.collection('storageSubscribers').add({ email, userId, userName, createdAt: Date.now() });
+  if(userId){ await protectAllForSubscriber(userId); }
+  document.getElementById('storagePayerEmailInput').value='';
+  await openStoragePayers();
+  showToast('success','Protected',(userName||email)+' — posts & marketplace safe from auto-delete');
+}
+async function protectAllForSubscriber(userId) {
+  try {
+    const [posts, mkt] = await Promise.all([
+      db.collection('posts').where('userId','==',userId).get(),
+      db.collection('marketplace').where('sellerId','==',userId).get()
+    ]);
+    const batch = db.batch();
+    posts.docs.forEach(d => batch.update(d.ref, { protectedFromAutoDelete: true }));
+    mkt.docs.forEach(d => batch.update(d.ref, { protectedFromAutoDelete: true }));
+    await batch.commit();
+  } catch(e){ console.error('protectAllForSubscriber error',e); }
+}
+async function removeStoragePayer(id) {
+  if(!confirm('Remove this storage payer? Their NEW posts will no longer be auto-protected.')) return;
+  try { await db.collection('storageSubscribers').doc(id).delete(); } catch(e){}
+  await openStoragePayers();
+}
+
+// ===== FREE (NORMAL) SIGNUPS ADMIN =====
+async function openNormalSignups() {
+  document.getElementById('normalSignupsOverlay').style.display='flex';
+  lucide.createIcons();
+  const list=document.getElementById('normalSignupsList');
+  list.innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;">Loading free signups...</div>';
+  try{
+    const [uSnap, rSnap]=await Promise.all([
+      db.collection('users').orderBy('createdAt','desc').limit(300).get(),
+      db.collection('richSubscriptions').where('status','==','paid').get()
+    ]);
+    const paidIds=new Set(rSnap.docs.map(d=>d.data().userId).filter(Boolean));
+    const all=uSnap.docs.map(d=>({id:d.id,...d.data()}));
+    window._normalSignups=all.filter(u=>!paidIds.has(u.id));
+    const c=document.getElementById('normalStatsCount'); if(c) c.textContent=window._normalSignups.length;
+    renderNormalSignups(window._normalSignups);
+  }catch(e){ console.error(e); list.innerHTML='<div style="text-align:center;padding:40px;color:#dc2626;">Could not load signups.</div>'; }
+}
+function renderNormalSignups(rows){
+  const list=document.getElementById('normalSignupsList');
+  list.innerHTML='';
+  if(!rows.length){ list.innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;">No free signups yet</div>'; return; }
+  rows.forEach(u=>{
+    const div=document.createElement('div');
+    div.style.cssText='background:white;border:1.5px solid #e2e8f0;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;';
+    div.innerHTML=`<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(u.name||u.email||'U')}&background=000&color=fff&size=64" style="width:36px;height:36px;border-radius:50%;"><div style="flex:1;min-width:0;"><div style="font-weight:800;font-size:13px;color:#0f172a;">${u.name||u.email||'User'}</div><div style="font-size:11px;color:#64748b;">${u.email||''}</div></div>`;
+    list.appendChild(div);
+  });
 }
 
 async function purgeOldPosts() {
@@ -11795,7 +12439,7 @@ async function purgeOldPosts() {
             const ts = data.timestamp || 0;
             if (!(ts && ts < cutoff)) return;
             // ===== ASK 6: skip protected posts =====
-            if (data.protectedFromAutoDelete === true) { skippedProtected++; return; }
+                        if (data.protectedFromAutoDelete === true || (window._storageSubIds && window._storageSubIds.has(data.userId))) { skippedProtected++; return; }
             (data.images || []).forEach(u => orphanImages.push(u));
             batch.delete(d.ref);
             count++;
@@ -12052,12 +12696,12 @@ function renderMgmtPosts(posts) {
       <input type="checkbox" class="mgmt-check" data-postid="${p.id}" style="width:18px;height:18px;margin-top:4px;accent-color:#3b82f6;flex-shrink:0;cursor:pointer;">
       ${av}
       <div style="flex:1;min-width:0;">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
           <span style="font-weight:800;font-size:14px;color:#0f172a;">${author.name || p.userId}</span>
-          ${protectedNow ? '<span style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;padding:1px 6px;border-radius:6px;font-size:9px;font-weight:800;display:flex;align-items:center;gap:3px;"><i data-lucide="shield-check" style="width:10px;height:10px;"></i>PROTECTED</span>' : ''}
         </div>
         <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;">${time}</div>
         ${p.text ? `<div style="font-size:13px;color:#334155;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${p.text}</div>` : ''}
+        ${protectedNow ? '<span style="margin-top:8px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:800;display:inline-flex;align-items:center;gap:3px;"><i data-lucide="shield-check" style="width:11px;height:11px;"></i>PROTECTED</span>' : ''}
       </div>
       ${img}
       <button onclick="toggleProtectPost('${p.id}',this)" title="${protectedNow ? 'Remove protection' : 'Protect from auto-delete'}" style="background:${protectedNow ? '#f0fdf4' : '#f8fafc'};border:1.5px solid ${protectedNow ? '#bbf7d0' : '#e2e8f0'};border-radius:10px;padding:8px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-right:6px;">
