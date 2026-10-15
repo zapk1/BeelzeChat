@@ -490,7 +490,6 @@ label[for="postImagesInput"].upload-btn {
             margin: 0 auto 20px;
             display: block;
             border-radius: 28px;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.25);
         }
         
         
@@ -1185,8 +1184,9 @@ label[for="postImagesInput"].upload-btn {
     display: flex; align-items: center; justify-content: center;
     margin: 0 auto 12px;
 }
-.post-menu-logo i.msg { position:absolute; width:48px; height:48px; color:#000; stroke-width:1.5; }
+.post-menu-logo i.msg { position:absolute; top:0; left:0; width:48px; height:48px; color:#000; stroke-width:1.5; }
 .post-menu-logo i.king { position:relative; width:24px; height:24px; color:#000; stroke-width:1.5; z-index:2; }
+
 
 
 .post-menu-option {
@@ -3101,9 +3101,8 @@ form input[type="text"] {
             border: none;
             pointer-events: all;
         }
-        .toast-logo {
+                .toast-logo {
             width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
         }
         .toast-body {
             display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;
@@ -3472,7 +3471,7 @@ form input[type="text"] {
     <div id="loadingScreen" style="display:none;position:fixed;inset:0;z-index:9999999;background:#e8eaf6;flex-direction:column;align-items:center;justify-content:center;">
     <div style="background:#ffffff;border-radius:24px;padding:32px 28px;width:300px;text-align:center;box-shadow:0 20px 60px rgba(63,81,181,0.25);">
                 <div style="position:relative;width:64px;height:64px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;">
-            <i data-lucide="message-circle" style="position:absolute;width:64px;height:64px;color:#0f172a;stroke-width:1.5;"></i>
+   <i data-lucide="message-circle" style="position:absolute;top:0;left:0;width:64px;height:64px;color:#0f172a;stroke-width:1.5;"></i>
             <i data-lucide="crown" style="position:relative;width:32px;height:32px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
         </div>
         <div style="font-size:20px;font-weight:800;color:#0f172a;letter-spacing:0.5px;margin-bottom:6px;">BeelzeChat</div>
@@ -3522,39 +3521,37 @@ form input[type="text"] {
 <!-- SYSTEM FOR LOG IN & SIGN UP -->
 
 
-<div id="authScreen" class="auth-screen" style="display:none;position:fixed;inset:0;z-index:99999;background:#e0e7ff;overflow-y:auto;align-items:center;justify-content:center;padding:24px 16px;">
-  <div class="auth-container" style="background:#ffffff;border-radius:20px;box-shadow:0 20px 60px rgba(43,43,158,0.18);width:100%;max-width:400px;padding:32px 26px;margin:auto;box-sizing:border-box;">
+<div id="authScreen" class="auth-screen" style="display:none;position:fixed;inset:0;z-index:9999998;background:#e0e7ff;overflow-y:auto;align-items:center;justify-content:center;padding:24px 16px;">
+  <button type="button" onclick="closeAuthScreen()" title="Close" style="position:fixed;top:16px;right:16px;z-index:1000002;width:40px;height:40px;border-radius:50%;background:#ffffff;border:none;box-shadow:0 4px 14px rgba(0,0,0,0.18);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+    <i data-lucide="x" style="width:20px;height:20px;color:#0f172a;stroke-width:2;"></i>
+  </button>
+  <div class="auth-container" style="background:#ffffff;border-radius:24px;box-shadow:0 24px 70px rgba(43,43,158,0.22);width:100%;max-width:400px;padding:32px 26px;margin:auto;box-sizing:border-box;max-height:calc(100vh - 48px);overflow-y:auto;">
 
     <!-- LOGO -->
     <div class="logo-container" style="text-align:center;margin-bottom:22px;">
-      <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" alt="BeelzeChat" class="app-logo" style="width:64px;height:64px;border-radius:16px;margin:0 auto 12px;display:block;box-shadow:0 8px 20px rgba(43,43,158,0.25);">
+            <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" alt="BeelzeChat" class="app-logo" style="width:64px;height:64px;border-radius:22px;object-fit:cover;margin:0 auto 12px;display:block;">
       <div class="app-title" style="font-size:24px;font-weight:800;color:#111827;letter-spacing:-0.5px;">Welcome to BeelzeChat</div>
-            <div class="auth-subtitle" style="color:#3F51B5;font-size:11px;margin-top:6px;font-weight:700;">Rich Platform for Marketing and Uniting</div>
-      <div style="color:#dc2626;font-size:11px;margin-top:4px;font-weight:700;">R3000 to create account</div>
+      <div class="auth-subtitle" style="color:#3F51B5;font-size:13px;margin-top:8px;font-weight:700;">Platform for Uniting and marketing</div>
     </div>
 
-    <!-- LOGIN -->
-    <form id="loginForm">
-      <!-- Google -->
-      <button type="button" class="btn" id="googleSignInBtn" style="background:#ffffff;color:#111827;border:1px solid #3F51B5;border-radius:10px;padding:13px 16px;font-size:15px;font-weight:600;margin-bottom:10px;position:relative;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
-        <svg width="20" height="20" viewBox="0 0 24 24" style="flex-shrink:0;">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-        </svg>
-        Continue with Google
-        <span style="position:absolute;top:-9px;right:10px;background:#3F51B5;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:0.3px;">Last Used</span>
+        <!-- ===== MAIN VIEW: logo + launchers (shown first) ===== -->
+    <div id="authMainView" style="display:block;">
+      <button type="button" onclick="showLogin()" style="width:100%;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#1d4ed8;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 6px 20px rgba(15,23,42,0.10);">
+        <i data-lucide="crown" style="width:18px;height:18px;color:#1d4ed8;stroke-width:1.5;"></i> Log in
       </button>
+      <button type="button" onclick="showAccountChoice()" style="width:100%;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 6px 20px rgba(220,38,38,0.12);">
+        <i data-lucide="crown" style="width:18px;height:18px;color:#dc2626;stroke-width:1.5;"></i> Create Account
+      </button>
+    </div>
 
-      <!-- OR -->
-      <div style="display:flex;align-items:center;gap:12px;margin:18px 0 14px;">
-        <div style="flex:1;height:1px;background:#E5E7EB;"></div>
-        <span style="color:#9ca3af;font-size:12px;font-weight:600;">OR</span>
-        <div style="flex:1;height:1px;background:#E5E7EB;"></div>
+    <!-- LOGIN (pop-up style: hidden until "Log in" is pressed) -->
+    <form id="loginForm" class="hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-weight:800;font-size:18px;color:#111827;">Log in</div>
+        <button type="button" onclick="showAuthMain()" style="width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><i data-lucide="x" style="width:17px;height:17px;color:#475569;"></i></button>
       </div>
-
-      <!-- Inputs -->
+    
+            <!-- Inputs -->
       <div class="form-group" style="margin-bottom:12px;">
                 <input type="email" class="form-input" id="loginIdentifier" placeholder="Enter your email" required style="width:100%;padding:13px 14px;border: 1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
@@ -3579,14 +3576,9 @@ form input[type="text"] {
       </label>
 
       <!-- Primary purple CTA -->
-            <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="background:#ffffff;color:#1d4ed8;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px;font-size:15px;font-weight:800;box-shadow:0 8px 22px rgba(255,255,255,0.95),0 2px 10px rgba(0,0,0,0.06);">
+            <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="background:#ffffff;color:#1d4ed8;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 6px 20px rgba(15,23,42,0.10);">
         <i data-lucide="crown" style="width:18px;height:18px;color:#1d4ed8;stroke-width:1.5;"></i>
         Log in
-      </button>
-
-      <button type="button" onclick="showAccountChoice()" style="width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:1px solid #dc2626;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;box-sizing:border-box;">
-        <i data-lucide="crown" style="width:20px;height:20px;color:#dc2626;"></i>
-        Create Account
       </button>
 
       <div id="loginError" class="error-message"></div>
@@ -3608,10 +3600,14 @@ form input[type="text"] {
       </div>
     </form>
 
-    <!-- SIGNUP -->
+        <!-- SIGNUP (pop-up style) -->
     <form id="signupForm" class="hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-weight:800;font-size:18px;color:#111827;">Create Account</div>
+        <button type="button" onclick="showAuthMain()" style="width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><i data-lucide="x" style="width:17px;height:17px;color:#475569;"></i></button>
+      </div>
       <div class="form-group" style="margin-bottom:12px;">
-        <input type="text" class="form-input" id="signupName" placeholder="Full name" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+                <input type="text" class="form-input" id="signupName" placeholder="Full name" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:12px;">
           <input type="email" class="form-input" id="signupIdentifier" placeholder="Email" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
@@ -3632,8 +3628,8 @@ form input[type="text"] {
           </button>
         </div>
       </div>
-      <button type="submit" id="signupSubmitBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:1px solid #dc2626;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;box-sizing:border-box;">
-        <i data-lucide="crown" style="width:20px;height:20px;"></i>
+            <button type="submit" id="signupSubmitBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 6px 20px rgba(220,38,38,0.12);">
+        <i data-lucide="crown" style="width:20px;height:20px;color:#dc2626;stroke-width:1.5;"></i>
         Create Account
       </button>
       <div id="signupError" class="error-message"></div>
@@ -3799,7 +3795,7 @@ form input[type="text"] {
                 <div style="background:white;border-radius:24px;width:100%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,0.35);overflow:hidden;" onclick="event.stopPropagation()">
                     <div style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid #f1f5f9;">
                         <div style="position:relative;width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <i data-lucide="message-circle" style="position:absolute;width:34px;height:34px;color:#0f172a;stroke-width:1.5;"></i>
+                            <i data-lucide="message-circle" style="position:absolute;top:0;left:0;width:34px;height:34px;color:#0f172a;stroke-width:1.5;"></i>
                             <i data-lucide="crown" style="position:relative;width:17px;height:17px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
                         </div>
                         <span style="font-weight:900;font-size:16px;color:#0f172a;flex:1;">Categories</span>
@@ -5456,16 +5452,17 @@ const firebaseConfig = {
 
 
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+// === GUEST MODE: open the app instantly, no loading screen ===
 
-// === GUEST MODE: open the app instantly, no loading screen ===
-// === GUEST MODE: open the app instantly, no loading screen ===
+// FIXED: this now runs BEFORE Firebase init. Previously, if the Firebase
+// CDN (gstatic.com) failed to load, firebase.initializeApp threw an error,
+// this code never ran, #app stayed display:none → WHITE SCREEN.
+// Now the app shell always opens, even with a bad connection.
 (function openAppInstantly(){
     // Show the loading modal while the app prepares (auth resolves, first posts load)
     if (typeof showLoadingScreen === 'function') showLoadingScreen();
-    const auth = document.getElementById('authScreen');
-    if (auth) auth.style.display = 'none';
+    const authEl = document.getElementById('authScreen');
+    if (authEl) authEl.style.display = 'none';
     const app = document.getElementById('app');
     if (app) app.classList.add('active');
 
@@ -5479,6 +5476,20 @@ const db = firebase.firestore();
     ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
     document.getElementById('storiesTab').classList.remove('hidden'); }
 })();
+
+// Firebase init — GUARDED: a CDN failure now shows a friendly error
+// instead of killing the entire script (the old white-screen cause)
+let db = null;
+try {
+    if (typeof firebase === 'undefined' || typeof firebase.initializeApp !== 'function') {
+        throw new Error('Firebase SDK did not load — check your internet connection');
+    }
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+} catch (e) {
+    console.error('Firebase init failed:', e);
+    showToast('error', 'Connection Problem', 'Could not reach the server. Check your internet, then refresh the page.');
+}
 
 let storage = null;
 let auth = null;
@@ -5522,7 +5533,13 @@ const R2_PUBLIC_BUCKET_URL = 'https://pub-730c026431a641358f01194bd545a5f4.r2.de
 function requireAuth(actionName) {
     const saved = localStorage.getItem('sxchatUser');
     if (saved) return true; // logged in, allow
-    // Not signed in — show auth screen as a modal
+    // Nobody signed in — always the centered gate popup (X + Sign in / Create account)
+    if (typeof bzRequireAccount === 'function') {
+        bzRequireAccount(actionName || 'continue');
+        return false;
+    }
+    // Fallback: show auth screen as a modal
+    // Not signed in (non-visitor) — show auth screen as a modal
     const authEl = document.getElementById('authScreen');
     if (authEl) {
         authEl.style.display = 'flex';
@@ -5543,6 +5560,13 @@ function requireAuth(actionName) {
 function closeAuthScreen() {
     const auth = document.getElementById('authScreen');
     if (auth) auth.style.display = 'none';
+    document.getElementById('loginHint')?.remove();
+    const appEl = document.getElementById('app');
+    if (!appEl || !appEl.classList.contains('active')) {
+        if (window.bzEnterVisitorMode) { bzEnterVisitorMode(); return; }
+    }
+    if (window.bzShowGuestDock) bzShowGuestDock();
+    if (window.lucide) lucide.createIcons();
 }
 
 // ============================================================
@@ -5649,22 +5673,11 @@ function hideGroupsSkeleton() {
 }
 
 function showUsersSkeleton() {
+    // People skeleton disabled — real cards load straight in (no stray boxes / no shifting).
     const list = document.getElementById('usersList');
     if (!list) return;
-    list.classList.remove('bz-people-grid');   // skeleton rows are lines — never put them inside the 2-column grid
-    let html = '';
-    for (let i = 0; i < 8; i++) {
-        html += `
-        <div style="padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:14px;background:white;">
-            <div style="width:56px;height:56px;border-radius:50%;background:#e2e8f0;animation:shimmer 1.4s infinite;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;"></div>
-            <div style="flex:1;">
-                <div style="height:15px;width:50%;background:#e2e8f0;border-radius:6px;margin-bottom:8px;animation:shimmer 1.4s infinite;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;"></div>
-                <div style="height:12px;width:30%;background:#e2e8f0;border-radius:6px;animation:shimmer 1.4s infinite;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;"></div>
-            </div>
-            <div style="width:36px;height:36px;border-radius:50%;background:#e2e8f0;animation:shimmer 1.4s infinite;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;"></div>
-        </div>`;
-    }
-    list.innerHTML = html;
+    if (typeof ensurePeopleGridDefault === 'function') ensurePeopleGridDefault();
+    list.classList.toggle('bz-people-grid', window._peopleViewMode === 'grid');
 }
 
 function showMarketSkeleton() {
@@ -6467,6 +6480,9 @@ document.getElementById('cancelReplyBtn').addEventListener('click', () => {
 // ============================================================
 if (auth) {
   auth.onAuthStateChanged(async (firebaseUser) => {
+    // Anonymous guest session = still a guest. Never treat it as a real account.
+    if (firebaseUser && firebaseUser.isAnonymous) return;
+    if (firebaseUser) { window._bzVisitor = false; if (window.bzHideGuestDock) bzHideGuestDock(); }
     if (window._bzSignupPending) return;   // signup handler is in charge — don't race it
     if (firebaseUser) {
     document.getElementById('authScreen').style.display = 'none';
@@ -6653,8 +6669,9 @@ if (window._justLoggedIn) {
             document.getElementById('loadingScreen').classList.add('hide');
             setTimeout(() => {
                 document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('authScreen').style.display = 'flex';
-                document.getElementById('app').classList.remove('active');
+                // Nobody signed in → Guest mode (content visible, floating buttons) instead of the sign-in page
+                if (window._bzJustSignedUp) { document.getElementById('authScreen').style.display = 'flex'; }
+                else { bzEnterVisitorMode(); }
             }, 600);
         }, 400);
     }
@@ -6698,7 +6715,7 @@ function editBio() {
 // ============================================================
 // GOOGLE SIGN IN
 // ============================================================
-document.getElementById('googleSignInBtn').addEventListener('click', async () => {
+document.getElementById('googleSignInBtn')?.addEventListener('click', async () => {
     try {
         window._justLoggedIn = true;
         showToast('info', 'Signing In', 'Please wait...');
@@ -6859,7 +6876,7 @@ function showRichAccountPayScreen(name, email) {
 
         <!-- Top: app logo + app name -->
         <div style="padding:18px 16px 8px;text-align:center;background:linear-gradient(135deg,#fff,#fef2f2);">
-            <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:42px;height:42px;border-radius:11px;margin:0 auto 7px;display:block;box-shadow:0 4px 14px rgba(220,38,38,0.25);">
+                        <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:42px;height:42px;border-radius:11px;margin:0 auto 7px;display:block;">
             <div style="font-weight:900;font-size:17px;color:#0f172a;letter-spacing:-0.5px;">BeelzeChat</div>
         </div>
         
@@ -7198,21 +7215,36 @@ window.handleGlobalSearch = function(term) {
     });
 };
 
+function showAuthMain() {
+    const mv = document.getElementById('authMainView'); if (mv) mv.style.display = '';
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('signupForm').classList.add('hidden');
+    document.getElementById('forgotForm').classList.add('hidden');
+    if (window.lucide) lucide.createIcons();
+}
 function showLogin() {
+    const mv = document.getElementById('authMainView'); if (mv) mv.style.display = 'none';
     document.getElementById('loginForm').classList.remove('hidden');
     document.getElementById('signupForm').classList.add('hidden');
     document.getElementById('forgotForm').classList.add('hidden');
+    if (typeof renderLoginRecaptcha === 'function') renderLoginRecaptcha();
+    if (window.lucide) lucide.createIcons();
 }
 function showSignup() {
+    const mv = document.getElementById('authMainView'); if (mv) mv.style.display = 'none';
     document.getElementById('loginForm').classList.add('hidden');
     document.getElementById('signupForm').classList.remove('hidden');
     document.getElementById('forgotForm').classList.add('hidden');
+    if (window.lucide) lucide.createIcons();
 }
 function showForgotPassword() {
+    const mv = document.getElementById('authMainView'); if (mv) mv.style.display = 'none';
     document.getElementById('loginForm').classList.add('hidden');
     document.getElementById('signupForm').classList.add('hidden');
     document.getElementById('forgotForm').classList.remove('hidden');
+    if (window.lucide) lucide.createIcons();
 }
+
 
 document.getElementById('showSignupLink').addEventListener('click', showSignup);
 document.getElementById('showLoginLink').addEventListener('click', showLogin);
@@ -7807,6 +7839,7 @@ async function loadMoreUsers() {
 
             const gridNow = window._peopleViewMode === 'grid';
             ul.classList.toggle('bz-people-grid', gridNow);
+            if (_loadedUserIds.size === 0) ul.innerHTML = '';   // clear any skeleton rows on the first real page
             const frag = document.createDocumentFragment();
             pageIds.forEach(uid => {
                 _loadedUserIds.add(uid);
@@ -8589,7 +8622,7 @@ async function createPostElement(post) {
         }
     }
 
-    const liked = post.likedBy?.includes(currentUser.id);
+    const liked = !!(currentUser && post.likedBy?.includes(currentUser.id));
     const tv = calcPostViews(post);
     const tl = calcPostLikes(post);
     
@@ -8602,7 +8635,7 @@ if (post.commentsEnabled !== false) {
     cmts = `
         <div class="post-comments" id="comments-section-${post.id}" style="display:none;">
             <div class="comment-input-wrapper">
-              <div class="comment-avatar" id="commentInputAvatar_${post.id}">${currentUser.profilePic ? `<img src="${currentUser.profilePic}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=000&color=fff&size=128';">` : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=000&color=fff&size=128">`}</div>
+              <div class="comment-avatar" id="commentInputAvatar_${post.id}">${currentUser?.profilePic ? `<img src="${currentUser.profilePic}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=000&color=fff&size=128';">` : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.name || 'U')}&background=000&color=fff&size=128">`}</div>
                 <div class="comment-input-group">
                     <input type="text" class="comment-input" data-postid="${post.id}" placeholder="Write a comment...">
                     <button class="comment-send-btn" data-postid="${post.id}"><i data-lucide="send"></i></button>
@@ -8646,7 +8679,7 @@ if (post.commentsEnabled !== false) {
             <i data-lucide="crown" class="king"></i>
         </div>
         <button onclick="document.getElementById('menu-${post.id}').classList.remove('active')" style="position:absolute;top:10px;right:10px;background:#f1f5f9;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:18px;height:18px;color:#0f172a;stroke-width:1.5;"></i></button>
-        ${post.userId === currentUser.id ? 
+        ${currentUser && post.userId === currentUser.id ? 
             `<div class="post-menu-option edit" data-postid="${post.id}" data-action="edit" style="display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;color:#0f172a;font-weight:700;border-radius:10px;">
                 <i data-lucide="pencil" style="width:18px;height:18px;color:#0f172a;stroke-width:1.5;"></i> Edit Post
             </div>
@@ -8922,6 +8955,7 @@ function formatCount(num) {
 
 
 async function togglePostLike(postId) {
+    if (requireAuth('like posts') === false) return;
     const btns = document.querySelectorAll(`.post-action-btn[data-postid="${postId}"][data-action="like"]`);
     const wasLiked = btns.length ? btns[0].classList.contains('liked') : false;
     const nowLiked = !wasLiked;
@@ -9140,6 +9174,7 @@ function renderPostImagesPreview() {
 
 document.getElementById('createPostForm').addEventListener('submit', async e => {
     e.preventDefault();
+    if (requireAuth('create a post') === false) return;
     const text = document.getElementById('postText').value.trim();
     const cat = document.getElementById('postCategory').value;
     if (!text && selectedPostImages.length === 0) { showToast('error', 'Error', 'Add content'); return; }
@@ -10359,8 +10394,8 @@ window._bzVisitor = false;
 
 function bzBrandLogo(size) {
     const s = size || 44;
-    return `<div style="position:relative;width:${s}px;height:${s}px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <i data-lucide="message-circle" style="position:absolute;width:${s}px;height:${s}px;color:#0f172a;stroke-width:1.5;"></i>
+    return `<div style="position:relative;width:${s}px;height:${s}px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:0 auto;">
+        <i data-lucide="message-circle" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${s}px;height:${s}px;color:#0f172a;stroke-width:1.5;"></i>
         <i data-lucide="crown" style="position:relative;width:${Math.round(s * 0.5)}px;height:${Math.round(s * 0.5)}px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
     </div>`;
 }
@@ -10371,14 +10406,14 @@ window.bzRequireAccount = function(what) {
     const old = document.getElementById('bzGatePopup'); if (old) old.remove();
     const ov = document.createElement('div');
     ov.id = 'bzGatePopup';
-    ov.style.cssText = 'position:fixed;inset:0;z-index:9999998;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;padding:20px;';
+        ov.style.cssText = 'position:fixed;inset:0;z-index:9999998;background:rgba(15,23,42,0.35);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:center;padding:20px;';
     ov.innerHTML = `<div style="background:white;border-radius:22px;width:100%;max-width:320px;padding:22px 18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.35);position:relative;" onclick="event.stopPropagation()">
         <button onclick="document.getElementById('bzGatePopup').remove()" style="position:absolute;top:12px;right:12px;background:#f1f5f9;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:17px;height:17px;color:#64748b;"></i></button>
         ${bzBrandLogo(52)}
         <div style="font-weight:900;font-size:17px;color:#0f172a;margin-top:8px;">Create an account</div>
         <div style="font-size:13px;color:#64748b;margin:6px 0 16px;">To ${what} you need a BeelzeChat account.</div>
         <button onclick="document.getElementById('bzGatePopup').remove();showAccountChoice();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;margin-bottom:8px;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Free Account</button>
-        <button onclick="document.getElementById('bzGatePopup').remove();document.getElementById('authScreen').style.display='flex';" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="log-in" style="width:16px;height:16px;color:#0f172a;stroke-width:1.5;"></i> Log in instead</button>
+        <button onclick="document.getElementById('bzGatePopup').remove();bzGuestOpenSignIn();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="log-in" style="width:16px;height:16px;color:#0f172a;stroke-width:1.5;"></i> Sign in</button>
     </div>`;
     document.body.appendChild(ov);
     lucide.createIcons();
@@ -10386,34 +10421,109 @@ window.bzRequireAccount = function(what) {
 
 // One capture-phase listener gates every visitor action — no handler was touched
 document.addEventListener('click', function(e) {
-    if (!window._bzVisitor) return;
-    const hit = e.target.closest('#createPostNavBtn, .mkt-msg-btn, .mkt-like-btn, #blockBtn, #startChatFromProfileBtn, [data-action="message"], [class*="like-btn"]');
+    // Anyone with no saved account is a guest — never trust the visitor flag
+    if (localStorage.getItem('sxchatUser')) return;
+    const hit = e.target.closest(
+        '#createPostNavBtn, #sellBtn, #createGroupBtn, #blockBtn, #startChatFromProfileBtn, ' +
+        '.nav-item[data-tab="messages"], .mkt-msg-btn, .mkt-like-btn, ' +
+        '[data-action="message"], [data-action="like"], [data-action="comment"], ' +
+        '.post-action-btn, .comment-like-btn, [class*="like-btn"], [class*="msg-btn"]'
+    );
     if (hit) { e.stopPropagation(); e.preventDefault(); bzRequireAccount('do that'); }
 }, true);
+
+// ===== GUEST FLOATING BUTTONS — slide in from the left, replace the big sign-in modal =====
+(function() {
+    const st = document.createElement('style');
+    st.textContent = `
+    #bzGuestDock { position: fixed; left: 0; bottom: 84px; z-index: 9990; display: none; flex-direction: column; gap: 10px; pointer-events: none; }
+    #bzGuestDock.show { display: flex; }
+    #bzGuestDock button { pointer-events: auto; display: flex; align-items: center; gap: 8px; border: 1.5px solid #e2e8f0; border-left: none; border-radius: 0 999px 999px 0; padding: 12px 20px 12px 14px; font-weight: 800; font-size: 14px; cursor: pointer; background: #fff; color: #0f172a; box-shadow: 0 8px 22px rgba(255,255,255,0.95), 0 4px 16px rgba(0,0,0,0.12); transform: translateX(-110%); animation: bzSlideInLeft 0.55s cubic-bezier(.2,.9,.3,1) forwards; }
+    #bzGuestDock button.bz-create { color: #dc2626; border-color: #fecaca; animation-delay: 0.18s; }
+    #bzGuestDock button i { width: 18px; height: 18px; stroke-width: 1.5; }
+    @keyframes bzSlideInLeft { from { transform: translateX(-110%); } to { transform: translateX(0); } }
+    `;
+    document.head.appendChild(st);
+    const dock = document.createElement('div');
+    dock.id = 'bzGuestDock';
+    dock.innerHTML = `
+        <button type="button" class="bz-signin" onclick="bzGuestOpenSignIn()"><i data-lucide="log-in"></i> Sign in</button>
+        <button type="button" class="bz-create" onclick="showAccountChoice()"><i data-lucide="crown"></i> Create account</button>`;
+    document.body.appendChild(dock);
+})();
+
+window.bzShowGuestDock = function() {
+    const d = document.getElementById('bzGuestDock'); if (!d) return;
+    d.classList.remove('show'); void d.offsetWidth;   // restart the slide-in animation
+    d.classList.add('show');
+    if (window.lucide) lucide.createIcons();
+};
+window.bzHideGuestDock = function() {
+    const d = document.getElementById('bzGuestDock'); if (d) d.classList.remove('show');
+};
+
+// Sign in button → opens the sign-in form only when pressed
+window.bzGuestOpenSignIn = function() {
+    window._bzVisitor = false;
+    bzHideGuestDock();
+    const a = document.getElementById('authScreen');
+    if (a) a.style.display = 'flex';
+    if (typeof showLogin === 'function') showLogin();
+};
+
+// Guests need a Firebase identity to read content — a silent anonymous session
+window.bzEnsureGuestSession = async function() {
+    try {
+        if (auth && !auth.currentUser) await auth.signInAnonymously();
+    } catch (e) { console.log('Guest session unavailable:', e.message); }
+};
+
+// Load the users cache for guests so authors' names/photos show on posts
+window.bzLoadGuestUsers = async function() {
+    try {
+        const snap = await db.collection('users').get();
+        snap.docs.forEach(d => { allUsers[d.id] = d.data(); });
+    } catch (e) { console.log('Guest users load skipped:', e.message); }
+};
 
 // VISITOR MODE — land on the feed, see posts and marketplace, gated actions popup
 window.bzEnterVisitorMode = async function() {
     window._bzVisitor = true;
+    currentUser = null;
     const a = document.getElementById('authScreen'); if (a) a.style.display = 'none';
-    const ls = document.getElementById('loadingScreen'); if (ls) ls.style.display = 'none';
+    const ls = document.getElementById('loadingScreen'); if (ls) { ls.classList.add('hide'); ls.style.display = 'none'; }
     document.getElementById('app').classList.add('active');
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
     ['messagesTab', 'usersTab', 'groupsTab'].forEach(t => document.getElementById(t)?.classList.add('hidden'));
     document.getElementById('storiesTab')?.classList.remove('hidden');
-    showToast('info', 'Visitor mode', 'Browsing as a guest — create an account to join in');
+    // Guest look of the profile button: a plain person icon instead of a skeleton
+    const pb = document.getElementById('profileBtn');
+    if (pb) { pb.style.animation = 'none'; pb.style.background = '#f1f5f9'; pb.style.color = '#0f172a'; pb.innerHTML = '<i data-lucide="user" style="width:18px;height:18px;stroke-width:1.5;"></i>'; }
+    bzShowGuestDock();
+    await bzEnsureGuestSession();
+    await bzLoadGuestUsers();
     try { await loadAllPosts(); } catch (e) { console.error(e); }
+    try {
+        _loadedUserIds = new Set();
+        _usersHasMore = true;
+        _usersLoading = false;
+        const _ul = document.getElementById('usersList');
+        if (_ul) _ul.innerHTML = '';
+        await loadMoreUsers();
+    } catch (e) { console.error(e); }
     lucide.createIcons();
 };
 
-// FREE / PAID CHOICE SCREEN — logo + name, two boxes, read-more, close
+// FREE / PAID CHOICE SCREEN— logo + name, two boxes, read-more, close
 window.showAccountChoice = function() {
     const old = document.getElementById('bzChoiceScreen'); if (old) old.remove();
     const scr = document.createElement('div');
     scr.id = 'bzChoiceScreen';
     scr.style.cssText = 'position:fixed;inset:0;z-index:9999999;background:#ffffff;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:24px 14px;';
     scr.innerHTML = `
-    <div style="width:100%;max-width:420px;">
+    <div style="width:100%;max-width:420px;position:relative;">
+        <button onclick="document.getElementById('bzChoiceScreen').remove();" style="position:fixed;top:16px;right:16px;z-index:10;width:38px;height:38px;border-radius:50%;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.08);"><i data-lucide="x" style="width:20px;height:20px;color:#475569;"></i></button>
         <div style="text-align:center;padding:10px 0 18px;">
             ${bzBrandLogo(56)}
             <div style="font-weight:900;font-size:22px;color:#0f172a;margin-top:8px;">BeelzeChat</div>
@@ -10541,7 +10651,6 @@ function bzSwapOldLogos() {
         tmp.innerHTML = bzKingLogoHTML(s);
         const logo = tmp.firstElementChild;
         logo.style.margin = img.style.margin || '';
-        logo.style.boxShadow = img.style.boxShadow || '';
         img.replaceWith(logo);
     });
     lucide.createIcons();
@@ -11051,12 +11160,21 @@ document.getElementById('accountSwitcherBtn').addEventListener('click', () => {
     const accs = JSON.parse(localStorage.getItem('sxchatAccounts') || '[]');
     const list = document.getElementById('accountList');
     list.innerHTML = '';
+    if (!currentUser) {
+        list.innerHTML = `
+            <div style="text-align:center;color:#64748b;padding:6px 0 14px;font-size:13px;">No account signed in</div>
+            <button type="button" onclick="document.getElementById('accountSwitcherModal').classList.remove('active');bzGuestOpenSignIn();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:12px;font-weight:800;font-size:14px;cursor:pointer;margin-bottom:8px;"><i data-lucide="log-in" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Sign in</button>
+            <button type="button" onclick="document.getElementById('accountSwitcherModal').classList.remove('active');showAccountChoice();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:12px;padding:12px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#0f172a;stroke-width:1.5;"></i> Create account</button>`;
+        document.getElementById('accountSwitcherModal').classList.add('active');
+        lucide.createIcons();
+        return;
+    }
     if (!accs.length) {
         list.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;">No saved accounts</div>';
     } else {
         accs.forEach(acc => {
             const div = document.createElement('div');
-            div.className = 'account-item' + (acc.id === currentUser.id ? ' active' : '');
+                        div.className = 'account-item' + (acc.id === currentUser?.id ? ' active' : '');
             const av = acc.profilePic ?
                 `<img src="${acc.profilePic}">` :
                 `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(acc.name)}&background=000&color=fff&size=128">`;
@@ -11177,7 +11295,7 @@ document.getElementById('addAccountBtn').addEventListener('click', async () => {
     setTimeout(() => {
         window._loadingDone?.();
         document.getElementById('authScreen').style.display = 'flex';
-        showLogin();
+        showAuthMain();
         setTimeout(() => {
             const ls = document.getElementById('loadingScreen');
             ls.classList.add('hide');
@@ -11203,17 +11321,13 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
         }
         localStorage.removeItem('sxchatUser');
         currentUser = null;
+        allUsers = {};
         try { await auth.signOut(); } catch(e) {}
-        setTimeout(() => {
-            window._loadingDone?.();
-            document.getElementById('authScreen').style.display = 'flex';
-            showLogin();
-            setTimeout(() => {
-                const ls = document.getElementById('loadingScreen');
-                ls.classList.add('hide');
-                setTimeout(() => { ls.style.display = 'none'; }, 600);
-            }, 500);
-        }, 1200);
+        window._loadingDone?.();
+        // Back to Guest mode: content stays visible, floating Sign in / Create account buttons slide in
+        const ls = document.getElementById('loadingScreen');
+        if (ls) { ls.classList.add('hide'); setTimeout(() => { ls.style.display = 'none'; }, 400); }
+        await bzEnterVisitorMode();
     };
 
 // Sign Another Account — show loading, then show auth screen
@@ -11230,7 +11344,7 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
         setTimeout(() => {
             window._loadingDone?.();
             document.getElementById('authScreen').style.display = 'flex';
-            showLogin();
+            showAuthMain();
             setTimeout(() => {
                 document.getElementById('loadingScreen').classList.add('hide');
                 setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 600);
@@ -12059,6 +12173,7 @@ function openImageViewer(src) {
 
 // Sell modal
 document.getElementById('sellBtn').addEventListener('click', () => {
+    if (requireAuth('sell on the Dark Market') === false) return;
     document.getElementById('sellWhatsapp').value = currentUser?.phone || '';
     document.getElementById('sellEmail').value = currentUser?.email || currentUser?.identifier || '';
     document.getElementById('sellWebsite').value = currentUser?.website || '';
@@ -12106,6 +12221,7 @@ function renderSellImagesPreview() {
 
 document.getElementById('sellForm').addEventListener('submit', async e => {
     e.preventDefault();
+    if (requireAuth('sell on the Dark Market') === false) return;
     const title = document.getElementById('sellTitle').value.trim();
     const price = document.getElementById('sellPrice').value.trim();
     if (!title || !price) { showToast('error','Required','Title and price are required'); return; }
@@ -13577,25 +13693,10 @@ function bzShowPostsEndIndicator() {
 }
 
 // Show indicators when scrolling to the bottom of each tab
-(function() {
-  const ac = document.querySelector('.app-content');
-  if (!ac) return;
-  let usersShown = false, postsShown = false;
-  ac.addEventListener('scroll', () => {
-    const nearBottom = ac.scrollTop + ac.clientHeight >= ac.scrollHeight - 150;
-    if (!nearBottom) return;
-    const usersTab = document.getElementById('usersTab');
-    const storiesTab = document.getElementById('storiesTab');
-    if (usersTab && !usersTab.classList.contains('hidden') && !usersShown) {
-      usersShown = true;
-      bzShowUsersEndIndicator();
-    }
-    if (storiesTab && !storiesTab.classList.contains('hidden') && !postsShown) {
-      postsShown = true;
-      // "Loading millions of remaining posts" box removed — it left a big empty gap in the feed
-    }
-  });
-})();
+// "Loading millions of remaining users/posts" boxes removed — the real infinite-scroll
+// listener (loadMoreUsers on .app-content) already loads the next page, so these
+// placeholder boxes only ever stacked on top of the real cards.
+
 </script>
 
 
