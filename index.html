@@ -8502,7 +8502,7 @@ if (appContent) {
     appContent.addEventListener('scroll', () => {
         const storiesTab = document.getElementById('storiesTab');
         if (!storiesTab || storiesTab.classList.contains('hidden')) return;
-        if (appContent.scrollTop + appContent.clientHeight >= appContent.scrollHeight - 300) {
+        if (appContent.scrollTop + appContent.clientHeight >= appContent.scrollHeight - 2500) {
             loadMorePosts();
         }
     });
@@ -10473,9 +10473,10 @@ document.addEventListener('click', function(e) {
         '#createPostNavBtn, #sellBtn, #createGroupBtn, #blockBtn, #startChatFromProfileBtn, ' +
         '.nav-item[data-tab="messages"], .mkt-msg-btn, .mkt-like-btn, ' +
         '[data-action="message"], [data-action="like"], [data-action="comment"], ' +
-        '.post-action-btn, .comment-like-btn, [class*="like-btn"], [class*="msg-btn"]'
+        '.post-action-btn, .comment-like-btn, [class*="like-btn"], [class*="msg-btn"], ' +
+        '.post-author-info, .post-author-avatar, .user-info, #pdSellerRow, .chat-user-info'
     );
-    if (hit) { e.stopPropagation(); e.preventDefault(); bzRequireAccount('do that'); }
+    if (hit) { e.stopPropagation(); e.preventDefault(); bzRequireAccount('view profiles'); }
 }, true);
 
 // ===== GUEST FLOATING BUTTONS — slide in from the left, replace the big sign-in modal =====
@@ -13498,27 +13499,39 @@ async function openBannerStats(id) {
 
 // ----- Inject banners into the POST FEED (between post boxes) -----
 let _injectingFeedBanners = false;
+let _feedBannerOrder = null;   // shuffled ad order — rebuilt every fresh feed, so every ad gets a turn
 async function injectFeedBanners() {
     if (_injectingFeedBanners) return;
     _injectingFeedBanners = true;
     try {
         const pl = document.getElementById('postsList');
         if (!pl) return;
-        // Only remove banners whose neighbouring post-card was removed — leave the rest alone
         const banners = (await getActiveBanners()).filter(b => b.showInFeed !== false);
         if (!banners.length) return;
         // Remove orphaned banners (ones whose previous sibling is gone)
         pl.querySelectorAll('.banner-ad-card').forEach(el => {
             if (!el.previousElementSibling || !el.previousElementSibling.classList.contains('post-card')) el.remove();
         });
-        // Only inject into positions that don't already have a banner after them
+        // Count banners already placed in the feed
+        const existingBanners = pl.querySelectorAll('.banner-ad-card').length;
+        // Fresh feed (no banners yet) → shuffle the ad order once, like the random older-posts queue
+        if (existingBanners === 0) {
+            _feedBannerOrder = banners.map((_, i) => i);
+            for (let i = _feedBannerOrder.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                const tmp = _feedBannerOrder[i]; _feedBannerOrder[i] = _feedBannerOrder[j]; _feedBannerOrder[j] = tmp;
+            }
+        }
+        const ordered = _feedBannerOrder ? _feedBannerOrder.map(idx => banners[idx]) : banners;
+        // Continue the rotation from however many banners are already shown,
+        // so each new slot gets a DIFFERENT ad instead of the same one every time
         const cards = Array.from(pl.querySelectorAll('.post-card'));
         if (!cards.length) return;
-        let bi = 0;
+        let bi = existingBanners;
         cards.forEach((card, i) => {
-            if ((i + 1) % 3 === 0 && banners.length) {
+            if ((i + 1) % 4 === 0 && ordered.length) {
                 if (card.nextElementSibling && card.nextElementSibling.classList.contains('banner-ad-card')) return;
-                card.after(buildBannerCard(banners[bi % banners.length]));
+                card.after(buildBannerCard(ordered[bi % ordered.length]));
                 bi++;
             }
         });
