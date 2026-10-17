@@ -3522,10 +3522,10 @@ form input[type="text"] {
 
 
 <div id="authScreen" class="auth-screen" style="display:none;position:fixed;inset:0;z-index:9999998;background:#e0e7ff;overflow-y:auto;align-items:center;justify-content:center;padding:24px 16px;">
-  <button type="button" onclick="closeAuthScreen()" title="Close" style="position:fixed;top:16px;right:16px;z-index:1000002;width:40px;height:40px;border-radius:50%;background:#ffffff;border:none;box-shadow:0 4px 14px rgba(0,0,0,0.18);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-    <i data-lucide="x" style="width:20px;height:20px;color:#0f172a;stroke-width:2;"></i>
+  <div class="auth-container" style="position:relative;background:#ffffff;border-radius:24px;box-shadow:0 24px 70px rgba(43,43,158,0.22);width:100%;max-width:400px;padding:32px 26px;margin:auto;box-sizing:border-box;max-height:calc(100vh - 48px);overflow-y:auto;">
+  <button type="button" onclick="closeAuthScreen()" title="Close" style="position:absolute;top:14px;right:14px;z-index:1000002;width:36px;height:36px;border-radius:50%;background:#f1f5f9;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.10);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+    <i data-lucide="x" style="width:18px;height:18px;color:#0f172a;stroke-width:2;"></i>
   </button>
-  <div class="auth-container" style="background:#ffffff;border-radius:24px;box-shadow:0 24px 70px rgba(43,43,158,0.22);width:100%;max-width:400px;padding:32px 26px;margin:auto;box-sizing:border-box;max-height:calc(100vh - 48px);overflow-y:auto;">
 
     <!-- LOGO -->
     <div class="logo-container" style="text-align:center;margin-bottom:22px;">
@@ -3546,9 +3546,9 @@ form input[type="text"] {
 
     <!-- LOGIN (pop-up style: hidden until "Log in" is pressed) -->
     <form id="loginForm" class="hidden">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div style="position:relative;text-align:center;margin-bottom:14px;">
         <div style="font-weight:800;font-size:18px;color:#111827;">Log in</div>
-        <button type="button" onclick="showAuthMain()" style="width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><i data-lucide="x" style="width:17px;height:17px;color:#475569;"></i></button>
+        <button type="button" onclick="showAuthMain()" style="position:absolute;top:0;right:0;width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><i data-lucide="x" style="width:17px;height:17px;color:#475569;"></i></button>
       </div>
     
             <!-- Inputs -->
@@ -6479,10 +6479,30 @@ document.getElementById('cancelReplyBtn').addEventListener('click', () => {
 // FIREBASE AUTH STATE — THE MAIN ENTRY POINT
 // ============================================================
 if (auth) {
-  auth.onAuthStateChanged(async (firebaseUser) => {
+    // Instantly wipes the guest look (gray person icon + guest dock) the moment a REAL user appears
+  function bzStripGuestProfile() {
+    window._bzVisitor = false;
+    if (window.bzHideGuestDock) bzHideGuestDock();
+    const pb = document.getElementById('profileBtn');
+    if (pb) {
+      pb.style.animation = 'none';
+      pb.style.background = '#000';
+      pb.style.color = '#fff';
+      pb.innerHTML = '<div style="width:15px;height:15px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>';
+    }
+    const mkt = document.getElementById('mktProfileBtn');
+    if (mkt) { mkt.style.background = '#000'; mkt.style.color = '#fff'; mkt.innerHTML = ''; }
+  }
+
+    auth.onAuthStateChanged(async (firebaseUser) => {
     // Anonymous guest session = still a guest. Never treat it as a real account.
-    if (firebaseUser && firebaseUser.isAnonymous) return;
-    if (firebaseUser) { window._bzVisitor = false; if (window.bzHideGuestDock) bzHideGuestDock(); }
+    if (firebaseUser && firebaseUser.isAnonymous) {
+        // A returning guest still needs the feed + people loaded — don't bail.
+        if (window._bzSignupPending) return;
+        if (typeof bzEnterVisitorMode === 'function') { bzEnterVisitorMode(); return; }
+        return;
+    }
+    if (firebaseUser) { bzStripGuestProfile(); }   // kill the guest icon IMMEDIATELY, before the slow load
     if (window._bzSignupPending) return;   // signup handler is in charge — don't race it
     if (firebaseUser) {
     document.getElementById('authScreen').style.display = 'none';
@@ -6835,19 +6855,26 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
     if (!name || !identifier || !password) { showToast('error', 'Error', 'Fill all fields'); return; }
     if (!identifier.includes('@')) { showToast('error', 'Invalid', 'Enter a valid email address'); return; }
-    if (password.length < 6) { showToast('error', 'Error', 'Password 6+ chars'); return; }
+        if (password.length < 6) { showToast('error', 'Error', 'Password 6+ chars'); return; }
     if (password !== confirmPassword) { showToast('error', 'Passwords do not match!', 'Try again'); return; }
 
-        // ===== RICH ACCOUNT — pay first, account is created after payment =====
+    const _sb = document.getElementById('signupSubmitBtn');
+    const _sbOrig = _sb ? _sb.innerHTML : '';
+    if (_sb) {
+        _sb.disabled = true;
+        _sb.style.opacity = '0.85';
+        _sb.innerHTML = '<div style="width:16px;height:16px;border:2px solid #dc2626;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div> Loading...';
+        if (window.lucide) lucide.createIcons();
+    }
+    if (typeof bzStripGuestProfile === 'function') bzStripGuestProfile();
+
     try {
-        // Save the pending signup so the PayFast return handler can finish creating the account
         localStorage.removeItem('sxchatUser');
         localStorage.setItem('bz_pendingRichSignup', JSON.stringify({ name, identifier, password }));
-
-        // Open the Rich Account payment screen
         showRichAccountPayScreen(name, identifier);
     } catch (e) {
         console.error('Signup error:', e);
+        if (_sb) { _sb.disabled = false; _sb.style.opacity = ''; _sb.innerHTML = _sbOrig; if (window.lucide) lucide.createIcons(); }
         restoreAuthScreen();
         showToast('error', 'Account error', e.message || 'Please try again');
     }
@@ -7032,6 +7059,7 @@ function resetRichPayBtn(btn) {
         const ls = document.getElementById('loadingScreen');
         if (ls) { ls.style.display = 'flex'; ls.classList.remove('hide'); }
         if (typeof showLoadingScreen === 'function') showLoadingScreen();
+        if (typeof bzStripGuestProfile === 'function') bzStripGuestProfile();
 
         const name = pending.name;
         const identifier = pending.identifier;
@@ -9175,10 +9203,22 @@ function renderPostImagesPreview() {
 document.getElementById('createPostForm').addEventListener('submit', async e => {
     e.preventDefault();
     if (requireAuth('create a post') === false) return;
+    if (!currentUser) { showToast('error', 'Login required', 'Sign in to post'); return; }
     const text = document.getElementById('postText').value.trim();
     const cat = document.getElementById('postCategory').value;
     if (!text && selectedPostImages.length === 0) { showToast('error', 'Error', 'Add content'); return; }
-    showToast('info', 'Posting', 'Creating...');
+
+    // Lock the Post button + show a spinner so the upload is visible
+    const postBtn = document.querySelector('#createPostForm button[type="submit"]');
+    const _origBtnHTML = postBtn ? postBtn.innerHTML : '';
+    const _resetPostBtn = () => { if (postBtn) { postBtn.disabled = false; postBtn.style.opacity = ''; postBtn.innerHTML = _origBtnHTML; if (window.lucide) lucide.createIcons(); } };
+    if (postBtn) {
+        postBtn.disabled = true;
+        postBtn.style.opacity = '0.75';
+        postBtn.innerHTML = '<div style="width:16px;height:16px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div> Posting...';
+    }
+    showToast('info', 'Posting', 'Uploading your post...');
+
     const bv = Math.floor(Math.random() * (95000 - 5000) + 5000);
     const newPostData = {
         userId: currentUser.id, text, images: [...selectedPostImages], category: cat,
@@ -9202,7 +9242,10 @@ document.getElementById('createPostForm').addEventListener('submit', async e => 
             pl.insertBefore(el, pl.firstChild);
             lucide.createIcons();
         }
-    } catch(err) {
+        _resetPostBtn();   // post is live — restore the button; push alerts run after
+
+        } catch(err) {
+        _resetPostBtn();
         showToast('error', 'Post failed', err.message || 'Check your connection and try again');
         return;
     }
@@ -10613,7 +10656,22 @@ window.bzCreateFreeAccount = async function() {
     if (!name || !email || !pw) { showToast('error', 'Error', 'Fill all fields'); return; }
     if (!email.includes('@')) { showToast('error', 'Invalid', 'Enter a valid email'); return; }
     if (pw.length < 6) { showToast('error', 'Error', 'Password 6+ chars'); return; }
-    if (pw !== pw2) { showToast('error', 'Error', 'Passwords do not match'); return; }
+        if (pw !== pw2) { showToast('error', 'Error', 'Passwords do not match'); return; }
+
+    // Lock the button + spinner so it never looks frozen while the account is created
+    const _fb = document.querySelector('#bzFreeSignup button[onclick*="bzCreateFreeAccount"]');
+    const _fbOrig = _fb ? _fb.innerHTML : '';
+    if (_fb) {
+        _fb.disabled = true;
+        _fb.style.opacity = '0.85';
+        _fb.innerHTML = '<div style="width:16px;height:16px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div> Creating your account...';
+    }
+    // Themed loader + wipe the guest icon the instant a real account is being made
+    if (typeof bzStripGuestProfile === 'function') bzStripGuestProfile();
+    const _ls = document.getElementById('loadingScreen');
+    if (_ls) { _ls.style.display = 'flex'; _ls.classList.remove('hide'); }
+    if (typeof showLoadingScreen === 'function') showLoadingScreen();
+
     try {
         localStorage.removeItem('sxchatUser');
         const cred = await auth.createUserWithEmailAndPassword(email, pw);
@@ -10629,6 +10687,8 @@ window.bzCreateFreeAccount = async function() {
         showToast('success', 'Account created', 'Welcome to BeelzeChat!');
         // onAuthStateChanged finishes loading the app automatically
     } catch (err) {
+        if (_fb) { _fb.disabled = false; _fb.style.opacity = ''; _fb.innerHTML = _fbOrig; if (window.lucide) lucide.createIcons(); }
+        const _lse = document.getElementById('loadingScreen'); if (_lse) { _lse.classList.add('hide'); _lse.style.display = 'none'; }
         showToast('error', 'Signup failed', err.message || 'Try again');
     }
 };
@@ -11238,7 +11298,8 @@ document.getElementById('accountSwitcherBtn').addEventListener('click', () => {
     _postsLastDoc = null; _postsLoading = false; _postsHasMore = true;
     _usersLastDoc = null; _usersLoading = false; _usersHasMore = true; _loadedUserIds = new Set();
 
-    // 4. NOW load the new currentUser
+        // 4. NOW load the new currentUser
+    window._bzVisitor = false;   // switching to a real account — never stay in guest mode
     const ud = await db.collection('users').doc(acc.id).get();
     currentUser = { id: acc.id, ...ud.data() };
     localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
