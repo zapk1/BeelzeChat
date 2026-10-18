@@ -3529,29 +3529,41 @@ form input[type="text"] {
 
     <!-- LOGO -->
     <div class="logo-container" style="text-align:center;margin-bottom:22px;">
-            <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" alt="BeelzeChat" class="app-logo" style="width:64px;height:64px;border-radius:22px;object-fit:cover;margin:0 auto 12px;display:block;">
+            <div id="bzAuthLogo" style="position:relative;width:64px;height:64px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="message-circle" id="bzAuthLogoBubble" style="position:absolute;width:64px;height:64px;color:#0f172a;stroke-width:1.5;"></i>
+                <i data-lucide="crown" id="bzAuthLogoCrown" style="position:relative;width:32px;height:32px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
+            </div>
       <div class="app-title" style="font-size:24px;font-weight:800;color:#111827;letter-spacing:-0.5px;">Welcome to BeelzeChat</div>
       <div class="auth-subtitle" style="color:#3F51B5;font-size:13px;margin-top:8px;font-weight:700;">Platform for Uniting and marketing</div>
     </div>
 
-        <!-- ===== MAIN VIEW: logo + launchers (shown first) ===== -->
-    <div id="authMainView" style="display:block;">
-      <button type="button" onclick="showLogin()" style="width:100%;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#1d4ed8;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 6px 20px rgba(15,23,42,0.10);">
-        <i data-lucide="crown" style="width:18px;height:18px;color:#1d4ed8;stroke-width:1.5;"></i> Log in
-      </button>
-      <button type="button" onclick="showAccountChoice()" style="width:100%;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 6px 20px rgba(220,38,38,0.12);">
-        <i data-lucide="crown" style="width:18px;height:18px;color:#dc2626;stroke-width:1.5;"></i> Create Account
-      </button>
-    </div>
-
-    <!-- LOGIN (pop-up style: hidden until "Log in" is pressed) -->
-    <form id="loginForm" class="hidden">
+        <!-- LOGIN — HTML 2's model (Google + email) -->
+    <form id="loginForm">
       <div style="position:relative;text-align:center;margin-bottom:14px;">
         <div style="font-weight:800;font-size:18px;color:#111827;">Log in</div>
         <button type="button" onclick="showAuthMain()" style="position:absolute;top:0;right:0;width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><i data-lucide="x" style="width:17px;height:17px;color:#475569;"></i></button>
       </div>
     
-            <!-- Inputs -->
+            <!-- Google (HTML 2's model) -->
+      <button type="button" class="btn" id="googleSignInBtn" style="background:#ffffff;color:#111827;border:1px solid #3F51B5;border-radius:10px;padding:13px 16px;font-size:15px;font-weight:600;margin-bottom:10px;position:relative;box-shadow:0 1px 2px rgba(0,0,0,0.04);width:100%;">
+        <svg width="20" height="20" viewBox="0 0 24 24" style="flex-shrink:0;">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Continue with Google
+        <span style="position:absolute;top:-9px;right:10px;background:#3F51B5;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:0.3px;">Last Used</span>
+      </button>
+
+      <!-- OR -->
+      <div style="display:flex;align-items:center;gap:12px;margin:18px 0 14px;">
+        <div style="flex:1;height:1px;background:#E5E7EB;"></div>
+        <span style="color:#9ca3af;font-size:12px;font-weight:600;">OR</span>
+        <div style="flex:1;height:1px;background:#E5E7EB;"></div>
+      </div>
+
+      <!-- Inputs -->
       <div class="form-group" style="margin-bottom:12px;">
                 <input type="email" class="form-input" id="loginIdentifier" placeholder="Enter your email" required style="width:100%;padding:13px 14px;border: 1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
@@ -3566,7 +3578,8 @@ form input[type="text"] {
       
   
       
-            <div id="loginRecaptcha" style="margin:12px 0;transform:scale(0.9);transform-origin:left;"></div>
+            
+
 
 
 <!-- Privacy policy consent checkbox -->
@@ -3596,21 +3609,30 @@ form input[type="text"] {
       </button>
       <div style="text-align:center;margin-top:14px;padding-top:12px;border-top:1px solid #f1f5f9;display:flex;justify-content:center;gap:18px;">
         <a onclick="showAccountChoice()" style="color:#1d4ed8;font-weight:800;font-size:13px;text-decoration:underline;cursor:pointer;">Free account</a>
-        <a onclick="showSignup()" style="color:#dc2626;font-weight:800;font-size:13px;text-decoration:underline;cursor:pointer;">Paid (Rich) account</a>
+        <a onclick="bzChooseAccount('paid')" style="color:#dc2626;font-weight:800;font-size:13px;text-decoration:underline;cursor:pointer;">Paid (Rich) account</a>
       </div>
     </form>
 
         <!-- SIGNUP (pop-up style) -->
-    <form id="signupForm" class="hidden">
+        <!-- SIGNUP — HTML 2's model (free & paid use the same look) -->
+        <form id="signupForm" class="hidden">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-        <div style="font-weight:800;font-size:18px;color:#111827;">Create Account</div>
-        <button type="button" onclick="showAuthMain()" style="width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><i data-lucide="x" style="width:17px;height:17px;color:#475569;"></i></button>
+        <div>
+          <div id="bzSignupSub" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#6b7280;font-weight:600;margin-top:4px;">
+            <span style="position:relative;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i data-lucide="message-circle" id="bzSubLogoBubble" style="position:absolute;width:16px;height:16px;color:#0f172a;stroke-width:2;"></i>
+              <i data-lucide="crown" id="bzSubLogoCrown" style="position:relative;width:9px;height:9px;color:#0f172a;stroke-width:2;z-index:2;"></i>
+            </span>
+            <span id="bzSignupSubText">Create free account</span>
+          </div>
+        </div>
+        <button type="button" onclick="showLogin()" style="width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><i data-lucide="x" style="width:17px;height:17px;color:#475569;stroke-width:1.5;"></i></button>
       </div>
       <div class="form-group" style="margin-bottom:12px;">
-                <input type="text" class="form-input" id="signupName" placeholder="Full name" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+        <input type="text" class="form-input" id="signupName" placeholder="Full name" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:12px;">
-          <input type="email" class="form-input" id="signupIdentifier" placeholder="Email" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+        <input type="email" class="form-input" id="signupIdentifier" placeholder="Email" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
       </div>
       <div class="form-group" style="margin-bottom:12px;">
         <div style="position:relative;">
@@ -3628,9 +3650,9 @@ form input[type="text"] {
           </button>
         </div>
       </div>
-            <button type="submit" id="signupSubmitBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 6px 20px rgba(220,38,38,0.12);">
-        <i data-lucide="crown" style="width:20px;height:20px;color:#dc2626;stroke-width:1.5;"></i>
-        Create Account
+      <button type="submit" class="btn btn-primary" id="signupSubmitBtn" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);width:100%;">
+        <i data-lucide="user-check" style="width:20px;height:20px;"></i>
+        <span id="bzSignupBtnText">Create account</span>
       </button>
       <div id="signupError" class="error-message"></div>
       <div id="signupSuccess" class="success-message"></div>
@@ -3701,7 +3723,7 @@ form input[type="text"] {
                 <i data-lucide="bell"></i>
                 <span id="notifBadge" style="display:none;position:absolute;top:2px;right:2px;background:#ef4444;color:white;border-radius:10px;font-size:10px;font-weight:800;padding:1px 5px;min-width:16px;text-align:center;"></span>
             </button>
-            <button class="profile-btn" id="profileBtn" style="background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:936px 100%;animation:shimmer 1.4s infinite;color:transparent;"></button>
+            <button class="profile-btn" id="profileBtn" style="background:#f1f5f9;color:#0f172a;display:flex;align-items:center;justify-content:center;"><i data-lucide="user" style="width:18px;height:18px;stroke-width:1.5;"></i></button>
         </div>
     </div>
 
@@ -4921,7 +4943,10 @@ form input[type="text"] {
 
 <div id="logoutConfirmModal" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
     <div style="background:white;border-radius:24px;padding:28px 24px;width:300px;box-shadow:0 20px 60px rgba(0,0,0,0.4);text-align:center;">
-        <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:56px;height:56px;border-radius:16px;margin-bottom:12px;">
+        <div style="position:relative;width:56px;height:56px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;">
+            <i data-lucide="message-circle" style="position:absolute;width:56px;height:56px;color:#0f172a;stroke-width:1.5;"></i>
+            <i data-lucide="crown" style="position:relative;width:28px;height:28px;color:#dc2626;stroke-width:1.5;z-index:2;"></i>
+        </div>
         <div style="font-weight:800;font-size:18px;color:#0f172a;margin-bottom:6px;">BeelzeChat</div>
         <div style="font-size:14px;color:#64748b;margin-bottom:24px;line-height:1.5;">Are you sure you want to logout?</div>
         <div style="display:flex;gap:10px;">
@@ -6486,9 +6511,10 @@ if (auth) {
     const pb = document.getElementById('profileBtn');
     if (pb) {
       pb.style.animation = 'none';
-      pb.style.background = '#000';
-      pb.style.color = '#fff';
-      pb.innerHTML = '<div style="width:15px;height:15px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>';
+      pb.style.background = '#f1f5f9';
+      pb.style.color = '#0f172a';
+      pb.innerHTML = '<i data-lucide="user" style="width:18px;height:18px;stroke-width:1.5;"></i>';
+      if (window.lucide) lucide.createIcons();
     }
     const mkt = document.getElementById('mktProfileBtn');
     if (mkt) { mkt.style.background = '#000'; mkt.style.color = '#fff'; mkt.innerHTML = ''; }
@@ -6809,14 +6835,7 @@ function restoreAuthScreen() {
 }
 
 document.getElementById('loginForm').addEventListener('submit', async e => {
-    e.preventDefault();
-        const _bzLocalDev = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:';
-    let recaptchaResponse = '';
-    if (!_bzLocalDev) {
-        if (typeof grecaptcha === 'undefined' || _loginRecaptchaId === null) { showToast('error', 'Verify', 'Please complete the CAPTCHA'); return; }
-        recaptchaResponse = grecaptcha.getResponse(_loginRecaptchaId);
-        if (!recaptchaResponse) { showToast('error', 'Verify', 'Please complete the CAPTCHA'); return; }
-    }
+        e.preventDefault();
     const identifier = document.getElementById('loginIdentifier').value.trim();
     const password = document.getElementById('loginPassword').value;
     if (!identifier || !password) { showToast('error', 'Error', 'Fill all fields'); return; }
@@ -6855,28 +6874,82 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
     if (!name || !identifier || !password) { showToast('error', 'Error', 'Fill all fields'); return; }
     if (!identifier.includes('@')) { showToast('error', 'Invalid', 'Enter a valid email address'); return; }
-        if (password.length < 6) { showToast('error', 'Error', 'Password 6+ chars'); return; }
-    if (password !== confirmPassword) { showToast('error', 'Passwords do not match!', 'Try again'); return; }
+    if (password.length < 6) { showToast('error', 'Error', 'Password 6+ chars'); return; }
+        if (password !== confirmPassword) { showToast('error', 'Passwords do not match!', 'Try again'); return; }
 
-    const _sb = document.getElementById('signupSubmitBtn');
-    const _sbOrig = _sb ? _sb.innerHTML : '';
-    if (_sb) {
-        _sb.disabled = true;
-        _sb.style.opacity = '0.85';
-        _sb.innerHTML = '<div style="width:16px;height:16px;border:2px solid #dc2626;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div> Loading...';
-        if (window.lucide) lucide.createIcons();
+    // PAID (Rich) — pass through the PayFast URL first; the return handler creates the account after payment
+        if (window._bzAccountType === 'paid') {
+        // Paid (Rich) — remember the details, then show the Rich Account Subscription screen
+        // (sliding pictures + full benefits + red Pay button); PayFast comes from ITS button
+        localStorage.setItem('bz_pendingRichSignup', JSON.stringify({ name, identifier, password }));
+        document.getElementById('authScreen').style.display = 'none';
+        const _ls0 = document.getElementById('loadingScreen');
+        if (_ls0) _ls0.style.display = 'none';
+        showRichAccountPayScreen(name, identifier);
+        return;
     }
-    if (typeof bzStripGuestProfile === 'function') bzStripGuestProfile();
+
+    // FREE — Show the loader NOW — stays until the account is fully created
+    const _ls = document.getElementById('loadingScreen');
+    _ls.style.display = 'flex';
+    _ls.classList.remove('hide');
+    document.getElementById('authScreen').style.display = 'none';
+    showLoadingScreen();
+    window._bzSignupPending = true;
 
     try {
         localStorage.removeItem('sxchatUser');
-        localStorage.setItem('bz_pendingRichSignup', JSON.stringify({ name, identifier, password }));
-        showRichAccountPayScreen(name, identifier);
-    } catch (e) {
-        console.error('Signup error:', e);
-        if (_sb) { _sb.disabled = false; _sb.style.opacity = ''; _sb.innerHTML = _sbOrig; if (window.lucide) lucide.createIcons(); }
+        try { await auth.createUserWithEmailAndPassword(identifier, password); }
+        catch (err) { try { await auth.signInWithEmailAndPassword(identifier, password); } catch (e2) {} }
+
+        const userId = identifier.replace(/[.#$\[\]@+]/g, '_');
+        const rc = Math.floor(100000 + Math.random() * 900000).toString();
+        const beelzeId = 'BeelzeChatID-' + Math.random().toString(36).substring(2, 6).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
+
+        const ud = await db.collection('users').doc(userId).get();
+        if (!ud.exists) {
+            await db.collection('users').doc(userId).set({
+                name, identifier, password, resetCode: rc, beelzeId,
+                createdAt: Date.now(), online: false,
+                blockedUsers: [], profilePic: null, bio: '',
+                userAgent: navigator.userAgent,
+                richVerified: false,
+                accountType: 'free'
+            });
+        } else {
+            await db.collection('users').doc(userId).update({ name, online: false });
+        }
+
+        currentUser = { id: userId, name, identifier, profilePic: null, bio: '', blockedUsers: [], resetCode: rc, beelzeId, richVerified: false, accountType: 'free' };
+        currentUser.userAgent = navigator.userAgent;
+        allUsers[currentUser.id] = { ...(allUsers[currentUser.id] || {}), ...currentUser };
+        localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
+        let _accs = JSON.parse(localStorage.getItem('sxchatAccounts') || '[]');
+        if (!_accs.find(a => a.id === userId)) {
+            _accs.push({ id: userId, name, identifier, profilePic: null });
+            localStorage.setItem('sxchatAccounts', JSON.stringify(_accs));
+        }
+        await db.collection('users').doc(userId).update({ online: true });
+        window._justLoggedIn = true;
+
+        await initializeApp();
+        await Promise.all([loadAllUsers(), loadAllPosts(), loadChats(), loadGroups()]);
+        document.getElementById('app').classList.add('active');
+        updateProfileButton();
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
+        ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
+        document.getElementById('storiesTab').classList.remove('hidden');
+        loadNotifications();
+        window.finishLoading();
+        window._bzSignupPending = false;
+        document.getElementById('signupForm').reset();
+        showToast('success', 'Account Created!', 'Welcome to BeelzeChat 🤝');
+    } catch (err) {
+        console.error('Signup error:', err);
+        window._bzSignupPending = false;
         restoreAuthScreen();
-        showToast('error', 'Account error', e.message || 'Please try again');
+        showToast('error', 'Account error', err.message || 'Try again');
     }
 });
 
@@ -6903,7 +6976,10 @@ function showRichAccountPayScreen(name, email) {
 
         <!-- Top: app logo + app name -->
         <div style="padding:18px 16px 8px;text-align:center;background:linear-gradient(135deg,#fff,#fef2f2);">
-                        <img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:42px;height:42px;border-radius:11px;margin:0 auto 7px;display:block;">
+            <div style="position:relative;width:42px;height:42px;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="message-circle" style="position:absolute;width:42px;height:42px;color:#0f172a;stroke-width:1.5;"></i>
+                <i data-lucide="crown" style="position:relative;width:22px;height:22px;color:#dc2626;stroke-width:1.5;z-index:2;"></i>
+            </div>
             <div style="font-weight:900;font-size:17px;color:#0f172a;letter-spacing:-0.5px;">BeelzeChat</div>
         </div>
         
@@ -7243,34 +7319,93 @@ window.handleGlobalSearch = function(term) {
     });
 };
 
-function showAuthMain() {
-    const mv = document.getElementById('authMainView'); if (mv) mv.style.display = '';
-    document.getElementById('loginForm').classList.add('hidden');
-    document.getElementById('signupForm').classList.add('hidden');
-    document.getElementById('forgotForm').classList.add('hidden');
-    if (window.lucide) lucide.createIcons();
+// Free / paid switches — paid passes through the PayFast URL
+window._bzAccountType = 'free';
+function bzChooseAccount(type) {
+    window._bzAccountType = type;
+    document.getElementById('bzChoiceScreen')?.remove();
+    const a = document.getElementById('authScreen');
+    if (a) a.style.display = 'flex';
+    showSignup();
 }
+function showAuthMain() { showLogin(); }
 function showLogin() {
-    const mv = document.getElementById('authMainView'); if (mv) mv.style.display = 'none';
+    window._bzAccountType = 'free';
+    const hC = document.getElementById('bzAuthLogoCrown');
+    if (hC) hC.style.color = '#0f172a';
     document.getElementById('loginForm').classList.remove('hidden');
     document.getElementById('signupForm').classList.add('hidden');
     document.getElementById('forgotForm').classList.add('hidden');
-    if (typeof renderLoginRecaptcha === 'function') renderLoginRecaptcha();
     if (window.lucide) lucide.createIcons();
 }
 function showSignup() {
-    const mv = document.getElementById('authMainView'); if (mv) mv.style.display = 'none';
+    const paid = window._bzAccountType === 'paid';
+    const red = '#dc2626', black = '#0f172a';
+    // Title
+    const t = document.getElementById('bzSignupTitle');
+    if (t) t.textContent = paid ? 'Create Paid (Rich) Account' : 'Create Free Account';
+    // Subtitle text + small logo icon before it (black for free, red crown for paid)
+    const st = document.getElementById('bzSignupSubText');
+    if (st) st.textContent = paid ? "Paid account creation cost R3000 once off" : 'Create free account , R0 Cost for creation';
+    const slC = document.getElementById('bzSubLogoCrown');
+    if (slC) slC.style.color = paid ? red : black;
+    // Header logo crown — red for paid, black for free (bubble stays dark)
+    const hC = document.getElementById('bzAuthLogoCrown');
+    if (hC) hC.style.color = paid ? red : black;
+    // Input borders — red for paid, blue for free
+    const bColor = paid ? red : '#3F51B5';
+    ['signupName','signupIdentifier','signupPassword','signupConfirmPassword'].forEach(function(id){
+        const el = document.getElementById(id); if (el) el.style.borderColor = bColor;
+    });
+    // Submit button — red with full logo icon for paid, blue with user-check for free
+    const btn = document.getElementById('signupSubmitBtn');
+    if (btn) {
+        btn.style.background = paid ? red : '#3F51B5';
+        btn.style.boxShadow = paid ? '0 4px 12px rgba(220,38,38,0.3)' : '0 4px 12px rgba(63,81,181,0.3)';
+        btn.innerHTML = paid
+            ? '<span style="position:relative;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;"><i data-lucide="message-circle" style="position:absolute;width:20px;height:20px;color:#fff;stroke-width:1.5;"></i><i data-lucide="crown" style="position:relative;width:10px;height:10px;color:#fff;stroke-width:1.5;z-index:2;"></i></span><span>Continue to payfast.com</span>'
+            : '<i data-lucide="user-check" style="width:20px;height:20px;"></i><span>Create account</span>';
+    }
     document.getElementById('loginForm').classList.add('hidden');
     document.getElementById('signupForm').classList.remove('hidden');
     document.getElementById('forgotForm').classList.add('hidden');
     if (window.lucide) lucide.createIcons();
 }
 function showForgotPassword() {
-    const mv = document.getElementById('authMainView'); if (mv) mv.style.display = 'none';
     document.getElementById('loginForm').classList.add('hidden');
     document.getElementById('signupForm').classList.add('hidden');
     document.getElementById('forgotForm').classList.remove('hidden');
     if (window.lucide) lucide.createIcons();
+}
+// PAID — POST straight through the PayFast worker URL; the return handler creates the Rich account
+const BZ_PAYFAST_WORKER_URL = 'https://beelzechat.white-mouse-5467.workers.dev';
+async function startPaidPayFastRedirect(name, email, password) {
+    try {
+        const orderRef = 'BZRICH-' + email.replace(/[^a-zA-Z0-9]/g, '') + '-' + Date.now();
+        localStorage.setItem('bz_pendingRichSignup', JSON.stringify({ name, identifier: email, password, orderRef }));
+        const res = await fetch(BZ_PAYFAST_WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: RICH_SUBSCRIPTION_AMOUNT,
+                itemName: 'BeelzeChat Rich Account Subscription',
+                itemDesc: 'R3,000/month — Rich Account access',
+                nameFirst: (name || '').split(' ')[0],
+                email: email,
+                orderRef: orderRef
+            })
+        });
+        const data = await res.json();
+        if (!data.url || !data.fields) { showToast('error', 'Payment error', 'Could not start payment'); restoreAuthScreen(); return; }
+        const form = document.createElement('form');
+        form.method = 'POST'; form.action = data.url;
+        Object.entries(data.fields).forEach(([k, v]) => { const i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = v; form.appendChild(i); });
+        document.body.appendChild(form);
+        form.submit();
+    } catch (e) {
+        showToast('error', 'Payment failed', e.message || 'Check your connection');
+        restoreAuthScreen();
+    }
 }
 
 
@@ -10454,16 +10589,34 @@ window.bzRequireAccount = function(what) {
     ov.id = 'bzGatePopup';
         ov.style.cssText = 'position:fixed;inset:0;z-index:9999998;background:rgba(15,23,42,0.35);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:center;padding:20px;';
     ov.innerHTML = `<div style="background:white;border-radius:22px;width:100%;max-width:320px;padding:22px 18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.35);position:relative;" onclick="event.stopPropagation()">
-        <button onclick="document.getElementById('bzGatePopup').remove()" style="position:absolute;top:12px;right:12px;background:#f1f5f9;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:17px;height:17px;color:#64748b;"></i></button>
+        <button onclick="bzCloseGatePopup()" style="position:absolute;top:12px;right:12px;background:#f1f5f9;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:17px;height:17px;color:#64748b;"></i></button>
         ${bzBrandLogo(52)}
         <div style="font-weight:900;font-size:17px;color:#0f172a;margin-top:8px;">Create an account</div>
         <div style="font-size:13px;color:#64748b;margin:6px 0 16px;">To ${what} you need a BeelzeChat account.</div>
         <button onclick="document.getElementById('bzGatePopup').remove();showAccountChoice();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;margin-bottom:8px;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Free Account</button>
-        <button onclick="document.getElementById('bzGatePopup').remove();bzGuestOpenSignIn();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="log-in" style="width:16px;height:16px;color:#0f172a;stroke-width:1.5;"></i> Sign in</button>
+                <button onclick="document.getElementById('bzGatePopup').remove();bzGuestOpenSignIn();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0f172a;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.10);"><i data-lucide="log-in" style="width:16px;height:16px;color:#0f172a;stroke-width:1.5;"></i> Sign in</button>
     </div>`;
     document.body.appendChild(ov);
     lucide.createIcons();
+    const _fab = document.getElementById('bzGateFab');
+    if (_fab) _fab.style.display = 'none';
 };
+
+// Closing the gate keeps the round King-logo pop — press it to reopen the same options
+window.bzCloseGatePopup = function() {
+    document.getElementById('bzGatePopup')?.remove();
+    if (typeof bzShowGuestDock === 'function') bzShowGuestDock();
+};
+(function bzGateFabInit() {
+    if (document.getElementById('bzGateFab')) return;
+    const fab = document.createElement('button');
+    fab.id = 'bzGateFab';
+    fab.type = 'button';
+    fab.style.cssText = 'position:fixed;bottom:150px;left:14px;z-index:9990;display:none;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;background:#ffffff;border:none;cursor:pointer;box-shadow:0 10px 28px rgba(15,23,42,0.22),0 3px 10px rgba(0,0,0,0.10);padding:0;';
+        fab.onclick = function() { bzShowGuestDock(); };
+    fab.innerHTML = bzBrandLogo(30);
+    document.body.appendChild(fab);
+})();
 
 // One capture-phase listener gates every visitor action — no handler was touched
 document.addEventListener('click', function(e) {
@@ -10485,8 +10638,8 @@ document.addEventListener('click', function(e) {
     st.textContent = `
     #bzGuestDock { position: fixed; left: 0; bottom: 84px; z-index: 9990; display: none; flex-direction: column; gap: 10px; pointer-events: none; }
     #bzGuestDock.show { display: flex; }
-    #bzGuestDock button { pointer-events: auto; display: flex; align-items: center; gap: 8px; border: 1.5px solid #e2e8f0; border-left: none; border-radius: 0 999px 999px 0; padding: 12px 20px 12px 14px; font-weight: 800; font-size: 14px; cursor: pointer; background: #fff; color: #0f172a; box-shadow: 0 8px 22px rgba(255,255,255,0.95), 0 4px 16px rgba(0,0,0,0.12); transform: translateX(-110%); animation: bzSlideInLeft 0.55s cubic-bezier(.2,.9,.3,1) forwards; }
-    #bzGuestDock button.bz-create { color: #dc2626; border-color: #fecaca; animation-delay: 0.18s; }
+        #bzGuestDock button { pointer-events: auto; display: flex; align-items: center; gap: 8px; border: none; border-radius: 999px; padding: 12px 20px 12px 14px; font-weight: 800; font-size: 14px; cursor: pointer; background: #fff; color: #0f172a; box-shadow: 0 8px 22px rgba(0,0,0,0.12); transform: translateX(-110%); animation: bzSlideInLeft 0.55s cubic-bezier(.2,.9,.3,1) forwards; }
+    #bzGuestDock button.bz-create { color: #dc2626; animation-delay: 0.18s; }
     #bzGuestDock button i { width: 18px; height: 18px; stroke-width: 1.5; }
     @keyframes bzSlideInLeft { from { transform: translateX(-110%); } to { transform: translateX(0); } }
     `;
@@ -10503,7 +10656,22 @@ window.bzShowGuestDock = function() {
     const d = document.getElementById('bzGuestDock'); if (!d) return;
     d.classList.remove('show'); void d.offsetWidth;   // restart the slide-in animation
     d.classList.add('show');
+    const _fab = document.getElementById('bzGateFab');
+    if (_fab) _fab.style.display = 'none';
     if (window.lucide) lucide.createIcons();
+    // Auto-hide after 20 seconds, then show the round button on the left
+    if (window._bzDockTimer) clearTimeout(window._bzDockTimer);
+    window._bzDockTimer = setTimeout(function() {
+        d.classList.remove('show');
+        const fab = document.getElementById('bzGateFab');
+        if (fab) fab.style.display = 'flex';
+    }, 20000);
+};
+window.bzDismissGuestDock = function() {
+    const d = document.getElementById('bzGuestDock'); if (d) d.classList.remove('show');
+    if (window._bzDockTimer) clearTimeout(window._bzDockTimer);
+    const _fab = document.getElementById('bzGateFab');
+    if (_fab) _fab.style.display = 'flex';
 };
 window.bzHideGuestDock = function() {
     const d = document.getElementById('bzGuestDock'); if (d) d.classList.remove('show');
@@ -10579,7 +10747,7 @@ window.showAccountChoice = function() {
             <div style="font-size:13px;color:#64748b;">Choose the account you want</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:12px;">
-            <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 4px 16px rgba(0,0,0,0.05);">
+            <div style="background:#fff;border:none;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(15,23,42,0.10);">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
                     <div style="width:38px;height:38px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;"><i data-lucide="crown" style="width:19px;height:19px;color:#1d4ed8;stroke-width:1.5;"></i></div>
                     <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Free Account</div>
@@ -10596,9 +10764,9 @@ window.showAccountChoice = function() {
                     ${bzTick('Pay for ads any time')}
                     <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="x" style="width:15px;height:15px;color:#94a3b8;stroke-width:2;flex-shrink:0;margin-top:2px;"></i><span>Cannot run free ads (paid accounts can)</span></div>
                 </div>
-                <button onclick="bzShowFreeSignup()" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Free Account</button>
+                <button onclick="bzChooseAccount('free');" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Free Account</button>
             </div>
-            <div style="background:#fff;border:1.5px solid #fecaca;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 4px 16px rgba(0,0,0,0.05);">
+                        <div style="background:#fff;border:none;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(220,38,38,0.14);">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
                     <div style="width:38px;height:38px;border-radius:10px;background:#fef2f2;display:flex;align-items:center;justify-content:center;"><i data-lucide="crown" style="width:19px;height:19px;color:#dc2626;stroke-width:1.5;"></i></div>
                     <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Paid (Rich) Account</div>
@@ -10614,7 +10782,7 @@ window.showAccountChoice = function() {
                     ${bzTick('Rich verified badge on your profile')}
                     ${bzTick('Full marketing and uniting platform access')}
                 </div>
-                <button onclick="document.getElementById('bzChoiceScreen').remove();showSignup();" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#dc2626;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Paid Account</button>
+                <button onclick="bzChooseAccount('paid');" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#dc2626;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Paid Account</button>
             </div>
         </div>
         <button onclick="document.getElementById('bzChoiceScreen').remove();document.getElementById('authScreen').style.display='flex';" style="width:100%;margin-top:14px;padding:12px;border:none;background:none;color:#64748b;font-weight:800;cursor:pointer;">Close</button>
