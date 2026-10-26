@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=overlays-content, viewport-fit=cover" />
     <title>BeelzeChat — Freedom of Informal, Open to All Rich and Business people</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="https://i.postimg.cc/mD0dbHM0/1000287857.png" type="image/png">
@@ -214,8 +214,8 @@
   document.addEventListener('focusout', function(e){
     if(isTypingTarget(e.target)) {
       if (window._bzResumeImgObs) window._bzResumeImgObs();
-      // Re-render any icons that were skipped while the keyboard was open
-      try { lucide.createIcons(); } catch(e2){}
+      // Re-render skipped icons AFTER the keyboard settles — never synchronously on blur
+      setTimeout(function(){ try { lucide.createIcons(); } catch(e2){} }, 400);
     }
   }, true);
 })();
@@ -524,6 +524,75 @@ label[for="postImagesInput"].upload-btn {
     border-radius: 24px;
 }
 
+/* ===== GROUP MODALS: 1px borders, compact buttons, thin icons ===== */
+#createGroupModal .modal-content,
+#groupOptionsModal .modal-content,
+#addMembersModal .modal-content {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 18px !important;
+    box-shadow: 0 18px 50px rgba(15,23,42,0.18) !important;
+    padding: 16px 14px 18px !important;
+}
+#createGroupModal .modal-header,
+#groupOptionsModal .modal-header,
+#addMembersModal .modal-header {
+    display: flex; align-items: center; gap: 8px; padding: 0 0 10px !important;
+    margin-bottom: 14px; border-bottom: 1px solid #f1f5f9;
+}
+#createGroupModal .modal-title,
+#groupOptionsModal .modal-title,
+#addMembersModal .modal-title {
+    font-size: 16px !important; font-weight: 900 !important; color: #0f172a !important; margin: 0 !important;
+}
+#createGroupModal .close-btn,
+#groupOptionsModal .close-btn,
+#addMembersModal .close-btn {
+    width: 30px !important; height: 30px !important; min-width: 30px; padding: 0 !important;
+    border: 1px solid #e5e7eb !important; border-radius: 50% !important;
+    background: #fff !important; color: #475569 !important; margin-left: auto;
+    display: flex; align-items: center; justify-content: center;
+}
+#createGroupModal .close-btn i,
+#groupOptionsModal .close-btn i,
+#addMembersModal .close-btn i { width: 15px !important; height: 15px !important; stroke-width: 1.5 !important; }
+#createGroupModal .form-group { margin-bottom: 12px !important; }
+#createGroupModal .form-label {
+    font-size: 12px !important; font-weight: 800 !important; color: #475569 !important;
+    gap: 6px !important; margin-bottom: 6px !important;
+}
+#createGroupModal .form-label i { width: 14px !important; height: 14px !important; stroke-width: 1.5 !important; color: #64748b !important; }
+#createGroupModal .form-input,
+#createGroupModal .post-textarea {
+    border: 1px solid #e5e7eb !important; border-radius: 12px !important;
+    padding: 11px 12px !important; font-size: 13px !important; font-weight: 600 !important;
+    background: #fff !important; min-height: 0 !important;
+}
+#createGroupModal .form-input:focus,
+#createGroupModal .post-textarea:focus { border-color: #0f172a !important; outline: none !important; }
+#createGroupModal .btn.btn-primary {
+    width: 100% !important; margin-top: 4px !important; padding: 11px 14px !important;
+    font-size: 13px !important; font-weight: 800 !important; border-radius: 12px !important;
+    display: flex !important; align-items: center; justify-content: center; gap: 7px;
+    background: #0f172a !important; color: #fff !important; border: 1px solid #0f172a !important;
+    box-shadow: 0 4px 14px rgba(15,23,42,0.18) !important;
+}
+#createGroupModal .btn.btn-primary i { width: 15px !important; height: 15px !important; stroke-width: 1.5 !important; }
+#groupOptionsModal .profile-avatar-large { width: 68px !important; height: 68px !important; }
+#groupOptionsModal .profile-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+#groupOptionsModal .action-btn,
+#addMembersModal .btn {
+    display: flex !important; align-items: center; justify-content: flex-start; gap: 8px;
+    padding: 10px 12px !important; font-size: 13px !important; font-weight: 700 !important;
+    border: 1px solid #e5e7eb !important; border-radius: 12px !important;
+    background: #fff !important; color: #0f172a !important; box-shadow: none !important;
+}
+#groupOptionsModal .action-btn i,
+#addMembersModal .btn i { width: 15px !important; height: 15px !important; stroke-width: 1.5 !important; }
+#groupOptionsModal .action-btn.block-btn { color: #dc2626 !important; border-color: #fecaca !important; }
+#addMembersModal .search-wrapper { margin: 0 0 10px !important; }
+#addMembersModal .search-input { border: 1px solid #e5e7eb !important; border-radius: 12px !important; padding: 10px 12px !important; font-size: 13px !important; background: #fff !important; }
+
+
 /* Make post cards full-width with smooth top corners */
 .post-card {
     margin: 8px 4px !important;
@@ -768,11 +837,52 @@ label[for="postImagesInput"].upload-btn {
             position: relative;
         }
         
-        .profile-btn img { 
+              .profile-btn img { 
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
         }
+        
+                /* 1px live ring — five-colour conic gradient that spins AND drifts its hue,
+           so the colours really change on their own within a couple of minutes.
+           Shared by the top-right profile button and the big profile circles. */
+        .profile-btn::before,
+        #profileModal #profileAvatarLarge::before,
+        #userProfileAvatar::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            padding: 1px;
+            background: conic-gradient(from 0deg,
+                #2563eb 0deg, #7c3aed 72deg, #dc2626 144deg,
+                #f59e0b 216deg, #059669 288deg, #2563eb 360deg);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            animation: bzRingSpin 45s linear infinite, bzRingHue 180s linear infinite;
+            will-change: transform, filter;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes bzRingSpin { to { transform: rotate(360deg); } }
+        @keyframes bzRingHue {
+            0%   { filter: hue-rotate(0deg); }
+            50%  { filter: hue-rotate(180deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        /* Big profile circles need a clean edge so the ring shows — no clipping, no grey border */
+        #profileModal #profileAvatarLarge,
+        #userProfileAvatar {
+            position: relative !important;
+            overflow: visible !important;
+            border: none !important;
+        }
+
+
+
         
         .profile-camera-icon {
             position: absolute;
@@ -2801,12 +2911,234 @@ label[for="postImagesInput"].upload-btn {
 }
 
 
-#createGroupBtn {
-    background: linear-gradient(135deg, #38bdf8, #3b82f6, #0ea5e9, #2563eb);
-    background-size: 300% 300%;
-    animation: gradientShift 3600s ease infinite;
-    border: none;
-    color: white;
+/* ===== COMPACT GROUP BUTTON, MATCHING SEARCH, CLEAN GROUP FIELDS ===== */
+#groupsTab .group-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px;
+    padding: 12px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+#groupsTab .group-search {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+}
+
+#groupsTab .group-search .search-icon {
+    left: 13px;
+    width: 16px !important;
+    height: 16px !important;
+    color: #64748b !important;
+    stroke-width: 1 !important;
+    pointer-events: none;
+}
+
+#groupsTab #groupSearch {
+    display: block;
+    width: 100%;
+    height: 40px;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 0 12px 0 38px;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 50px;
+    background: #f8fafc !important;
+    background-image: none !important;
+    color: #0f172a;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 400;
+    box-shadow: none;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+#groupsTab #groupSearch::placeholder {
+    color: #94a3b8;
+    opacity: 1;
+}
+
+#groupsTab #groupSearch:focus {
+    outline: none;
+    border-color: #64748b !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.10);
+}
+
+#groupsTab #createGroupBtn {
+    display: inline-flex !important;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: auto !important;
+    height: 40px;
+    min-height: 40px;
+    margin: 0;
+    padding: 0 12px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 50px !important;
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #0f172a !important;
+    font-family: inherit;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: none !important;
+    animation: none !important;
+    transform: none !important;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+#groupsTab #createGroupBtn:hover {
+    border-color: #cbd5e1 !important;
+    background: #f8fafc !important;
+}
+
+#groupsTab #createGroupBtn:focus-visible {
+    outline: 2px solid #64748b;
+    outline-offset: 2px;
+}
+
+#groupsTab #createGroupBtn i,
+#groupsTab #createGroupBtn svg {
+    flex-shrink: 0;
+    width: 16px !important;
+    height: 16px !important;
+    stroke-width: 1 !important;
+}
+
+#createGroupModal .modal-content {
+    width: calc(100% - 32px) !important;
+    max-width: 420px !important;
+    box-sizing: border-box;
+    padding: 18px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 24px !important;
+    background: #ffffff !important;
+}
+
+#createGroupModal .modal-header {
+    align-items: center;
+    padding-bottom: 12px !important;
+    margin-bottom: 16px;
+}
+
+#createGroupModal .modal-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+#createGroupModal .close-btn i,
+#createGroupModal .close-btn svg {
+    width: 16px !important;
+    height: 16px !important;
+    stroke-width: 1 !important;
+}
+
+#createGroupModal .form-group {
+    margin-bottom: 14px !important;
+}
+
+#createGroupModal .form-label {
+    display: flex;
+    align-items: center;
+    gap: 6px !important;
+    margin-bottom: 7px !important;
+    color: #475569 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+#createGroupModal .form-label i,
+#createGroupModal .form-label svg {
+    width: 15px !important;
+    height: 15px !important;
+    stroke-width: 1 !important;
+}
+
+#createGroupModal .form-input,
+#createGroupModal .post-textarea {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 44px !important;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 10px 12px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 14px !important;
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    line-height: 1.5;
+    box-shadow: none !important;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+#createGroupModal #groupName {
+    height: 44px;
+}
+
+#createGroupModal #groupDescription {
+    height: 104px;
+    min-height: 104px !important;
+    resize: vertical;
+}
+
+#createGroupModal .form-input::placeholder,
+#createGroupModal .post-textarea::placeholder {
+    color: #94a3b8;
+    font-family: inherit;
+    font-weight: 400;
+    opacity: 1;
+}
+
+#createGroupModal .form-input:focus,
+#createGroupModal .post-textarea:focus {
+    outline: none !important;
+    border-color: #64748b !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.10) !important;
+}
+
+#createGroupModal #createGroupForm > .btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: fit-content !important;
+    min-height: 40px;
+    margin: 4px 0 0 auto !important;
+    padding: 0 16px !important;
+    border: 1px solid #0f172a !important;
+    border-radius: 50px !important;
+    background: #0f172a !important;
+    color: #ffffff !important;
+    font-family: inherit;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1;
+    box-shadow: none !important;
+    transform: none !important;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+#createGroupModal #createGroupForm > .btn i,
+#createGroupModal #createGroupForm > .btn svg {
+    width: 16px !important;
+    height: 16px !important;
+    stroke-width: 1 !important;
 }
         
         
@@ -3994,17 +4326,23 @@ form input[type="text"] {
         </div>
         
         <div id="groupsTab" class="hidden">
-    <div class="search-container">
-        <div class="search-wrapper" style="margin-bottom:12px;">
-            <i data-lucide="search" class="search-icon" style="color:#ef4444;"></i>
-            <input type="text" class="search-input" id="groupSearch" placeholder="Search groups & chats..." style="border:2px solid transparent;background-image:linear-gradient(white,white),linear-gradient(135deg,#6366f1,#4338ca);background-origin:border-box;background-clip:padding-box,border-box;">
+    <div class="search-container group-toolbar">
+        <div class="search-wrapper group-search">
+            <i data-lucide="search" class="search-icon" aria-hidden="true"></i>
+            <input
+                type="text"
+                class="search-input"
+                id="groupSearch"
+                placeholder="Search groups &amp; chats..."
+                aria-label="Search groups and chats"
+            >
         </div>
-        <button class="btn btn-primary" id="createGroupBtn">
-        
-                    <i data-lucide="users-round"></i>
-                    Create Group
-                </button>
-            </div>
+
+        <button type="button" class="btn btn-primary" id="createGroupBtn">
+            <i data-lucide="users-round" aria-hidden="true"></i>
+            <span>Create Group</span>
+        </button>
+    </div>
             <div id="groupsList">
                 <!-- Gray boxes shimmer until groups load -->
                 <div id="groupsSkeleton">
@@ -4658,28 +4996,50 @@ form input[type="text"] {
     <div class="modal-content">
         <div class="modal-header">
             <h2 class="modal-title">Create Group</h2>
-            <button class="close-btn" id="closeCreateGroupBtn">
-                <i data-lucide="x"></i>
+
+            <button
+                type="button"
+                class="close-btn"
+                id="closeCreateGroupBtn"
+                aria-label="Close create group"
+            >
+                <i data-lucide="x" aria-hidden="true"></i>
             </button>
         </div>
+
         <form class="create-post-form" id="createGroupForm">
             <div class="form-group">
-                <label class="form-label">
-                    <i data-lucide="users-round"></i>
+                <label class="form-label" for="groupName">
+                    <i data-lucide="users-round" aria-hidden="true"></i>
                     Group Name
                 </label>
-                <input type="text" class="form-input" id="groupName" placeholder="My Awesome Group" required>
+
+                <input
+                    type="text"
+                    class="form-input"
+                    id="groupName"
+                    placeholder="My Awesome Group"
+                    required
+                >
             </div>
+
             <div class="form-group">
-                <label class="form-label">
-                    <i data-lucide="file-text"></i>
+                <label class="form-label" for="groupDescription">
+                    <i data-lucide="file-text" aria-hidden="true"></i>
                     Description
                 </label>
-                <textarea class="post-textarea" id="groupDescription" placeholder="What's this group about?" style="min-height:80px;"></textarea>
+
+                <textarea
+                    class="post-textarea"
+                    id="groupDescription"
+                    placeholder="What's this group about?"
+                    rows="4"
+                ></textarea>
             </div>
+
             <button type="submit" class="btn btn-primary">
-                <i data-lucide="check-circle"></i>
-                Create Group
+                <i data-lucide="check-circle" aria-hidden="true"></i>
+                <span>Create Group</span>
             </button>
         </form>
     </div>
@@ -5537,14 +5897,7 @@ try {
 
 
 
-// To this:
-const _savedUser = localStorage.getItem('sxchatUser');
-document.addEventListener('DOMContentLoaded', () => {
-    if (_savedUser) {
-        const el = document.getElementById('authScreen');
-        if (el) el.style.display = 'none';
-    }
-});
+
 
 
 // ===== Cloudflare R2 Storage =====
@@ -5747,9 +6100,10 @@ function loginWelcomeToast(name) {
     setTimeout(() => { t.style.transition = 'all .35s'; t.style.opacity = '0'; t.style.transform = 'translateY(-8px)'; setTimeout(() => t.remove(), 350); }, 4000);
 }
 
-function showLoadingScreen() {
+function showLoadingScreen(force) {
     const ls = document.getElementById('loadingScreen');
     if (!ls) return;
+    if (window._bzAppReady && !force) return;   // app already on screen — never flash the loader again
     ls.style.display = 'flex';
     ls.classList.remove('hide');
     const rb = document.getElementById('realLoadingBar');
@@ -5804,6 +6158,7 @@ window.finishLoading = function() {
     };
     requestAnimationFrame(_hideLoader);
     setTimeout(_hideLoader, 1500);
+    window._bzAppReady = true;   // from here the boot loader can never come back
 };
 window._loadingDone = window.finishLoading;
 
@@ -6510,11 +6865,23 @@ if (auth) {
     if (window.bzHideGuestDock) bzHideGuestDock();
     const pb = document.getElementById('profileBtn');
     if (pb) {
+            // SIGNED-IN LOOK: black circle + first letter. Never the grey "guest" person icon.
+            const nm = (currentUser && (currentUser.name || currentUser.identifier)) || '';
       pb.style.animation = 'none';
-      pb.style.background = '#f1f5f9';
-      pb.style.color = '#0f172a';
-      pb.innerHTML = '<i data-lucide="user" style="width:18px;height:18px;stroke-width:1.5;"></i>';
-      if (window.lucide) lucide.createIcons();
+      pb.style.background = '#000';
+      pb.style.color = '#fff';
+      pb.style.display = 'flex';
+      pb.style.alignItems = 'center';
+      pb.style.justifyContent = 'center';
+      pb.style.fontWeight = '700';
+      pb.style.fontSize = '18px';
+      const initial = ((nm + '').trim().charAt(0) || 'U').toUpperCase();
+      if (currentUser && currentUser.profilePic) {
+        pb.innerHTML = '<img src="' + currentUser.profilePic + '" style="width:100%;height:100%;object-fit:cover;">';
+      } else {
+        pb.innerHTML = '';
+        pb.textContent = initial;
+      }
     }
     const mkt = document.getElementById('mktProfileBtn');
     if (mkt) { mkt.style.background = '#000'; mkt.style.color = '#fff'; mkt.innerHTML = ''; }
@@ -6528,7 +6895,8 @@ if (auth) {
         if (typeof bzEnterVisitorMode === 'function') { bzEnterVisitorMode(); return; }
         return;
     }
-    if (firebaseUser) { bzStripGuestProfile(); }   // kill the guest icon IMMEDIATELY, before the slow load
+        if (firebaseUser && window._bzBootedAs === firebaseUser.uid) return;   // already booted this account — never rebuild the app twice
+        if (firebaseUser) { window._bzBootedAs = firebaseUser.uid; bzStripGuestProfile(firebaseUser.email); }   // signed-in look IMMEDIATELY, never the guest icon
     if (window._bzSignupPending) return;   // signup handler is in charge — don't race it
     if (firebaseUser) {
     document.getElementById('authScreen').style.display = 'none';
@@ -6614,25 +6982,29 @@ if (auth) {
         await db.collection('users').doc(firebaseUserId).update({ online: true });
 
         // Save to account switcher
-        let accs = JSON.parse(localStorage.getItem('sxchatAccounts') || '[]');
+                let accs = (JSON.parse(localStorage.getItem('sxchatAccounts') || '[]') || []).filter(a => a && a.id);
         if (!accs.find(a => a.id === firebaseUserId)) {
-            accs.push({ id: firebaseUserId, name: currentUser.name, identifier: currentUser.identifier, profilePic: currentUser.profilePic });
+            accs.push({ id: firebaseUserId, name: currentUser.name || currentUser.identifier || '', identifier: currentUser.identifier || '', profilePic: currentUser.profilePic || null });
             localStorage.setItem('sxchatAccounts', JSON.stringify(accs));
         }
         localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
+        updateProfileButton();   // real photo / initial NOW — don't wait for the lists
 
 
         // Load EVERYTHING before showing app
+        // Set up the shell, then SHOW the app immediately — don't wait for the lists
         await initializeApp();
+        document.getElementById('app').classList.add('active');
+        updateProfileButton();
+        if (typeof bzStripGuestProfile === 'function') bzStripGuestProfile();
+
+        // Load the lists in the background
         await Promise.all([
             loadAllUsers(),
             loadAllPosts(),
             loadChats(),
             loadGroups()
         ]);
-
-        document.getElementById('app').classList.add('active');
-        updateProfileButton();
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.querySelector('.nav-item[data-tab="stories"]')?.classList.add('active');
         ['messagesTab','usersTab','groupsTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
@@ -6852,7 +7224,14 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
 
     try {
         await auth.signInWithEmailAndPassword(identifier, password);
-        // onAuthStateChanged handles the rest
+        // Mark as signed-in IMMEDIATELY so the app never falls back to the guest
+        // "Sign in / Create account" popup while the profile finishes loading.
+        try {
+            if (typeof bzStripGuestProfile === 'function') bzStripGuestProfile();
+            localStorage.setItem('sxchatUser', JSON.stringify({ id: identifier.replace(/[.#$\[\]@+]/g, '_'), identifier, name: identifier.split('@')[0] }));
+            const _as = document.getElementById('authScreen'); if (_as) _as.style.display = 'none';
+        } catch(e) {}
+        // onAuthStateChanged handles the full load
     } catch (err) {
         showToast('error', 'Error', err.message || 'Wrong email or password');
         restoreAuthScreen();
@@ -8185,9 +8564,12 @@ function formatPostText(text) {
     if (!text) return '';
     let t = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     t = t.replace(/#([a-zA-Z0-9_]+)/g,'<span style="color:#3b82f6;font-weight:700;">#$1</span>');
-    t = t.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:#3b82f6;">$1</a>');
     t = t.replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,'<span style="color:#3b82f6;">$1</span>');
-    t = t.replace(/(?<![/"@='>])\b([a-zA-Z0-9][a-zA-Z0-9.-]*\.(co\.za|com|net|org|io|co|app|dev|xyz|beelzeapps\.co\.za))\b(?![^<]*>)/g,'<a href="https://$1" target="_blank" style="color:#3b82f6;">$1</a>');
+    // 1) Bare domains (linkedin.com/in/you) — full profile path kept. The lookbehind skips any URL that already has http(s)://
+        t = t.replace(/(?<![/"@='>.=])\b((?:[a-zA-Z0-9-]+\.)+(?:co\.za|com|net|org|io|co|app|dev|xyz|me|link|ly|bio|site|shop|store|online|za|info|biz|ai|tv|cc|page|gl|to|id)(?:\/[^\s<]*[^\s<.,;:!?)\]])?)(?![^<]*>)/g,
+        '<a href="https://$1" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:#3b82f6;text-decoration:underline;">$1</a>');
+    // 2) Full http(s) links — runs last, and skips the ones step 1 just created
+    t = t.replace(/(?<!href=")(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:#3b82f6;text-decoration:underline;">$1</a>');
     t = t.replace(/\n/g,'<br>');
     return t;
 }
@@ -8574,9 +8956,9 @@ function openPostDetail(postCardEl) {
     
     // Re-wire comment send
     clone.querySelectorAll('.comment-input').forEach(inp => {
-        inp.addEventListener('keypress', e => {
-            if (e.key === 'Enter') postComment(inp.dataset.postid, inp.value.trim());
-        });
+        inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); postComment(inp.dataset.postid, inp.value.trim()); }
+});
     });
     clone.querySelectorAll('.comment-send-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -9736,8 +10118,9 @@ function renderMessages(messages, isFull, prepend) {
 function formatMsgText(text) {
     if (!text) return '';
     let t = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    t = t.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:#93c5fd;text-decoration:underline;">$1</a>');
-    t = t.replace(/(?<![/"@='>])\b([a-zA-Z0-9][a-zA-Z0-9.-]*\.(co\.za|com|net|org|io|co|app|beelzeapps\.co\.za))\b(?![^<]*>)/g,'<a href="https://$1" target="_blank" style="color:#93c5fd;text-decoration:underline;">$1</a>');
+   t = t.replace(/(?<![/"@='>.=])\b((?:[a-zA-Z0-9-]+\.)+(?:co\.za|com|net|org|io|co|app|dev|xyz|me|link|ly|bio|site|shop|store|online|za|info|biz|ai|tv|cc|page|gl|to|id)(?:\/[^\s<]*[^\s<.,;:!?)\]])?)(?![^<]*>)/g,
+      '<a href="https://$1" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:#93c5fd;text-decoration:underline;">$1</a>');
+    t = t.replace(/(?<!href=")(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:#93c5fd;text-decoration:underline;">$1</a>');
     t = t.replace(/\n/g,'<br>');
     return t;
 }
@@ -11391,7 +11774,8 @@ document.getElementById('downloadImageBtn').addEventListener('click', async () =
 // ACCOUNT SWITCHER
 // ============================================================
 document.getElementById('accountSwitcherBtn').addEventListener('click', () => {
-    const accs = JSON.parse(localStorage.getItem('sxchatAccounts') || '[]');
+    let accs = [];
+    try { accs = (JSON.parse(localStorage.getItem('sxchatAccounts') || '[]') || []).filter(a => a && (a.name || a.identifier)); } catch(e) { accs = []; }
     const list = document.getElementById('accountList');
     list.innerHTML = '';
     if (!currentUser) {
@@ -11477,8 +11861,8 @@ document.getElementById('accountSwitcherBtn').addEventListener('click', () => {
     const ud = await db.collection('users').doc(acc.id).get();
     currentUser = { id: acc.id, ...ud.data() };
     localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
-    let accs2 = JSON.parse(localStorage.getItem('sxchatAccounts')||'[]');
-    const ai2 = accs2.findIndex(a=>a.id===currentUser.id);
+    let accs2 = (JSON.parse(localStorage.getItem('sxchatAccounts')||'[]') || []).filter(a => a && a.id);
+    const ai2 = accs2.findIndex(a => a.id === currentUser.id);
     if (ai2>=0) { accs2[ai2].profilePic=currentUser.profilePic; localStorage.setItem('sxchatAccounts',JSON.stringify(accs2)); }
 
     // 5. Update profile button + notifications for the NEW account
