@@ -97,6 +97,218 @@
 }
 </style>
 
+<style>
+  #safeDataBtn { background:#fff; color:#000; border:1px solid #000; }
+  #safeDataBtn.live { background:#000 !important; color:#fff !important; }
+  #safeDataBtn.live .bz-icon-off { display:none !important; }
+  #safeDataBtn:not(.live) .bz-icon-on { display:none !important; }
+  #safeDataNotice { display:none; }
+  #safeDataNotice.live { display:flex; }
+</style>
+<script>
+/* ===== BZ DATA SAVER + SAFE DATA MODE =====
+   Feeds, lists and chat only download a small compressed copy.
+   Safe Data mode: post pictures don't download at all until the eye is pressed. */
+(function () {
+  var PROXY = 'https://wsrv.nl/?url=';
+  var KEY = 'bz_safe_data';
+  var AVATAR_BOXES = ['avatar','avatar-wrapper','message-avatar','chat-avatar','post-author-avatar',
+                      'comment-avatar','bz-card-avatar','profile-avatar-large','account-avatar','profile-btn'];
+  var AVATAR_IDS = ['chatAvatar','profileAvatarLarge','profileAvatarSmall'];
+  var THUMB_BOXES = ['richPayBox','post-images-preview'];
+  var EYE = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>');
+
+  try { window.bzSafeOn = localStorage.getItem(KEY) === '1'; } catch (e) { window.bzSafeOn = false; }
+
+  function inBoxes(img, names) {
+    var p = img.parentElement, hops = 0;
+    while (p && hops < 4) {
+      if (p.classList) for (var i = 0; i < names.length; i++) if (p.classList.contains(names[i])) return true;
+      p = p.parentElement; hops++;
+    }
+    return false;
+  }
+  function isAvatar(img) {
+    if (AVATAR_IDS.indexOf(img.id) !== -1) return true;
+    return inBoxes(img, AVATAR_BOXES);
+  }
+  function slim(url, mode) {
+    if (!url || typeof url !== 'string') return url;
+    if (url.indexOf('data:') === 0 || url.indexOf('wsrv.nl') !== -1 || url.indexOf('ui-avatars.com') !== -1) return url;
+    if (!/^https?:\/\//i.test(url)) return url;
+    var q = '&output=webp&we&q=';
+    if (mode === 'avatar') return PROXY + encodeURIComponent(url) + '&w=160&h=160&fit=cover' + q + '55';
+    if (mode === 'large')  return PROXY + encodeURIComponent(url) + '&w=320&h=320&fit=cover' + q + '60';
+    if (mode === 'thumb')  return PROXY + encodeURIComponent(url) + '&w=400' + q + '60';
+    return PROXY + encodeURIComponent(url) + '&w=1080' + q + '72';
+  }
+
+  /* ---- safe data: grey box with an eye, nothing downloaded ---- */
+    var PIXEL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+  var PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="120" viewBox="0 0 300 120"><g fill="none" stroke="#111111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M118 40s14-18 32-18 32 18 32 18-14 18-32 18-32-18-32-18z"/><circle cx="150" cy="40" r="6.5"/></g><text x="150" y="82" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="14" font-weight="800" fill="#111111" letter-spacing="0.6">SAFE DATA MODE</text><text x="150" y="102" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" font-weight="600" fill="#64748b">Tap the eye to load this picture</text></svg>');
+
+  // used by the post builders so the picture address is never put on the page
+  window.bzPic = function (u) { return window.bzSafeOn ? PIXEL : u; };
+
+  function block(img, real) {
+    if (!img || !real || img.dataset.bzBlocked === '1') return;
+    if (real.indexOf('data:') === 0) return;
+    img.dataset.bzSafeSrc = real;
+    img.dataset.bzBlocked = '1';
+    img.alt = '';
+    img.setAttribute('src', PIXEL);          // 1 byte, nothing downloaded, no broken icon
+    img.style.backgroundImage = 'url("' + PLACEHOLDER + '")';
+    img.style.backgroundRepeat = 'no-repeat';
+    img.style.backgroundPosition = 'center';
+    img.style.backgroundSize = 'contain';
+    img.style.backgroundColor = '#eef2f7';
+    if (!img.style.minHeight) img.style.minHeight = '220px';
+  }
+  function unblock(img) {
+    if (!img || img.dataset.bzBlocked !== '1') return;
+    var real = img.dataset.bzSafeSrc || img.dataset.img || '';
+    delete img.dataset.bzBlocked;
+    delete img.dataset.bzSafeSrc;
+    img.style.backgroundImage = '';
+    img.style.backgroundRepeat = '';
+    img.style.backgroundPosition = '';
+    img.style.backgroundSize = '';
+    img.style.backgroundColor = '';
+    img.style.minHeight = '';
+    if (real) img.setAttribute('src', slim(real, 'photo'));
+  }
+
+  function apply(img) {
+    if (!img || img.tagName !== 'IMG' || img.dataset.bzSlim === '1') return;
+    if (img.id === 'viewerImage' || img.classList.contains('viewer-image') || (img.closest && img.closest('#imageViewer'))) return;
+    var srcAttr = img.getAttribute('src') || '';
+    var real = (img.dataset.img || '').trim() || (srcAttr.indexOf('data:image/gif') === 0 ? '' : srcAttr);
+    if (!real) return;
+    img.dataset.bzSlim = '1';
+    if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
+    if (!img.hasAttribute('decoding')) img.setAttribute('decoding', 'async');
+    var mode = isAvatar(img) ? ((inBoxes(img, ['profile-avatar-large']) || img.id === 'profileAvatarLarge') ? 'large' : 'avatar')
+             : inBoxes(img, THUMB_BOXES) ? 'thumb' : 'photo';
+    img.dataset.bzMode = mode;
+    if (mode === 'photo' && window.bzSafeOn) { block(img, real); return; }
+    var small = slim(real, mode);
+    if (small === real) return;
+    img.dataset.bzFull = real;
+    img.setAttribute('src', small);
+  }
+
+  function scan(root) {
+    if (!root || root.nodeType !== 1) return;
+    if (root.tagName === 'IMG') { apply(root); return; }
+    if (root.querySelectorAll) root.querySelectorAll('img').forEach(apply);
+  }
+
+  function refreshBtn() {
+    var b = document.getElementById('safeDataBtn');
+    var n = document.getElementById('safeDataNotice');
+    if (b) b.classList.toggle('live', !!window.bzSafeOn);
+    if (n) n.classList.toggle('live', !!window.bzSafeOn);
+  }
+
+  window.bzToggleSafe = function () {
+    window.bzSafeOn = !window.bzSafeOn;
+    try { localStorage.setItem(KEY, window.bzSafeOn ? '1' : '0'); } catch (e) {}
+    document.querySelectorAll('img[data-bz-mode="photo"]').forEach(function (img) {
+      if (window.bzSafeOn) block(img, img.dataset.bzSafeSrc || img.dataset.bzFull || img.dataset.img || img.getAttribute('src') || '');
+      else unblock(img);
+    });
+    refreshBtn();
+    if (window.lucide) lucide.createIcons();
+  };
+
+  // press the eye on a grey box → load that one picture
+  document.addEventListener('click', function (e) {
+    var img = e.target && e.target.closest ? e.target.closest('img[data-bz-blocked="1"]') : null;
+    if (!img) return;
+    e.preventDefault();
+    e.stopPropagation();
+    unblock(img);
+  }, true);
+
+  new MutationObserver(function (muts) {
+    for (var i = 0; i < muts.length; i++) {
+      var added = muts[i].addedNodes;
+      for (var j = 0; j < added.length; j++) scan(added[j]);
+    }
+  }).observe(document.documentElement, { childList: true, subtree: true });
+
+  function boot() { scan(document.body); refreshBtn(); if (window.lucide) lucide.createIcons(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  window.bzSlim = slim;
+})();
+</script>
+
+<script>
+/* ===== GLOBAL BROKEN IMAGE HANDLER ===== */
+/* Feeds, lists and chat only ever download a small compressed copy.
+   The full-quality original loads only when a picture is opened in the viewer. */
+(function () {
+  var PROXY = 'https://wsrv.nl/?url=';
+  var AVATAR_BOXES = ['avatar','avatar-wrapper','message-avatar','chat-avatar','post-author-avatar',
+                      'comment-avatar','bz-card-avatar','profile-avatar-large','account-avatar','profile-btn'];
+  var AVATAR_IDS = ['chatAvatar','profileAvatarLarge','profileAvatarSmall'];
+  var THUMB_BOXES = ['richPayBox','post-images-preview'];
+
+  function inBoxes(img, names) {
+    var p = img.parentElement, hops = 0;
+    while (p && hops < 4) {
+      if (p.classList) for (var i = 0; i < names.length; i++) if (p.classList.contains(names[i])) return true;
+      p = p.parentElement; hops++;
+    }
+    return false;
+  }
+  function isAvatar(img) {
+    if (AVATAR_IDS.indexOf(img.id) !== -1) return true;
+    return inBoxes(img, AVATAR_BOXES);
+  }
+  function slim(url, mode) {
+    if (!url || typeof url !== 'string') return url;
+    if (url.indexOf('data:') === 0 || url.indexOf('wsrv.nl') !== -1 || url.indexOf('ui-avatars.com') !== -1) return url;
+    if (!/^https?:\/\//i.test(url)) return url;
+    var q = '&output=webp&we&q=';
+    if (mode === 'avatar') return PROXY + encodeURIComponent(url) + '&w=160&h=160&fit=cover' + q + '55';
+    if (mode === 'large')  return PROXY + encodeURIComponent(url) + '&w=320&h=320&fit=cover' + q + '60';
+    if (mode === 'thumb')  return PROXY + encodeURIComponent(url) + '&w=400' + q + '60';
+    return PROXY + encodeURIComponent(url) + '&w=1080' + q + '72';
+  }
+  function apply(img) {
+    if (!img || img.tagName !== 'IMG' || img.dataset.bzSlim === '1') return;
+    if (img.id === 'viewerImage' || img.classList.contains('viewer-image') || (img.closest && img.closest('#imageViewer'))) return;
+    img.dataset.bzSlim = '1';
+    if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
+    if (!img.hasAttribute('decoding')) img.setAttribute('decoding', 'async');
+    var full = img.getAttribute('src');
+    if (!full) return;
+    var mode = isAvatar(img) ? ((inBoxes(img, ['profile-avatar-large']) || img.id === 'profileAvatarLarge') ? 'large' : 'avatar')
+             : inBoxes(img, THUMB_BOXES) ? 'thumb' : 'photo';
+    var small = slim(full, mode);
+    if (small === full) return;
+    img.dataset.bzFull = full;
+    img.setAttribute('src', small);
+  }
+  function scan(root) {
+    if (!root || root.nodeType !== 1) return;
+    if (root.tagName === 'IMG') { apply(root); return; }
+    if (root.querySelectorAll) root.querySelectorAll('img').forEach(apply);
+  }
+  new MutationObserver(function (muts) {
+    for (var i = 0; i < muts.length; i++) {
+      var added = muts[i].addedNodes;
+      for (var j = 0; j < added.length; j++) scan(added[j]);
+    }
+  }).observe(document.documentElement, { childList: true, subtree: true });
+  document.addEventListener('DOMContentLoaded', function () { scan(document.body); });
+  if (document.body) scan(document.body);
+  window.bzSlim = slim;
+})();
+</script>
+
 <script>
 /* ===== GLOBAL BROKEN IMAGE HANDLER ===== */
 (function () {
@@ -104,9 +316,16 @@
   const FAILED_SVG = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 3l18 18"/></svg>';
   const AVATAR_SVG = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>';
 
-  function coverBroken(img) {
+function coverBroken(img) {
     if (!img || img.dataset.bzCovered === '1') return;
     if (img.tagName !== 'IMG') return;
+    if (img.dataset.bzBlocked === '1') return; // safe-data placeholder, not broken
+    // compressed copy failed — use the original once, never leave a hole
+    if (img.dataset.bzFull && img.dataset.bzTried !== '1') {
+      img.dataset.bzTried = '1';
+      img.setAttribute('src', img.dataset.bzFull);
+      return;
+    }
         if (img.id === 'viewerImage' || img.id === 'imgViewerImg') return;
     // Never turn the header logo into a person icon — it has its own onerror
     if (img.id === 'headerLogoImg') return;
@@ -4137,6 +4356,14 @@ form input[type="text"] {
                 </div>
                 <button id="postsCategoryBtn" onclick="openCategoryPopup()" title="Categories" style="width:38px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e2e8f0;border-radius:10px;background:#fff;color:#0f172a;cursor:pointer;"><i data-lucide="sliders-horizontal" style="width:16px;height:16px;stroke-width:1.5;"></i></button>
                 <button id="postsSearchToggleBtn" onclick="togglePostsSearch()" title="Search" style="width:38px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e2e8f0;border-radius:10px;background:#fff;color:#0f172a;cursor:pointer;"><i data-lucide="search" style="width:16px;height:16px;stroke-width:1.5;"></i></button>
+                <button id="safeDataBtn" onclick="bzToggleSafe()" title="Safe Data — pictures load only when you press them" style="width:38px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #000;border-radius:10px;cursor:pointer;">
+                    <i data-lucide="eye" class="bz-icon-on" style="width:16px;height:16px;stroke-width:1;"></i>
+                    <i data-lucide="eye-off" class="bz-icon-off" style="width:16px;height:16px;stroke-width:1;"></i>
+                </button>
+            </div>
+            <div id="safeDataNotice" style="margin:6px 20px 0;border:1px solid #000;border-radius:10px;background:#fff;color:#111;padding:8px 10px;font-size:11.5px;font-weight:700;line-height:1.35;align-items:center;gap:6px;">
+                <i data-lucide="eye-off" style="width:13px;height:13px;stroke-width:1;flex-shrink:0;"></i>
+                <span>You are on Safe Data mode — pictures won't show until you press them.</span>
             </div>
             <div id="postsSearchBar" style="display:none;margin:8px 20px 4px;">
                 <div class="search-wrapper">
@@ -8885,7 +9112,8 @@ function buildGridView() {
         const tile = document.createElement('div');
         tile.style.cssText = 'position:relative;aspect-ratio:1;overflow:hidden;cursor:pointer;background:#f1f5f9;';
         tile.dataset.category = category;
-        tile.innerHTML = `<img src="${img.src}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+        tile.innerHTML = `<img src="${img.dataset.bzSafeSrc || img.src}" data-img="${img.dataset.bzSafeSrc || img.src}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+
         
         // Get stats
         const likeSpan = card.querySelector('[data-action="like"] span');
@@ -9150,7 +9378,7 @@ async function createPostElement(post) {
         if (count === 1) {
             imgs = `<div class="post-images" style="margin-top:9px;">
                 <div style="position:relative;overflow:hidden;border-radius:8px;background:#f1f5f9;">
-                    <img class="post-image" src="${pics[0]}" data-img="${pics[0]}" style="width:100%;height:auto;max-height:480px;object-fit:contain;display:block;cursor:pointer;">
+                    <img class="post-image" src="${bzPic(pics[0])}" data-img="${pics[0]}" style="width:100%;height:auto;max-height:480px;object-fit:contain;display:block;cursor:pointer;">
                 </div>
             </div>`;
         } else {
@@ -9158,7 +9386,7 @@ async function createPostElement(post) {
                 <div class="pzCarousel" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:0;">
                     ${pics.map((img) => `
                         <div style="scroll-snap-align:start;flex:0 0 100%;width:100%;position:relative;">
-                            <img class="post-image" src="${img}" data-img="${img}" style="width:100%;height:auto;max-height:480px;object-fit:contain;display:block;cursor:pointer;">
+                            <img class="post-image" src="${bzPic(pics[0])}" data-img="${pics[0]}" style="width:100%;height:auto;max-height:480px;object-fit:contain;display:block;cursor:pointer;">
                         </div>
                     `).join('')}
                 </div>
