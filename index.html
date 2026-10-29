@@ -137,8 +137,8 @@
     if (url.indexOf('data:') === 0 || url.indexOf('wsrv.nl') !== -1 || url.indexOf('ui-avatars.com') !== -1) return url;
     if (!/^https?:\/\//i.test(url)) return url;
     var q = '&output=webp&we&q=';
-    if (mode === 'avatar') return PROXY + encodeURIComponent(url) + '&w=160&h=160&fit=cover' + q + '55';
-    if (mode === 'large')  return PROXY + encodeURIComponent(url) + '&w=320&h=320&fit=cover' + q + '60';
+    if (mode === 'avatar') return PROXY + encodeURIComponent(url) + '&w=250&h=250&fit=cover' + q + '60';
+    if (mode === 'large')  return PROXY + encodeURIComponent(url) + '&w=500&h=500&fit=cover' + q + '70';
     if (mode === 'thumb')  return PROXY + encodeURIComponent(url) + '&w=400' + q + '60';
     return PROXY + encodeURIComponent(url) + '&w=1080' + q + '72';
   }
@@ -272,10 +272,10 @@
     if (url.indexOf('data:') === 0 || url.indexOf('wsrv.nl') !== -1 || url.indexOf('ui-avatars.com') !== -1) return url;
     if (!/^https?:\/\//i.test(url)) return url;
     var q = '&output=webp&we&q=';
-    if (mode === 'avatar') return PROXY + encodeURIComponent(url) + '&w=160&h=160&fit=cover' + q + '55';
-    if (mode === 'large')  return PROXY + encodeURIComponent(url) + '&w=320&h=320&fit=cover' + q + '60';
-    if (mode === 'thumb')  return PROXY + encodeURIComponent(url) + '&w=400' + q + '60';
-    return PROXY + encodeURIComponent(url) + '&w=1080' + q + '72';
+    if (mode === 'avatar') return PROXY + encodeURIComponent(url) + '&w=400&h=400&fit=cover' + q + '80';
+    if (mode === 'large')  return PROXY + encodeURIComponent(url) + '&w=800&h=800&fit=cover' + q + '85';
+    if (mode === 'thumb')  return PROXY + encodeURIComponent(url) + '&w=900' + q + '82';
+    return PROXY + encodeURIComponent(url) + '&w=1600' + q + '85';
   }
   function apply(img) {
     if (!img || img.tagName !== 'IMG' || img.dataset.bzSlim === '1') return;
@@ -843,7 +843,10 @@ label[for="postImagesInput"].upload-btn {
 
 
 
-.search-icon { color: #ef4444 !important; }
+.search-icon { color: #94a3b8 !important; }
+#addMembersModal .search-wrapper { display: flex !important; align-items: center; gap: 10px; padding: 0 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; position: static; }
+#addMembersModal .search-icon { position: static !important; left: auto !important; top: auto !important; width: 16px !important; height: 16px !important; flex-shrink: 0; }
+#addMembersModal .search-input { padding-left: 0 !important; border: none !important; background: transparent !important; flex: 1; }
         
         
         .auth-subtitle { 
@@ -2016,7 +2019,7 @@ label[for="postImagesInput"].upload-btn {
         }
         
 .message.own .message-bubble {
-    background: linear-gradient(135deg, #6d28d9, #4f46e5);
+    background: #1e3a5f;
     color: white;
     border-radius: 22px;
 }
@@ -2026,6 +2029,14 @@ label[for="postImagesInput"].upload-btn {
     border-radius: 22px;
 }
         
+        .message-input::placeholder {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #94a3b8;
+            font-size: 15px;
+        }
+        .message-input { line-height: 44px; }
         .message-text { 
             font-size: 15px; 
             line-height: 1.5; 
@@ -2383,7 +2394,7 @@ label[for="postImagesInput"].upload-btn {
                 .message-input { 
             flex: 1; 
             padding: 13px 20px; 
-            border: none; 
+            border: 1px solid #1e3a5f; 
             border-radius: 18px; 
             font-size: 16px; 
             background: #ffffff; 
@@ -3677,6 +3688,10 @@ form input[type="text"] {
         .toast.success { 
             border-color: #10b981; 
         }
+        .toast.send, .toast.send .toast-title, .toast.send .toast-message, .toast.send .toast-icon {
+            background: #0f172a !important;
+            color: #ffffff !important;
+        }
         
         .toast.error { 
             border-color: #ef4444; 
@@ -4092,8 +4107,7 @@ form input[type="text"] {
     <form id="loginForm">
       <div style="position:relative;text-align:center;margin-bottom:14px;">
         <div style="font-weight:800;font-size:18px;color:#111827;">Log in</div>
-        <button type="button" onclick="showAuthMain()" style="position:absolute;top:0;right:0;width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><i data-lucide="x" style="width:17px;height:17px;color:#475569;"></i></button>
-      </div>
+          </div>
     
             <!-- Google (HTML 2's model) -->
       <button type="button" class="btn" id="googleSignInBtn" style="background:#ffffff;color:#111827;border:1px solid #3F51B5;border-radius:10px;padding:13px 16px;font-size:15px;font-weight:600;margin-bottom:10px;position:relative;box-shadow:0 1px 2px rgba(0,0,0,0.04);width:100%;">
@@ -4155,11 +4169,8 @@ form input[type="text"] {
         Don't have an account?
         <a id="showSignupLink" style="color:#3F51B5;font-weight:700;text-decoration:underline;cursor:pointer;margin-left:4px;">Sign up</a>
       </div>
-      <button type="button" onclick="bzEnterVisitorMode()" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;box-sizing:border-box;">
-        <i data-lucide="eye" style="width:17px;height:17px;color:#0f172a;stroke-width:1.5;"></i> Browse as Visitor (no account)
-      </button>
-      <div style="text-align:center;margin-top:14px;padding-top:12px;border-top:1px solid #f1f5f9;display:flex;justify-content:center;gap:18px;">
-        <a onclick="showAccountChoice()" style="color:#1d4ed8;font-weight:800;font-size:13px;text-decoration:underline;cursor:pointer;">Free account</a>
+            <div style="text-align:center;margin-top:14px;padding-top:12px;border-top:1px solid #f1f5f9;display:flex;justify-content:center;gap:18px;">
+        <a onclick="showAccountChoice()" style="color:#0f172a;font-weight:800;font-size:13px;text-decoration:underline;cursor:pointer;">Connection account</a>
         <a onclick="bzChooseAccount('paid')" style="color:#dc2626;font-weight:800;font-size:13px;text-decoration:underline;cursor:pointer;">Paid (Rich) account</a>
       </div>
     </form>
@@ -4167,17 +4178,10 @@ form input[type="text"] {
         <!-- SIGNUP (pop-up style) -->
         <!-- SIGNUP — HTML 2's model (free & paid use the same look) -->
         <form id="signupForm" class="hidden">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-        <div>
-          <div id="bzSignupSub" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#6b7280;font-weight:600;margin-top:4px;">
-            <span style="position:relative;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <i data-lucide="message-circle" id="bzSubLogoBubble" style="position:absolute;width:16px;height:16px;color:#0f172a;stroke-width:2;"></i>
-              <i data-lucide="crown" id="bzSubLogoCrown" style="position:relative;width:9px;height:9px;color:#0f172a;stroke-width:2;z-index:2;"></i>
-            </span>
-            <span id="bzSignupSubText">Create free account</span>
-          </div>
+      <div style="text-align:center;margin-bottom:14px;">
+        <div id="bzSignupSub" style="font-size:13px;color:#6b7280;font-weight:700;justify-content:center;text-align:center;">
+          <span id="bzSignupSubText">Connection account — R175 / month</span>
         </div>
-        <button type="button" onclick="showLogin()" style="width:32px;height:32px;border-radius:50%;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><i data-lucide="x" style="width:17px;height:17px;color:#475569;stroke-width:1.5;"></i></button>
       </div>
       <div class="form-group" style="margin-bottom:12px;">
         <input type="text" class="form-input" id="signupName" placeholder="Full name" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
@@ -4739,7 +4743,7 @@ form input[type="text"] {
           
           <!-- SYSTEM FOR WRITING MESSAGES -->
           
-<textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1" autocomplete="on" autocorrect="on" autocapitalize="sentences" spellcheck="true" inputmode="text"></textarea>
+<textarea class="message-input" id="messageInput" placeholder="Write a message" rows="1" autocomplete="on" autocorrect="on" autocapitalize="sentences" spellcheck="true" inputmode="text" style="white-space:nowrap;overflow:hidden;"></textarea>
             
             <button class="send-btn" id="sendBtn">
                 <i data-lucide="send"></i>
@@ -5678,8 +5682,9 @@ form input[type="text"] {
       <button onclick="selectAllMgmtPosts()" style="display:flex;align-items:center;gap:6px;background:#eff6ff;color:#3b82f6;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="check-square" style="width:15px;height:15px;stroke-width:1.5;"></i> Select All</button>
       <button onclick="bulkDeleteMgmtPosts()" style="display:flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="trash-2" style="width:15px;height:15px;stroke-width:1.5;"></i> Delete Selected</button>
       <button onclick="openPaidSignups()" style="display:flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="crown" style="width:15px;height:15px;stroke-width:1.5;"></i> Paid Signups</button>
-      <button onclick="openNormalSignups()" style="display:flex;align-items:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="user-plus" style="width:15px;height:15px;stroke-width:1.5;"></i> Free Signups</button>
+      <button onclick="openNormalSignups()" style="display:flex;align-items:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="user-plus" style="width:15px;height:15px;stroke-width:1.5;"></i> Signups</button>
       <button onclick="openMktMgmt()" style="display:flex;align-items:center;gap:6px;background:#fff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="store" style="width:15px;height:15px;color:#0f172a;stroke-width:1.5;"></i> Marketplace Products</button>
+      <button onclick="openConnectionAccounts()" style="display:flex;align-items:center;gap:6px;background:#0f172a;color:#fff;border:1px solid #0f172a;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="crown" style="width:15px;height:15px;color:#fff;stroke-width:1;"></i> Connection Accounts</button>
       <button onclick="openStoragePayers()" style="display:flex;align-items:center;gap:6px;background:#f0fdf4;color:#15803d;border:1.5px solid #bbf7d0;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="database" style="width:15px;height:15px;color:#15803d;stroke-width:1.5;"></i> Storage Payers</button>
     </div>
   </div>
@@ -5879,7 +5884,7 @@ form input[type="text"] {
 <div id="normalSignupsOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:white;flex-direction:column;overflow-y:auto;">
   <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #e2e8f0;background:white;position:sticky;top:0;z-index:10;">
     <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#64748b,#475569);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="user-plus" style="width:20px;height:20px;color:white;stroke-width:1.5;"></i></div>
-    <div><div style="font-weight:900;font-size:18px;color:#0f172a;">Free Signups</div><div style="font-size:12px;color:#64748b;">Users who signed up without paying</div></div>
+    <div><div style="font-weight:900;font-size:18px;color:#0f172a;">Signups</div><div style="font-size:12px;color:#64748b;">Users who signed up without paying</div></div>
     <button onclick="document.getElementById('normalSignupsOverlay').style.display='none';" style="margin-left:auto;background:#f1f5f9;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:18px;height:18px;stroke-width:1.5;"></i></button>
   </div>
   <div style="padding:12px 16px;border-bottom:1px solid #e2e8f0;background:#f8fafc;display:flex;gap:10px;align-items:center;">
@@ -5900,6 +5905,29 @@ form input[type="text"] {
     <button onclick="addStorageSubscriber()" style="display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,#22c55e,#16a34a);color:white;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;"><i data-lucide="shield-check" style="width:15px;height:15px;stroke-width:1.5;"></i> Add &amp; Protect</button>
   </div>
   <div id="storagePayersList" style="padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px;"></div>
+</div>
+
+<!-- ===== CONNECTION ACCOUNTS DASHBOARD (ADMIN) ===== -->
+<div id="connAccOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:#fff;flex-direction:column;overflow-y:auto;">
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #e2e8f0;background:#fff;position:sticky;top:0;z-index:10;">
+    <div style="width:36px;height:36px;position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <i data-lucide="message-circle" style="position:absolute;width:36px;height:36px;color:#0f172a;stroke-width:1;"></i>
+      <i data-lucide="crown" style="position:relative;width:18px;height:18px;color:#1e3a8a;stroke-width:1;z-index:2;"></i>
+    </div>
+    <div>
+      <div style="font-weight:900;font-size:18px;color:#0f172a;">Connection Accounts</div>
+      <div style="font-size:12px;color:#1e3a8a;font-weight:700;">R175 / month · paid &amp; unpaid months</div>
+    </div>
+    <button onclick="document.getElementById('connAccOverlay').style.display='none';document.getElementById('postMgmtOverlay').style.display='flex';" style="margin-left:auto;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:18px;height:18px;color:#0f172a;stroke-width:1;"></i></button>
+  </div>
+  <div style="display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid #e2e8f0;background:#f8fafc;align-items:center;flex-wrap:wrap;position:sticky;top:69px;z-index:9;">
+    <input id="connAccSearch" type="text" placeholder="Search names..." oninput="window.filterConnAccounts(this.value)" style="flex:1;min-width:170px;padding:10px 14px;border:1.5px solid #cbd5e1;border-radius:12px;font-size:14px;outline:none;background:#fff;">
+    <button id="connModeAll" onclick="window.setConnMode('all')" title="Show full accounts" style="display:flex;align-items:center;gap:6px;background:#0f172a;color:#fff;border:1px solid #0f172a;border-radius:10px;padding:9px 12px;font-weight:800;font-size:12px;cursor:pointer;"><i data-lucide="eye" style="width:14px;height:14px;stroke-width:1;"></i> Full</button>
+    <button id="connModeNew" onclick="window.setConnMode('new')" title="Show new signups" style="display:flex;align-items:center;gap:6px;background:#fff;color:#0f172a;border:1px solid #0f172a;border-radius:10px;padding:9px 12px;font-weight:800;font-size:12px;cursor:pointer;"><i data-lucide="eye" style="width:14px;height:14px;stroke-width:1;"></i> New</button>
+  </div>
+  <div id="connAccList" style="padding:14px 16px 32px;display:flex;flex-direction:column;gap:12px;"></div>
+
+
 </div>
 
 <!-- ===== PAID SIGNUPS DASHBOARD (ADMIN) ===== -->
@@ -6809,6 +6837,7 @@ function showToast(type, title, msg) {
     const c = document.getElementById('toastContainer');
     const t = document.createElement('div');
     t.className = `toast ${type}`;
+    if (/sent|sending|message/i.test((title || '') + ' ' + (msg || ''))) t.className += ' send';
     const i = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info';
     t.innerHTML =
         '<img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" class="toast-logo">' +
@@ -6862,7 +6891,6 @@ EMOJIS.forEach(em => {
                 }
             });
         lucide.createIcons();
-        showToast('success', 'Reacted!', em);
         closeEmoji();
                                 // 2. Firestore save in the background — UI already updated, this just persists
         (async () => {
@@ -6883,7 +6911,7 @@ EMOJIS.forEach(em => {
                 const ref = db.collection('chats').doc(currentChatId).collection('messages').doc(realId);
                 // Dot-notation update = atomic, no transaction needed. Only touches THIS user's
                 // reaction key, so 99 people reacting at once never overwrite each other.
-                await ref.update({ ['reactions.' + currentUser.id]: em });
+                   await ref.set({ reactions: { [currentUser.id]: em } }, { merge: true });
 
                 // 3. UPDATE the message cache so reactions survive app restart
                 const cachedMsgs = getMsgs(currentChatId);
@@ -7520,13 +7548,14 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
                 blockedUsers: [], profilePic: null, bio: '',
                 userAgent: navigator.userAgent,
                 richVerified: false,
-                accountType: 'free'
+                accountType: 'connection', connectionAccount: true, connectionLocked: false,
+                connectionFee: 175, connectionPayments: {}, connectionSince: Date.now()
             });
         } else {
             await db.collection('users').doc(userId).update({ name, online: false });
         }
 
-        currentUser = { id: userId, name, identifier, profilePic: null, bio: '', blockedUsers: [], resetCode: rc, beelzeId, richVerified: false, accountType: 'free' };
+        currentUser = { id: userId, name, identifier, profilePic: null, bio: '', blockedUsers: [], resetCode: rc, beelzeId, richVerified: false, accountType: 'connection' };
         currentUser.userAgent = navigator.userAgent;
         allUsers[currentUser.id] = { ...(allUsers[currentUser.id] || {}), ...currentUser };
         localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
@@ -7551,6 +7580,7 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
         window._bzSignupPending = false;
         document.getElementById('signupForm').reset();
         showToast('success', 'Account Created!', 'Welcome to BeelzeChat 🤝');
+        setTimeout(function () { if (window._bzAccountType === 'paid' && window.bzShowPayNotice) window.bzShowPayNotice(false); }, 900);
     } catch (err) {
         console.error('Signup error:', err);
         window._bzSignupPending = false;
@@ -7949,12 +7979,10 @@ function showSignup() {
     const red = '#dc2626', black = '#0f172a';
     // Title
     const t = document.getElementById('bzSignupTitle');
-    if (t) t.textContent = paid ? 'Create Paid (Rich) Account' : 'Create Free Account';
+    if (t) t.textContent = paid ? 'Create Paid (Rich) Account' : 'Create Connection Account';
     // Subtitle text + small logo icon before it (black for free, red crown for paid)
     const st = document.getElementById('bzSignupSubText');
-    if (st) st.textContent = paid ? "Paid account creation cost R3000 once off" : 'Create free account , R0 Cost for creation';
-    const slC = document.getElementById('bzSubLogoCrown');
-    if (slC) slC.style.color = paid ? red : black;
+    if (st) st.textContent = paid ? "Paid account creation cost R3000 once off" : 'Connection account — R175 / month, unlocks after payment';
     // Header logo crown — red for paid, black for free (bubble stays dark)
     const hC = document.getElementById('bzAuthLogoCrown');
     if (hC) hC.style.color = paid ? red : black;
@@ -8664,7 +8692,7 @@ if (appContent) {
     appContent.addEventListener('scroll', () => {
         const usersTab = document.getElementById('usersTab');
         if (!usersTab || usersTab.classList.contains('hidden')) return;
-        if (appContent.scrollTop + appContent.clientHeight >= appContent.scrollHeight - 200) {
+        if (appContent.scrollTop + appContent.clientHeight >= appContent.scrollHeight - 900) {
             loadMoreUsers();
         }
     });
@@ -9386,7 +9414,7 @@ async function createPostElement(post) {
                 <div class="pzCarousel" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:0;">
                     ${pics.map((img) => `
                         <div style="scroll-snap-align:start;flex:0 0 100%;width:100%;position:relative;">
-                            <img class="post-image" src="${bzPic(pics[0])}" data-img="${pics[0]}" style="width:100%;height:auto;max-height:480px;object-fit:contain;display:block;cursor:pointer;">
+                            <img class="post-image" src="${bzPic(img)}" data-img="${img}" style="width:100%;height:auto;max-height:480px;object-fit:contain;display:block;cursor:pointer;">
                         </div>
                     `).join('')}
                 </div>
@@ -10254,8 +10282,9 @@ function renderMessages(messages, isFull, prepend) {
     messages.forEach(msg => {
         const _msgKey = (msg.senderId||'') + '_' + (msg.timestamp||0);
                 if (_renderedMsgIds.has(_msgKey)) {
-            // Message already on screen — live-update its reactions row instead of skipping
+                 // Message already on screen — live-update its reactions row instead of skipping
             const reactions = msg.reactions || {};
+            // Force refresh reactions from Firestore so everyone sees them         
             const uEm = {};
             Object.values(reactions).forEach(e => { uEm[e] = (uEm[e]||0)+1; });
             const newRxHtml = Object.keys(uEm).length > 0
@@ -10295,7 +10324,7 @@ function renderMessages(messages, isFull, prepend) {
             `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(msg.senderName || 'U')}&background=000&color=fff&size=128" style="width:100%;height:100%;object-fit:cover;">`;
 
         let content = '';
-        if (msg.replyTo) content += `<div class="reply-preview" style="background:rgba(255,255,255,0.15);border-left:3px solid rgba(255,255,255,0.5);border-radius:6px;padding:4px 8px;margin-bottom:4px;"><i data-lucide="corner-down-right" style="color:rgba(255,255,255,0.8);"></i><span class="reply-preview-text" style="color:rgba(255,255,255,0.9);font-size:12px;">${msg.replyTo}</span></div>`;
+        if (msg.replyTo) content += `<div class="reply-preview" style="background:rgba(15,23,42,0.06);border-left:3px solid #1e3a5f;border-radius:6px;padding:4px 8px;margin-bottom:4px;"><i data-lucide="corner-down-right" style="color:#000000;"></i><span class="reply-preview-text" style="color:#000000;font-size:12px;font-weight:600;">${msg.replyTo}</span></div>`;
         if (msg.images?.length > 0) content += `<div class="message-images" style="margin-bottom:${msg.text?'4px':'0'};">${msg.images.map(i => `<img src="${i}" class="message-image" data-img="${i}">`).join('')}</div>`;
         if (msg.text) content += `<div class="message-text" style="margin-top:0;">${formatMsgText(msg.text)}</div>`;
         if (msg.files?.length > 0) msg.files.forEach(f => { content += `<div class="message-file" data-url="${f.url}" data-name="${f.name}"><i data-lucide="file-text"></i><div class="file-info"><div class="file-name">${f.name}</div><div class="file-size">${fmtSize(f.size)}</div></div></div>`; });
@@ -11195,6 +11224,7 @@ function bzTick(t) { return `<div style="display:flex;align-items:flex-start;gap
 
 // Centered, smooth, curved gate popup with the King logo (no full-screen blur)
 window.bzRequireAccount = function(what) {
+    if (window.bzShowConnectionGate) return window.bzShowConnectionGate();
     const old = document.getElementById('bzGatePopup'); if (old) old.remove();
     const ov = document.createElement('div');
     ov.id = 'bzGatePopup';
@@ -11204,7 +11234,7 @@ window.bzRequireAccount = function(what) {
         ${bzBrandLogo(52)}
         <div style="font-weight:900;font-size:17px;color:#0f172a;margin-top:8px;">Create an account</div>
         <div style="font-size:13px;color:#64748b;margin:6px 0 16px;">To ${what} you need a BeelzeChat account.</div>
-        <button onclick="document.getElementById('bzGatePopup').remove();showAccountChoice();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;margin-bottom:8px;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Free Account</button>
+        <button onclick="document.getElementById('bzGatePopup').remove();showAccountChoice();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;margin-bottom:8px;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create account</button>
                 <button onclick="document.getElementById('bzGatePopup').remove();bzGuestOpenSignIn();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0f172a;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.10);"><i data-lucide="log-in" style="width:16px;height:16px;color:#0f172a;stroke-width:1.5;"></i> Sign in</button>
     </div>`;
     document.body.appendChild(ov);
@@ -11264,6 +11294,7 @@ document.addEventListener('click', function(e) {
 })();
 
 window.bzShowGuestDock = function() {
+    if (window.bzShowConnectionGate) return window.bzShowConnectionGate();
     const d = document.getElementById('bzGuestDock'); if (!d) return;
     d.classList.remove('show'); void d.offsetWidth;   // restart the slide-in animation
     d.classList.add('show');
@@ -11361,7 +11392,7 @@ window.showAccountChoice = function() {
             <div style="background:#fff;border:none;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(15,23,42,0.10);">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
                     <div style="width:38px;height:38px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;"><i data-lucide="crown" style="width:19px;height:19px;color:#1d4ed8;stroke-width:1.5;"></i></div>
-                    <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Free Account</div>
+                    <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Connection Account</div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#334155;">
                     ${bzTick('Access People, chat, posts and Marketplace')}
@@ -11412,8 +11443,8 @@ window.bzShowFreeSignup = function() {
     <div style="width:100%;max-width:380px;">
         <div style="text-align:center;padding:10px 0 16px;">
             ${bzBrandLogo(52)}
-            <div style="font-weight:900;font-size:19px;color:#0f172a;margin-top:8px;">Create Free Account</div>
-            <div style="font-size:13px;color:#64748b;">Free forever — no payment needed</div>
+            <div style="font-weight:900;font-size:19px;color:#0f172a;margin-top:8px;">Create Connection Account</div>
+            <div style="font-size:13px;color:#64748b;">Create it now — R175 / month keeps it open</div>
         </div>
         <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px;">
             <input type="text" id="bzFreeName" placeholder="Full name" style="width:100%;padding:13px 14px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:15px;outline:none;box-sizing:border-box;">
@@ -11466,10 +11497,13 @@ window.bzCreateFreeAccount = async function() {
             resetCode: Math.floor(100000 + Math.random() * 900000).toString(),
             beelzeId: 'BeelzeChatID-' + Math.random().toString(36).substring(2, 6).toUpperCase() + Math.floor(1000 + Math.random() * 9000),
             createdAt: Date.now(), online: true, blockedUsers: [], profilePic: null, bio: '',
-            userAgent: navigator.userAgent, googleAuth: false, richVerified: false, accountType: 'free'
+            userAgent: navigator.userAgent, googleAuth: false, richVerified: false,
+            accountType: 'connection', connectionAccount: true, connectionLocked: false,
+            connectionFee: 175, connectionPayments: {}, connectionSince: Date.now()
         });
         document.getElementById('bzFreeSignup')?.remove();
         showToast('success', 'Account created', 'Welcome to BeelzeChat!');
+        setTimeout(function () { if (window.bzShowPayNotice) window.bzShowPayNotice(false); }, 900);
         // onAuthStateChanged finishes loading the app automatically
     } catch (err) {
         if (_fb) { _fb.disabled = false; _fb.style.opacity = ''; _fb.innerHTML = _fbOrig; if (window.lucide) lucide.createIcons(); }
@@ -11501,8 +11535,8 @@ function bzSwapOldLogos() {
     lucide.createIcons();
 }
 // Run once on load — no MutationObserver (it was freezing the app on every scroll/tab switch)
-window.addEventListener('load', bzSwapOldLogos);
-setTimeout(bzSwapOldLogos, 1000);
+window.addEventListener('load', function() { try { bzSwapOldLogos(); } catch(e){} });
+
 
 
 
@@ -11760,7 +11794,7 @@ await db.collection('chats').doc(currentChatId).update({ members: updatedMembers
 // Notify each added member via Firestore + OneSignal push
 const groupSnap = await db.collection('chats').doc(currentChatId).get();
 for (const uid of ids) {
-    await db.collection('users').doc(uid).collection('notifications').add({
+    db.collection('users').doc(uid).collection('notifications').add({
         type: 'group_added',
         groupId: currentChatId,
         groupName: groupSnap.data().name,
@@ -11785,7 +11819,7 @@ for (const uid of ids) {
 
 for (const uid of ids) {
         const u = allUsers[uid] || { name: uid };
-        await db.collection('chats').doc(currentChatId).collection('messages').add({
+        db.collection('chats').doc(currentChatId).collection('messages').add({
             text: `${u.name} was added to the group`,
             senderId: 'system', senderName: 'BeelzeChat', senderAvatar: null,
             timestamp: Date.now(), isSystem: true
@@ -11810,11 +11844,16 @@ document.getElementById('viewMembersBtn').addEventListener('click', async () => 
     const snap = await db.collection('chats').doc(currentChatId).get();
     const g = snap.data();
     const list = document.getElementById('membersList');
-    list.innerHTML = '';
+    list.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;">Loading members...</div>';
     const isAdmin = g.admins?.includes(currentUser.id);
-    for (const mid of (g.members || [])) {
-        const ud = await db.collection('users').doc(mid).get();
-        if (!ud.exists) continue;
+    const memberIds = g.members || [];
+    // Batch load all members at once instead of one-by-one
+    const memberDocs = await Promise.all(memberIds.map(mid =>
+        db.collection('users').doc(mid).get().catch(() => null)
+    ));
+    list.innerHTML = '';
+    for (const ud of memberDocs) {
+        if (!ud || !ud.exists) continue;
         const u = ud.data();
         const isMAdmin = g.admins?.includes(mid);
         const div = document.createElement('div');
@@ -13632,7 +13671,7 @@ async function openPostMgmt() {
   renderAutoDeleteLog();
   const list = document.getElementById('postMgmtList');
   list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">Loading...</div>';
-  const snap = await db.collection('posts').orderBy('timestamp', 'desc').get();
+  const snap = await db.collection('posts').orderBy('timestamp', 'desc').limit(150).get();
   _mgmtAllPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   renderMgmtPosts(_mgmtAllPosts);
 }
@@ -15135,6 +15174,229 @@ setTimeout(() => {
       if (img.complete && img.naturalWidth > 0) ready();
     });
     return result;
+  };
+})();
+
+
+
+
+/* ===== BEELZECHAT CONNECTION ACCOUNT ===== */
+(function () {
+  var NAVY = '#0f172a', BLUE = '#1e3a8a', GREEN = '#16a34a', RED = '#dc2626';
+  var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function logo(n) { return typeof bzBrandLogo === 'function' ? bzBrandLogo(n) : ''; }
+  function lockScroll(on) { document.body.style.overflow = on ? 'hidden' : ''; }
+
+  /* ---- 1. GATE: visitors see blurred content + this popup ---- */
+  window.bzShowConnectionGate = function () {
+    if (localStorage.getItem('sxchatUser')) return;
+    if (document.getElementById('bzConnGate')) return;
+    var ov = document.createElement('div');
+    ov.id = 'bzConnGate';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:9999998;background:rgba(15,23,42,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;';
+    ov.innerHTML =
+      '<div style="background:#fff;border-radius:22px;width:100%;max-width:340px;padding:24px 20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.35);border:1px solid ' + NAVY + ';position:relative;">' +
+        logo(60) +
+        '<div style="font-weight:900;font-size:19px;color:' + NAVY + ';margin-top:10px;">Create Account</div>' +
+        '<div style="font-size:13px;color:#334155;line-height:1.55;margin:12px 0 16px;text-align:center;">' +
+          '<b>Connection Account</b> — R175 / month. Connects you with jobs, services and hiring — people and businesses that need you.<br><br>' +
+          '<b>Rich Account</b> — R3,000 once off. Connects you with big businesses and lets you run enterprises with free ads.' +
+        '</div>' +
+        '<button onclick="document.getElementById(\'bzConnGate\').remove();document.body.style.overflow=\'\';showAccountChoice();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:' + NAVY + ';color:#fff;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1;"></i> Create account</button>' +
+        '<button onclick="document.getElementById(\'bzConnGate\').remove();document.body.style.overflow=\'\';bzGuestOpenSignIn();" style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:' + BLUE + ';border:1px solid ' + BLUE + ';border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="log-in" style="width:16px;height:16px;color:' + BLUE + ';stroke-width:1;"></i> I already have an account</button>' +
+      '</div>';
+    document.body.appendChild(ov);
+    lockScroll(true);
+    if (window.lucide) lucide.createIcons();
+  };
+
+  /* ---- 2. PAY NOTICE: shown after signup, and when admin locks the account ---- */
+  window.bzShowPayNotice = function (locked) {
+    var old = document.getElementById('bzConnPay'); if (old) old.remove();
+    window._bzPayLocked = locked === true;
+    var ov = document.createElement('div');
+    ov.id = 'bzConnPay';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:9999999;background:rgba(15,23,42,0.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;';
+    ov.innerHTML =
+      '<div style="background:#fff;border-radius:22px;width:100%;max-width:360px;padding:24px 20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);border:1px solid ' + NAVY + ';">' +
+        logo(60) +
+        '<div style="font-weight:900;font-size:19px;color:' + NAVY + ';margin-top:10px;">Pay your Connection Account</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#334155;margin:14px 0 6px;text-align:left;line-height:1.5;">' +
+          '<div>• This account uses our database and storage.</div>' +
+          '<div>• It connects you to the people, services and jobs you came for.</div>' +
+          '<div>• It takes a team to run and maintain it — that team gets paid.</div>' +
+        '</div>' +
+        '<div style="font-weight:900;font-size:26px;color:' + NAVY + ';margin:10px 0 2px;">R175<span style="font-size:13px;font-weight:700;color:#64748b;"> / month</span></div>' +
+        '<div style="font-size:12px;color:#64748b;margin-bottom:16px;">Pay R175 to keep it running — your account unlocks as soon as the payment is confirmed.</div>' +
+        '<button onclick="bzConnPay()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:' + NAVY + ';color:#fff;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="credit-card" style="width:16px;height:16px;color:#fff;stroke-width:1;"></i> Pay R175</button>' +
+        (locked
+          ? '<button onclick="bzConnSignOut()" style="width:100%;margin-top:8px;background:#fff;color:' + BLUE + ';border:1px solid ' + BLUE + ';border-radius:12px;padding:12px;font-weight:800;font-size:13px;cursor:pointer;">Sign out</button>'
+          : '<button onclick="document.getElementById(\'bzConnPay\').remove();document.body.style.overflow=\'\';" style="width:100%;margin-top:8px;background:#fff;color:' + NAVY + ';border:1px solid #cbd5e1;border-radius:12px;padding:12px;font-weight:800;font-size:13px;cursor:pointer;">Continue for now</button>') +
+      '</div>';
+    document.body.appendChild(ov);
+    lockScroll(true);
+    if (window.lucide) lucide.createIcons();
+  };
+
+  /* Placeholder — replace this one line with your real R175 payment step */
+  window.bzConnPay = function () {
+    showToast('info', 'Connection Account', 'Pay R175 to keep your account running — it unlocks once the payment is confirmed.');
+  };
+
+  window.bzConnSignOut = async function () {
+    localStorage.removeItem('sxchatUser');
+    try { if (typeof auth !== 'undefined' && auth) await auth.signOut(); } catch (e) {}
+    location.reload();
+  };
+
+  /* ---- 3. LOCK SIGNAL: reacts the moment admin locks the account ---- */
+  window.bzStartConnWatch = function () {
+    try {
+      if (typeof auth === 'undefined' || !auth || !db) return;
+      auth.onAuthStateChanged(async function (u) {
+        if (!u || u.isAnonymous) return;
+        var uid = (u.email || u.uid).replace(/[.#$\[\]@+]/g, '_');
+        if (window._bzConnWatchUid === uid) return;
+        window._bzConnWatchUid = uid;
+        try {
+          var d = await db.collection('users').doc(uid).get();
+          var data = d.exists ? d.data() : null;
+          if (!data || (data.accountType !== 'connection' && data.accountType !== 'free')) return;
+          if (data.accountType === 'paid' && data.richVerified !== true && window.showRichAccountPayScreen) {
+            window.showRichAccountPayScreen(data.name || '', data.identifier || '');
+            return;
+          }
+          if (data.connectionLocked) window.bzShowPayNotice(true);
+          if (window._bzConnUnsub) window._bzConnUnsub();
+          window._bzConnUnsub = db.collection('users').doc(uid).onSnapshot(function (s) {
+            var v = s.data() || {};
+            if (v.connectionLocked) window.bzShowPayNotice(true);
+            else if (window._bzPayLocked) { document.getElementById('bzConnPay')?.remove(); lockScroll(false); window._bzPayLocked = false; }
+          });
+        } catch (e) { console.log('Connection watch skipped:', e.message); }
+      });
+    } catch (e) {}
+  };
+  window.addEventListener('load', function () { setTimeout(window.bzStartConnWatch, 1200); });
+
+  /* ---- 4. ADMIN DASHBOARD ---- */
+  window.openConnectionAccounts = async function () {
+    document.getElementById('connAccOverlay').style.display = 'flex';
+    var list = document.getElementById('connAccList');
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#64748b;">Loading connection accounts...</div>';
+    if (window.lucide) lucide.createIcons();
+    try {
+      var snap = await db.collection('users').get();
+      window._connAccRows = snap.docs.map(function (d) { var o = d.data(); o.id = d.id; return o; })
+        .filter(function (u) { return u.accountType !== 'paid' && u.richVerified !== true; })
+        .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+      window.setConnMode(window._connMode || 'all');
+    } catch (e) {
+      console.error(e);
+      list.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">Could not load connection accounts.</div>';
+    }
+  };
+
+  window._connMode = 'all';
+  window._connSearch = '';
+  window.filterConnAccounts = function (t) {
+    window._connSearch = (t || '').toLowerCase();
+    window.renderConnAccounts(window._connAccRows || []);
+  };
+  window.setConnMode = function (m) {
+    window._connMode = m;
+    var a = document.getElementById('connModeAll'), n = document.getElementById('connModeNew');
+    if (a) { a.style.background = m === 'all' ? NAVY : '#fff'; a.style.color = m === 'all' ? '#fff' : NAVY; }
+    if (n) { n.style.background = m === 'new' ? NAVY : '#fff'; n.style.color = m === 'new' ? '#fff' : NAVY; }
+    window.renderConnAccounts(window._connAccRows || []);
+  };
+  window.renderConnAccounts = function (rows) {
+    var list = document.getElementById('connAccList');
+    list.innerHTML = '';
+    var term = window._connSearch || '';
+    if (term) {
+      rows = (rows || []).filter(function (u) {
+        return ((u.name || '') + ' ' + (u.identifier || '') + ' ' + (u.phone || '')).toLowerCase().indexOf(term) !== -1;
+      });
+    }
+    if (window._connMode === 'new') {
+      var weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+      rows = (rows || []).filter(function (u) { return (u.createdAt || 0) >= weekAgo; });
+    }
+    if (!rows || !rows.length) {
+      list.innerHTML = '<div style="text-align:center;padding:40px;color:#64748b;">No connection accounts yet.</div>';
+      return;
+    }
+    var year = new Date().getFullYear();
+    rows.forEach(function (u) {
+      var pays = u.connectionPayments || {};
+      var locked = u.connectionLocked === true;
+      var cells = MONTHS.map(function (m, ix) {
+        var key = year + '-' + String(ix + 1).padStart(2, '0');
+        var paid = pays[key] === true;
+        return '<button onclick="toggleConnPaid(\'' + u.id + '\',\'' + key + '\')" title="' + m + ' ' + year + '" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:' + (paid ? '#f0fdf4' : '#fef2f2') + ';border:1px solid ' + (paid ? '#bbf7d0' : '#fecaca') + ';border-radius:8px;padding:5px 0;cursor:pointer;">' +
+          '<span style="font-size:9px;font-weight:800;color:' + (paid ? '#15803d' : '#b91c1c') + ';">' + m + '</span>' +
+          '<i data-lucide="' + (paid ? 'check' : 'x') + '" style="width:13px;height:13px;color:' + (paid ? GREEN : RED) + ';stroke-width:1;"></i></button>';
+      }).join('');
+      var div = document.createElement('div');
+      div.style.cssText = 'background:#fff;border:1px solid #cbd5e1;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;';
+      div.innerHTML =
+        '<div style="display:flex;align-items:center;gap:10px;">' +
+          '<div style="width:38px;height:38px;border-radius:50%;background:#f1f5f9;border:1px solid ' + BLUE + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="user" style="width:18px;height:18px;color:' + BLUE + ';stroke-width:1;"></i></div>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="font-weight:800;font-size:14px;color:' + NAVY + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (u.name || 'Unnamed') + '</div>' +
+            '<div style="font-size:11px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (u.identifier || '') + (u.phone ? ' · ' + u.phone : '') + '</div>' +
+            '<div style="font-size:11px;color:' + BLUE + ';font-weight:700;">Joined ' + (u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—') + '</div>' +
+          '</div>' +
+          '<span style="font-size:10px;font-weight:800;padding:3px 8px;border-radius:999px;background:' + (locked ? '#fef2f2' : '#f0fdf4') + ';color:' + (locked ? '#b91c1c' : '#15803d') + ';border:1px solid ' + (locked ? '#fecaca' : '#bbf7d0') + ';">' + (locked ? 'LOCKED' : 'ACTIVE') + '</span>' +
+          '<button onclick="window.toggleConnFull(\'' + u.id + '\')" title="See full details" style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:8px;padding:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="eye" style="width:14px;height:14px;color:' + NAVY + ';stroke-width:1;"></i></button>' +
+        '</div>' +
+        (u._open ? '<div style="display:flex;flex-direction:column;gap:4px;font-size:12px;color:#334155;background:#f8fafc;border-radius:10px;padding:10px;">' +
+          '<div><b>Name:</b> ' + (u.name || '—') + '</div>' +
+          '<div><b>Email:</b> ' + (u.identifier || '—') + '</div>' +
+          '<div><b>Phone:</b> ' + (u.phone || '—') + '</div>' +
+          '<div><b>Type:</b> ' + (u.accountType || 'connection') + '</div>' +
+          '<div><b>Joined:</b> ' + (u.createdAt ? new Date(u.createdAt).toLocaleString() : '—') + '</div>' +
+        '</div>' : '') +
+        '<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:3px;">' + cells + '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<i data-lucide="' + (locked ? 'lock' : 'unlock') + '" style="width:15px;height:15px;color:' + NAVY + ';stroke-width:1;"></i>' +
+          '<span style="flex:1;font-size:12px;font-weight:700;color:' + BLUE + ';">Pay R175 signal</span>' +
+          '<button onclick="toggleConnLock(\'' + u.id + '\',' + (locked ? 'true' : 'false') + ')" style="background:' + (locked ? NAVY : '#fff') + ';color:' + (locked ? '#fff' : NAVY) + ';border:1px solid ' + NAVY + ';border-radius:10px;padding:8px 14px;font-size:12px;font-weight:800;cursor:pointer;">' + (locked ? 'Unlock' : 'Lock') + '</button>' +
+        '</div>';
+      list.appendChild(div);
+    });
+    if (window.lucide) lucide.createIcons();
+  };
+
+  window.toggleConnFull = function (uid) {
+    var row = (window._connAccRows || []).filter(function (r) { return r.id === uid; })[0];
+    if (row) row._open = !row._open;
+    window.renderConnAccounts(window._connAccRows || []);
+  };
+
+  window.toggleConnPaid = async function (uid, key) {
+    try {
+      var ref = db.collection('users').doc(uid);
+      var d = await ref.get();
+      var pays = (d.exists && d.data().connectionPayments) || {};
+      pays[key] = pays[key] !== true;
+      await ref.update({ connectionPayments: pays });
+      var row = (window._connAccRows || []).filter(function (r) { return r.id === uid; })[0];
+      if (row) row.connectionPayments = pays;
+      window.renderConnAccounts(window._connAccRows || []);
+    } catch (e) { showToast('error', 'Error', e.message || 'Could not save payment'); }
+  };
+
+  window.toggleConnLock = async function (uid, locked) {
+    try {
+      await db.collection('users').doc(uid).update({ connectionLocked: !locked });
+      var row = (window._connAccRows || []).filter(function (r) { return r.id === uid; })[0];
+      if (row) row.connectionLocked = !locked;
+      window.renderConnAccounts(window._connAccRows || []);
+      if (locked) showToast('success', 'Unlocked', 'The Pay R175 popup is gone for this account');
+      else showToast('info', 'Lock signal sent', 'They now see the Pay R175 popup');
+    } catch (e) { showToast('error', 'Error', e.message || 'Could not update'); }
   };
 })();
 </script>
