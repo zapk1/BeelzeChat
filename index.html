@@ -7227,7 +7227,10 @@ if (auth) {
                 bio: '',
                 userAgent: navigator.userAgent,
                 googleAuth: !!firebaseUser.providerData.find(p => p.providerId === 'google.com'),
-                richVerified: false
+                richVerified: false,
+                accountType: 'connection', connectionAccount: true, connectionLocked: true,
+                lockAfter: Date.now() + 39000,   /* 39s grace — change 39000 to 20000 for 20 seconds */
+                connectionFee: 175, connectionPayments: {}, connectionSince: Date.now()
             });
             ud = await db.collection('users').doc(firebaseUserId).get();
         }
@@ -7548,7 +7551,8 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
                 blockedUsers: [], profilePic: null, bio: '',
                 userAgent: navigator.userAgent,
                 richVerified: false,
-                accountType: 'connection', connectionAccount: true, connectionLocked: false,
+                accountType: 'connection', connectionAccount: true, connectionLocked: true,
+                lockAfter: Date.now() + 39000,   /* 39s grace — change 39000 to 20000 for 20 seconds */
                 connectionFee: 175, connectionPayments: {}, connectionSince: Date.now()
             });
         } else {
@@ -7802,7 +7806,10 @@ function resetRichPayBtn(btn) {
                     userAgent: navigator.userAgent,
                     richVerified: true,            // ← auto-verified as a Rich user
                     richSubscribedAt: Date.now(),
-                    richSubscriptionAmount: 3000
+                    richSubscriptionAmount: 3000,
+                    accountType: 'rich', connectionAccount: true, connectionLocked: true,
+                    lockAfter: Date.now() + 39000,   /* 39s grace — change 39000 to 20000 for 20 seconds */
+                    connectionFee: 175, connectionPayments: {}, connectionSince: Date.now()
                 });
                 // Record the payment in a subscriptions collection for the admin panel
                 await db.collection('richSubscriptions').add({
@@ -11498,13 +11505,12 @@ window.bzCreateFreeAccount = async function() {
             beelzeId: 'BeelzeChatID-' + Math.random().toString(36).substring(2, 6).toUpperCase() + Math.floor(1000 + Math.random() * 9000),
             createdAt: Date.now(), online: true, blockedUsers: [], profilePic: null, bio: '',
             userAgent: navigator.userAgent, googleAuth: false, richVerified: false,
-            accountType: 'connection', connectionAccount: true, connectionLocked: false,
+            accountType: 'connection', connectionAccount: true, connectionLocked: true,
+            lockAfter: Date.now() + 39000,   /* 39s grace — change 39000 to 20000 for 20 seconds */
             connectionFee: 175, connectionPayments: {}, connectionSince: Date.now()
         });
         document.getElementById('bzFreeSignup')?.remove();
-        showToast('success', 'Account created', 'Welcome to BeelzeChat!');
-        setTimeout(function () { if (window.bzShowPayNotice) window.bzShowPayNotice(false); }, 900);
-        // onAuthStateChanged finishes loading the app automatically
+        showToast('success', 'Account created', 'Welcome to BeelzeChat!');        // onAuthStateChanged finishes loading the app automatically
     } catch (err) {
         if (_fb) { _fb.disabled = false; _fb.style.opacity = ''; _fb.innerHTML = _fbOrig; if (window.lucide) lucide.createIcons(); }
         const _lse = document.getElementById('loadingScreen'); if (_lse) { _lse.classList.add('hide'); _lse.style.display = 'none'; }
@@ -15238,10 +15244,73 @@ setTimeout(() => {
     if (window.lucide) lucide.createIcons();
   };
 
-  /* Placeholder — replace this one line with your real R175 payment step */
-  window.bzConnPay = function () {
-    showToast('info', 'Connection Account', 'Pay R175 to keep your account running — it unlocks once the payment is confirmed.');
+    /* ---- 2b. REAL R175 PAYMENT — straight to PayFast ---- */
+  window.bzConnPay = async function () {
+    var me = null;
+    try { me = JSON.parse(localStorage.getItem('sxchatUser') || 'null'); } catch (e) {}
+    if (!me || !me.id) { showToast('error', 'Not signed in', 'Sign in again to pay'); return; }
+    var btn = document.querySelector('#bzConnPay button');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-circle" style="width:16px;height:16px;color:#fff;animation:spin 0.8s linear infinite;"></i> Opening PayFast...';
+      if (window.lucide) lucide.createIcons();
+    }
+    try {
+      var orderRef = 'BZCONN-' + me.id.replace(/[^a-zA-Z0-9]/g, '') + '-' + Date.now();
+      localStorage.setItem('bz_pendingConnPay', JSON.stringify({ uid: me.id, orderRef: orderRef }));
+      var res = await fetch('https://beelzechat.white-mouse-5467.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: '175.00',
+          itemName: 'BeelzeChat Connection Account',
+          itemDesc: 'R175/month — connection account',
+          nameFirst: (me.name || '').split(' ')[0],
+          email: me.identifier || '',
+          orderRef: orderRef
+        })
+      });
+      var data = await res.json();
+      if (!data.url || !data.fields) { showToast('error', 'Payment error', 'Could not start payment'); return; }
+      var form = document.createElement('form');
+      form.method = 'POST'; form.action = data.url;
+      Object.entries(data.fields).forEach(function (kv) {
+        var i = document.createElement('input');
+        i.type = 'hidden'; i.name = kv[0]; i.value = kv[1];
+        form.appendChild(i);
+      });
+      document.body.appendChild(form);
+      form.submit();
+    } catch (e) {
+      showToast('error', 'Payment failed', e.message || 'Check your connection');
+    }
   };
+
+  /* ---- 2c. PayFast return — payment done, unlock the account automatically ---- */
+  (function handleConnPaymentReturn() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('pf') !== 'return') return;
+      var pending = null;
+      try { pending = JSON.parse(localStorage.getItem('bz_pendingConnPay') || 'null'); } catch (e) {}
+      if (!pending || !pending.uid) return;
+      localStorage.removeItem('bz_pendingConnPay');
+      history.replaceState({}, document.title, window.location.pathname);
+      var ref = db.collection('users').doc(pending.uid);
+      ref.get().then(function (d) {
+        var pays = (d.exists && d.data().connectionPayments) || {};
+        var now = new Date();
+        pays[now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0')] = true;
+        return ref.update({ connectionLocked: false, connectionPayments: pays, connectionPaidAt: Date.now() });
+      }).then(function () {
+        var ov = document.getElementById('bzConnPay'); if (ov) ov.remove();
+        lockScroll(false);
+        window._bzPayLocked = false;
+        setTimeout(function () { showToast('success', 'Payment received', 'Your connection account is unlocked'); }, 700);
+      }).catch(function (e) { showToast('error', 'Could not unlock', e.message || 'Contact support'); });
+    } catch (e) {}
+  })();
+
 
   window.bzConnSignOut = async function () {
     localStorage.removeItem('sxchatUser');
@@ -15252,49 +15321,92 @@ setTimeout(() => {
   /* ---- 3. LOCK SIGNAL: reacts the moment admin locks the account ---- */
   window.bzStartConnWatch = function () {
     try {
-      if (typeof auth === 'undefined' || !auth || !db) return;
-      auth.onAuthStateChanged(async function (u) {
-        if (!u || u.isAnonymous) return;
-        var uid = (u.email || u.uid).replace(/[.#$\[\]@+]/g, '_');
-        if (window._bzConnWatchUid === uid) return;
+      if (!db) return;
+
+      function watch(uid) {
+        if (!uid || window._bzConnWatchUid === uid) return;
         window._bzConnWatchUid = uid;
-        try {
-          var d = await db.collection('users').doc(uid).get();
-          var data = d.exists ? d.data() : null;
-          if (!data || (data.accountType !== 'connection' && data.accountType !== 'free')) return;
-          if (data.accountType === 'paid' && data.richVerified !== true && window.showRichAccountPayScreen) {
-            window.showRichAccountPayScreen(data.name || '', data.identifier || '');
-            return;
+        if (window._bzConnUnsub) window._bzConnUnsub();
+        window._bzConnUnsub = db.collection('users').doc(uid).onSnapshot(function (s) {
+          if (!s.exists) return;
+          var v = s.data() || {};
+          if (window._bzLockTimer) { clearTimeout(window._bzLockTimer); window._bzLockTimer = null; }
+          if (v.connectionLocked === true) {
+            var due = v.lockAfter || 0;
+            var wait = due - Date.now();
+            if (wait <= 0) {
+              window.bzShowPayNotice(true);            // stays until admin unlocks / payment lands
+            } else {
+              window._bzLockTimer = setTimeout(function () { window.bzShowPayNotice(true); }, wait);
+            }
+          } else if (window._bzPayLocked) {
+            var ov = document.getElementById('bzConnPay'); if (ov) ov.remove();
+            lockScroll(false);
+            window._bzPayLocked = false;
           }
-          if (data.connectionLocked) window.bzShowPayNotice(true);
-          if (window._bzConnUnsub) window._bzConnUnsub();
-          window._bzConnUnsub = db.collection('users').doc(uid).onSnapshot(function (s) {
-            var v = s.data() || {};
-            if (v.connectionLocked) window.bzShowPayNotice(true);
-            else if (window._bzPayLocked) { document.getElementById('bzConnPay')?.remove(); lockScroll(false); window._bzPayLocked = false; }
-          });
-        } catch (e) { console.log('Connection watch skipped:', e.message); }
-      });
-    } catch (e) {}
+        });
+      }
+
+      function savedUid() {
+        try {
+          var u = JSON.parse(localStorage.getItem('sxchatUser') || 'null');
+          return u && u.id ? u.id : null;
+        } catch (e) { return null; }
+      }
+
+      // 1. Google / Firebase logins
+      if (typeof auth !== 'undefined' && auth) {
+        auth.onAuthStateChanged(function (u) {
+          if (!u || u.isAnonymous) return;
+          watch((u.email || u.uid).replace(/[.#$\[\]@+]/g, '_'));
+        });
+      }
+      // 2. Email / phone / remembered logins (these never hit Firebase auth)
+      setInterval(function () { watch(savedUid()); }, 3000);
+      // 3. Permanent: if the account is still locked and the popup got closed, put it back
+      setInterval(function () {
+        if (window._bzPayLocked && !document.getElementById('bzConnPay')) window.bzShowPayNotice(true);
+      }, 2000);
+    } catch (e) { console.log('Connection watch skipped:', e.message); }
   };
+
   window.addEventListener('load', function () { setTimeout(window.bzStartConnWatch, 1200); });
 
   /* ---- 4. ADMIN DASHBOARD ---- */
-  window.openConnectionAccounts = async function () {
-    document.getElementById('connAccOverlay').style.display = 'flex';
+  window.loadConnAccounts = async function () {
     var list = document.getElementById('connAccList');
-    list.innerHTML = '<div style="text-align:center;padding:40px;color:#64748b;">Loading connection accounts...</div>';
+    var mode = window._connMode || 'all';
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#64748b;">Loading...</div>';
     if (window.lucide) lucide.createIcons();
     try {
-      var snap = await db.collection('users').get();
-      window._connAccRows = snap.docs.map(function (d) { var o = d.data(); o.id = d.id; return o; })
-        .filter(function (u) { return u.accountType !== 'paid' && u.richVerified !== true; })
-        .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
-      window.setConnMode(window._connMode || 'all');
+      /* Read users once, then keep ONLY connection accounts (the R175/month people).
+         Old code read the whole users collection, so free / legacy / admin accounts
+         were being listed as "new sign ups". */
+      var snap = await db.collection('users').limit(500).get();
+      var all = snap.docs.map(function (d) { var o = d.data(); o.id = d.id; return o; });
+            /* Full = every account in the app. New = only the people recorded under the
+         connection account (the R175/month signups). */
+      var isConn = function (u) {
+        return u.connectionAccount === true || u.accountType === 'connection' || u.accountType === 'rich' || u.connectionFee === 175;
+      };
+      var connOnly = (mode === 'new') ? all.filter(isConn) : all;
+
+      window._connAccRows = connOnly.sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+      if (!window._connAccRows.length) {
+        list.innerHTML = '<div style="text-align:center;padding:40px;color:#64748b;">' +
+          (mode === 'new' ? 'No connection sign ups yet.' : 'No accounts yet.') + '</div>';
+        return;
+      }
+      window.renderConnAccounts(window._connAccRows);
     } catch (e) {
       console.error(e);
-      list.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">Could not load connection accounts.</div>';
+      list.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">Could not load accounts: ' + (e.message || 'unknown error') + '</div>';
     }
+  }
+
+  window.openConnectionAccounts = function () {
+    document.getElementById('connAccOverlay').style.display = 'flex';
+    window.setConnMode(window._connMode || 'all');
   };
 
   window._connMode = 'all';
@@ -15308,7 +15420,7 @@ setTimeout(() => {
     var a = document.getElementById('connModeAll'), n = document.getElementById('connModeNew');
     if (a) { a.style.background = m === 'all' ? NAVY : '#fff'; a.style.color = m === 'all' ? '#fff' : NAVY; }
     if (n) { n.style.background = m === 'new' ? NAVY : '#fff'; n.style.color = m === 'new' ? '#fff' : NAVY; }
-    window.renderConnAccounts(window._connAccRows || []);
+    window.loadConnAccounts();
   };
   window.renderConnAccounts = function (rows) {
     var list = document.getElementById('connAccList');
@@ -15319,11 +15431,7 @@ setTimeout(() => {
         return ((u.name || '') + ' ' + (u.identifier || '') + ' ' + (u.phone || '')).toLowerCase().indexOf(term) !== -1;
       });
     }
-    if (window._connMode === 'new') {
-      var weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-      rows = (rows || []).filter(function (u) { return (u.createdAt || 0) >= weekAgo; });
-    }
-    if (!rows || !rows.length) {
+if (!rows || !rows.length) {
       list.innerHTML = '<div style="text-align:center;padding:40px;color:#64748b;">No connection accounts yet.</div>';
       return;
     }
@@ -15355,7 +15463,7 @@ setTimeout(() => {
           '<div><b>Name:</b> ' + (u.name || '—') + '</div>' +
           '<div><b>Email:</b> ' + (u.identifier || '—') + '</div>' +
           '<div><b>Phone:</b> ' + (u.phone || '—') + '</div>' +
-          '<div><b>Type:</b> ' + (u.accountType || 'connection') + '</div>' +
+          '<div><b>Type:</b> ' + (u.richVerified === true ? 'Rich (R3,000 paid)' : (u.accountType || 'connection')) + '</div>' +
           '<div><b>Joined:</b> ' + (u.createdAt ? new Date(u.createdAt).toLocaleString() : '—') + '</div>' +
         '</div>' : '') +
         '<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:3px;">' + cells + '</div>' +
