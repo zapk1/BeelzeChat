@@ -1839,6 +1839,7 @@ label[for="postImagesInput"].upload-btn {
     left: 0;
     right: 0;
     bottom: 0;
+    z-index: 900;
     /* When the keyboard opens, shrink to visible viewport so the input stays on-screen */
 }
 .chat-view.active {
@@ -6399,9 +6400,16 @@ window.finishLoading = function() {
     if (rp) rp.textContent = '100%';
     if (ipb) ipb.style.width = '100%';
     if (ipt) ipt.textContent = 'Ready!';
-    const _app = document.getElementById('app');
-    if (_app) _app.classList.add('active');
+        // Only bring the app shell back if nothing else is open — this was what painted the
+    // feed and chat list on top of an open chat.
+    if (!document.getElementById('chatView')?.classList.contains('active') &&
+        !document.getElementById('marketplaceView')?.classList.contains('active') &&
+        document.getElementById('productDetailView')?.style.display !== 'flex') {
+        document.getElementById('app')?.classList.add('active');
+        document.getElementById('bottomNav').style.display = 'flex';
+    }
     if (currentUser) { const _as = document.getElementById('authScreen'); if (_as) _as.style.display = 'none'; }
+
 
     // Hide the loader immediately — the shimmer skeleton is already showing behind it,
     // so there's NEVER a white screen. Hard cap 1.5s so it can never get stuck.
@@ -6864,8 +6872,12 @@ EMOJIS.forEach(em => {
         if (!emojiPop.dataset.msgId || !currentChatId) { closeEmoji(); return; }
         if (!currentUser) { showToast('error', 'Not logged in', 'Please log in first'); closeEmoji(); return; }
         const msgId = emojiPop.dataset.msgId;
+        // Lock chat + user NOW — leaving the chat a second later must not kill the save
+        const rxChatId = currentChatId;
+        const rxUid = currentUser.id;
+        const rxMsgMeta = (getMsgs(rxChatId) || []).find(m => String(m.id) === String(msgId)) || {};
         // 1. INSTANT UI — read reactions from localStorage cache (no network wait)
-        const cacheKey = 'rx_' + currentChatId + '_' + msgId;
+        const cacheKey = 'rx_' + rxChatId + '_' + msgId;
         let rx = {};
         try { rx = JSON.parse(localStorage.getItem(cacheKey) || '{}'); } catch(e){}
         rx[currentUser.id] = em;
@@ -6908,10 +6920,23 @@ EMOJIS.forEach(em => {
                     }
                     if (String(realId).indexOf('temp_') === 0) { console.log('reaction: message still sending, skipped save'); return; }
                 }
-                const ref = db.collection('chats').doc(currentChatId).collection('messages').doc(realId);
-                // Dot-notation update = atomic, no transaction needed. Only touches THIS user's
-                // reaction key, so 99 people reacting at once never overwrite each other.
-                   await ref.set({ reactions: { [currentUser.id]: em } }, { merge: true });
+                // Find the REAL message document. If the id was temporary or stale, match it by
+                // sender + timestamp so the reaction can never land on a phantom document.
+                const rxCol = db.collection('chats').doc(rxChatId).collection('messages');
+                let rxRef = rxCol.doc(String(realId));
+                if (!(await rxRef.get()).exists) {
+                    const ts = rxMsgMeta.timestamp;
+                    const snd = rxMsgMeta.senderId;
+                    if (ts && snd) {
+                        const q = await rxCol.where('senderId', '==', snd).where('timestamp', '==', ts).limit(1).get();
+                        if (!q.empty) rxRef = q.docs[0].ref;
+                    }
+                }
+                if (!(await rxRef.get()).exists) { console.log('reaction: message not found, skipped'); return; }
+                // Dot-path update = atomic. Only THIS user's key is touched, so nobody else's
+                // reaction is ever wiped and 50 people reacting at once can't overwrite each other.
+                await rxRef.update({ ['reactions.' + rxUid]: em });
+
 
                 // 3. UPDATE the message cache so reactions survive app restart
                 const cachedMsgs = getMsgs(currentChatId);
@@ -6926,7 +6951,7 @@ EMOJIS.forEach(em => {
                 // Force a fresh re-render of this message's reactions from Firestore
                 // (safety net — guarantees group reactions show, not just personal chats)
                 try {
-                    var fresh = await ref.get();
+                    var fresh = await rxRef.get();
                     var frx = (fresh.data() && fresh.data().reactions) || {};
                     var fuEm = {};
                     Object.values(frx).forEach(function(e){ fuEm[e] = (fuEm[e]||0)+1; });
@@ -10081,9 +10106,7 @@ async function startChatDirectly(userId) {
 function openChat(chatId, user, userId) {
     currentChatId = chatId;
     currentChatUser = { ...user, id: userId };
-    document.getElementById('app').classList.remove('active');
-    document.getElementById('chatView').classList.add('active');
-    document.getElementById('bottomNav').style.display = 'none';
+    bzShowScreen('chat');
     showMessengerLoader();
     document.getElementById('chatUserName').textContent = user.name;
     document.getElementById('chatAvatar').innerHTML = user.profilePic ?
@@ -10099,9 +10122,7 @@ function openChat(chatId, user, userId) {
 function openGroupChat(chatId, group) {
     currentChatId = chatId;
     currentChatUser = { ...group, isGroup: true };
-    document.getElementById('app').classList.remove('active');
-    document.getElementById('chatView').classList.add('active');
-    document.getElementById('bottomNav').style.display = 'none';
+    bzShowScreen('chat');
     showMessengerLoader();
     document.getElementById('chatUserName').textContent = group.name + ' (Group)';
     const gpic = group.groupPic || `https://ui-avatars.com/api/?name=${encodeURIComponent(group.name)}&background=8b5cf6&color=fff&size=128`;
@@ -10115,10 +10136,21 @@ document.getElementById('chatAvatar').addEventListener('click', () => {
     if (currentChatUser?.isGroup) viewImage(currentChatUser.groupPic || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentChatUser.name)}&background=8b5cf6&color=fff&size=256`);
 });
 
+// ONE screen at a time — app shell, chat, or marketplace. Never two stacked.
+window.bzShowScreen = function (name) {
+    const app = document.getElementById('app');
+    const chat = document.getElementById('chatView');
+    const mkt = document.getElementById('marketplaceView');
+    const nav = document.getElementById('bottomNav');
+    const isApp = name === 'app';
+    if (app) app.classList.toggle('active', isApp);
+    if (chat) chat.classList.toggle('active', name === 'chat');
+    if (mkt) mkt.classList.toggle('active', name === 'marketplace');
+    if (nav) nav.style.display = isApp ? 'flex' : 'none';
+};
+
 document.getElementById('closeChatBtn').addEventListener('click', () => {
-    document.getElementById('chatView').classList.remove('active');
-    document.getElementById('app').classList.add('active');
-    document.getElementById('bottomNav').style.display = 'flex';
+    bzShowScreen('app');
     currentChatId = null;
     currentChatUser = null;
     replyToMessage = null;
@@ -11272,12 +11304,13 @@ document.addEventListener('click', function(e) {
     if (localStorage.getItem('sxchatUser')) return;
     const hit = e.target.closest(
         '#createPostNavBtn, #sellBtn, #createGroupBtn, #blockBtn, #startChatFromProfileBtn, ' +
-        '.nav-item[data-tab="messages"], .mkt-msg-btn, .mkt-like-btn, ' +
+        '.nav-item[data-tab="messages"], .nav-item[data-tab="users"], .nav-item[data-tab="groups"], ' +
+        '#mktProfileBtn, .mkt-msg-btn, .mkt-like-btn, ' +
         '[data-action="message"], [data-action="like"], [data-action="comment"], ' +
         '.post-action-btn, .comment-like-btn, [class*="like-btn"], [class*="msg-btn"], ' +
-        '.post-author-info, .post-author-avatar, .user-info, #pdSellerRow, .chat-user-info'
+        '.post-author-info, .post-author-avatar, .user-info, #pdSellerRow, #pdLikeBtn, .chat-user-info'
     );
-    if (hit) { e.stopPropagation(); e.preventDefault(); bzRequireAccount('view profiles'); }
+    if (hit) { e.stopPropagation(); e.preventDefault(); bzRequireAccount('like, comment, chat or sell'); }
 }, true);
 
 // ===== GUEST FLOATING BUTTONS — slide in from the left, replace the big sign-in modal =====
@@ -12793,13 +12826,11 @@ document.getElementById('closeProductDetail').addEventListener('click', () => {
     document.getElementById('productDetailView').style.display = 'none';
 });
 document.getElementById('mktBackBtn').addEventListener('click', () => {
-    document.getElementById('marketplaceView').classList.remove('active');
-    document.getElementById('app').classList.add('active');
+    bzShowScreen('app');
 });
 
 function openMarketplace() {
-    document.getElementById('app').classList.remove('active');
-    document.getElementById('marketplaceView').classList.add('active');
+    bzShowScreen('marketplace');
     const btn = document.getElementById('mktProfileBtn');
     if (currentUser?.profilePic) {
         btn.innerHTML = `<img src="${currentUser.profilePic}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`;
@@ -13024,6 +13055,7 @@ content.querySelector('#pdDeleteBtn')?.addEventListener('click', async () => {
 }
 
 async function toggleListingLike(listingId) {
+    if (requireAuth('like listings') === false) return;
     const ref = db.collection('marketplace').doc(listingId);
     const snap = await ref.get();
     if (!snap.exists) return;
@@ -15210,10 +15242,21 @@ setTimeout(() => {
         '</div>' +
         '<button onclick="document.getElementById(\'bzConnGate\').remove();document.body.style.overflow=\'\';showAccountChoice();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:' + NAVY + ';color:#fff;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1;"></i> Create account</button>' +
         '<button onclick="document.getElementById(\'bzConnGate\').remove();document.body.style.overflow=\'\';bzGuestOpenSignIn();" style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:' + BLUE + ';border:1px solid ' + BLUE + ';border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="log-in" style="width:16px;height:16px;color:' + BLUE + ';stroke-width:1;"></i> I already have an account</button>' +
+        '<button onclick="document.getElementById(\'bzConnGate\').remove();document.body.style.overflow=\'\';bzViewAsGuest();" style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;background:#f8fafc;color:#475569;border:1px solid #cbd5e1;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="eye" style="width:16px;height:16px;color:#475569;stroke-width:1;"></i> View as guest</button>' +
       '</div>';
-    document.body.appendChild(ov);
+        document.body.appendChild(ov);
     lockScroll(true);
     if (window.lucide) lucide.createIcons();
+  };
+
+  /* ---- 1b. VIEW AS GUEST — read only: posts + marketplace ---- */
+  window.bzViewAsGuest = function () {
+    window._bzGuestViewing = true;
+    window._bzVisitor = true;
+    document.body.style.overflow = '';
+    var g = document.getElementById('bzConnGate'); if (g) g.remove();
+    var fab = document.getElementById('bzGateFab'); if (fab) fab.style.display = 'flex';
+    showToast('info', 'Guest mode', 'You can browse Posts and Market. Create an account to like, comment, chat or sell.');
   };
 
   /* ---- 2. PAY NOTICE: shown after signup, and when admin locks the account ---- */
