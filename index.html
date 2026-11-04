@@ -9,8 +9,23 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://www.google.com/recaptcha/api.js?render=explicit&onload=bzRecaptchaOnload" async defer></script>
+<script>
+var _loginRecaptchaId=null;
+function renderLoginRecaptcha(){if(_loginRecaptchaId!==null)return;if(location.hostname==='localhost'||location.hostname==='127.0.0.1'||location.protocol==='file:'){_loginRecaptchaId='local-dev';return;}if(typeof grecaptcha==='undefined'||!grecaptcha.render)return;var box=document.getElementById('loginRecaptcha');if(!box||box.offsetParent===null)return;try{_loginRecaptchaId=grecaptcha.render(box,{sitekey:'6LfYH40tAAAAAMlU_jZm94JNZ821uD7vMLWDxYgm'});}catch(e){}}
+window.bzRecaptchaOnload=function(){var iv=setInterval(function(){if(_loginRecaptchaId!==null){clearInterval(iv);return;}renderLoginRecaptcha();if(_loginRecaptchaId!==null)clearInterval(iv);},400);};
+</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-00EPZJGG4T"></script>
 <script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);} gtag('js', new Date());gtag('config', 'G-00EPZJGG4T');</script>
+
+<script>
+window.addEventListener('error', function (e) {
+  var d = document.getElementById('__e') || document.body.appendChild(Object.assign(document.createElement('div'), {id:'__e'}));
+  d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#000;color:#0f0;font:12px monospace;padding:8px;z-index:999999;white-space:pre-wrap;max-height:40%;overflow:auto';
+  d.textContent += e.message + ' | line ' + e.lineno + ':' + e.colno + '\n';
+});
+</script>
+
+
 
 <!-- ===== ONE SIGNAL WEB SDK ===== -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" async></script>
@@ -4148,15 +4163,23 @@ form input[type="text"] {
 
 
 
+      <!-- reCAPTCHA (sign in) -->
+      <div id="loginRecaptcha" class="g-recaptcha" style="display:flex;justify-content:center;margin:10px 0 4px;"></div>
+
 <!-- Privacy policy consent checkbox -->
       <label style="display:flex;align-items:flex-start;gap:8px;margin:10px 0;font-size:13px;color:#475569;cursor:pointer;">
+
         <input type="checkbox" id="privacyConsent" style="margin-top:3px;width:16px;height:16px;cursor:pointer;">
         <span>I have read and accept the <a href="https://privacypolicy.beelzechat.co.za" target="_blank" rel="noopener" onclick="event.stopPropagation();" style="color:#3F51B5;text-decoration:underline;font-weight:700;">Privacy Policy &amp; Terms</a>. I confirm I am 20 years or older.</span>
       </label>
 
-      <!-- Primary purple CTA -->
-            <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="background:#ffffff;color:#1d4ed8;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;box-shadow:0 10px 28px rgba(255,255,255,0.95),0 6px 20px rgba(15,23,42,0.10);">
-        <i data-lucide="crown" style="width:18px;height:18px;color:#1d4ed8;stroke-width:1.5;"></i>
+      <!-- reCAPTCHA "I'm not a bot" box — the engine renders the widget here when login is visible -->
+      <div id="loginRecaptcha" style="margin:10px 0 14px;display:flex;justify-content:center;min-height:78px;"></div>
+
+            <!-- Primary purple CTA -->
+            <div id="loginRecaptcha" style="margin-bottom:12px;display:flex;justify-content:center;"></div>
+            <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="background:#3F51B5;color:#fff;border:1px solid #3F51B5;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.25);width:100%;">
+        <i data-lucide="crown" style="width:20px;height:20px;color:#fff;stroke-width:1.5;"></i>
         Log in
       </button>
 
@@ -4206,10 +4229,18 @@ form input[type="text"] {
           </button>
         </div>
       </div>
+            <!-- reCAPTCHA (create account) -->
+      <div id="signupRecaptcha" class="g-recaptcha" style="display:flex;justify-content:center;margin:10px 0 4px;"></div>
+
       <button type="submit" class="btn btn-primary" id="signupSubmitBtn" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);width:100%;">
         <i data-lucide="user-check" style="width:20px;height:20px;"></i>
         <span id="bzSignupBtnText">Create account</span>
       </button>
+
+      <!-- reCAPTCHA (sign up only) -->
+      <div id="bzSignupCaptcha" style="display:flex;justify-content:center;margin:4px 0 12px;"></div>
+      <div id="bzSignupCaptchaError" class="error-message"></div>
+
       <div id="signupError" class="error-message"></div>
       <div id="signupSuccess" class="success-message"></div>
       <div class="auth-toggle" style="text-align:center;margin-top:16px;color:#6b7280;font-size:14px;">
@@ -4234,7 +4265,9 @@ form input[type="text"] {
           </button>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);">
+      <!-- reCAPTCHA — create account only -->
+      <div id="signupRecaptcha" class="g-recaptcha" style="display:flex;justify-content:center;margin:0 0 12px;"></div>
+      <button type="submit" class="btn btn-primary" id="signupSubmitBtn" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);width:100%;">
         <i data-lucide="check-circle" style="width:20px;height:20px;"></i>
         Reset password
       </button>
@@ -6120,7 +6153,7 @@ const firebaseConfig = {
 
 // Firebase init — GUARDED: a CDN failure now shows a friendly error
 // instead of killing the entire script (the old white-screen cause)
-let db = null;
+var db = null;
 try {
     if (typeof firebase === 'undefined' || typeof firebase.initializeApp !== 'function') {
         throw new Error('Firebase SDK did not load — check your internet connection');
@@ -6132,8 +6165,8 @@ try {
     showToast('error', 'Connection Problem', 'Could not reach the server. Check your internet, then refresh the page.');
 }
 
-let storage = null;
-let auth = null;
+var storage = null;
+var auth = null;
 
 // Removed: capture-phase profile blocker. It checked the in-memory `currentUser`
 // which is null during the Firebase Auth resolve window, so it blocked the real
@@ -6203,30 +6236,16 @@ function closeAuthScreen() {
     if (window.lucide) lucide.createIcons();
 }
 
-// ============================================================
-// reCAPTCHA — explicit render (auto-render fails because the auth
-// screen is hidden while the page loads)
-// ============================================================
-let _loginRecaptchaId = null;
-function renderLoginRecaptcha() {
-    if (_loginRecaptchaId !== null) return;
-    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:') { _loginRecaptchaId = 'local-dev'; return; }
-    if (typeof grecaptcha === 'undefined' || !grecaptcha.render) return;
-    const box = document.getElementById('loginRecaptcha');
-    if (!box || box.offsetParent === null) return; // wait until the login box is visible
-    try {
-        _loginRecaptchaId = grecaptcha.render(box, {
-            sitekey: '6LfYH40tAAAAAMlU_jZm94JNZ821uD7vMLWDxYgm'
-        });
-    } catch (e) { /* already rendered or blocked */ }
-}
-window.bzRecaptchaOnload = function () {
-    const iv = setInterval(() => {
-        if (_loginRecaptchaId !== null) { clearInterval(iv); return; }
-        renderLoginRecaptcha();
-        if (_loginRecaptchaId !== null) clearInterval(iv);
-    }, 400);
-};
+
+// Self-start fallback — recaptcha's onload can fire BEFORE this script runs
+// (async+defer race), which logs "couldn't find user-provided function".
+// This kicks the same poller ourselves so the widget still renders the moment
+// the login box becomes visible.
+setTimeout(function () {
+    if (_loginRecaptchaId === null && typeof grecaptcha !== 'undefined' && grecaptcha.render) {
+        window.bzRecaptchaOnload();
+    }
+}, 1200);
 
 // ============================================================
 // SKELETON LOADERS (YouTube-style shimmer)
@@ -6877,11 +6896,10 @@ EMOJIS.forEach(em => {
         const rxUid = currentUser.id;
         const rxMsgMeta = (getMsgs(rxChatId) || []).find(m => String(m.id) === String(msgId)) || {};
         // 1. INSTANT UI — read reactions from localStorage cache (no network wait)
-        const cacheKey = 'rx_' + rxChatId + '_' + msgId;
-        let rx = {};
-        try { rx = JSON.parse(localStorage.getItem(cacheKey) || '{}'); } catch(e){}
+        const cacheKey = bzRxKey(rxChatId, msgId);
+        let rx = bzGetRx(rxChatId, msgId);
         rx[currentUser.id] = em;
-        try { localStorage.setItem(cacheKey, JSON.stringify(rx)); } catch(e){}
+        bzSetRx(rxChatId, msgId, rx);
         // Rebuild the reaction row HTML immediately
         const uEm2 = {};
         Object.values(rx).forEach(e2 => { uEm2[e2] = (uEm2[e2]||0)+1; });
@@ -6892,17 +6910,14 @@ EMOJIS.forEach(em => {
                 if (bubble && bubble.dataset && bubble.dataset.msgid === msgId) {
                     const existingRx = m.querySelector('.message-reactions-row');
                     const mc = m.querySelector('.message-content');
+                    if (rxHtml2 && existingRx && existingRx.outerHTML === rxHtml2) return;
                     if (existingRx) { if (rxHtml2) existingRx.outerHTML = rxHtml2; else existingRx.remove(); }
                     else if (mc && rxHtml2) mc.insertAdjacentHTML('beforeend', rxHtml2);
-                    // Re-attach the "who reacted" click handler on every live update — outerHTML wiped the old ones
                     m.querySelectorAll('.reaction-tag').forEach(function(t){
                         t.addEventListener('click', function(e){ e.stopPropagation(); showMessageReactions(msgId); });
                     });
-                    // Force lucide to re-scan so no broken/empty reaction tags linger
-                    if (window.lucide) lucide.createIcons();
                 }
             });
-        lucide.createIcons();
         closeEmoji();
                                 // 2. Firestore save in the background — UI already updated, this just persists
         (async () => {
@@ -6932,27 +6947,44 @@ EMOJIS.forEach(em => {
                         if (!q.empty) rxRef = q.docs[0].ref;
                     }
                 }
-                if (!(await rxRef.get()).exists) { console.log('reaction: message not found, skipped'); return; }
+                const rxDoc = await rxRef.get();
+                if (!rxDoc.exists) {
+                    showToast('error', 'Reaction not saved', 'This message was not found on the server. Reopen the chat and try again.');
+                    return;
+                }
                 // Dot-path update = atomic. Only THIS user's key is touched, so nobody else's
                 // reaction is ever wiped and 50 people reacting at once can't overwrite each other.
-                await rxRef.update({ ['reactions.' + rxUid]: em });
+                try {
+                    await rxRef.update({ ['reactions.' + rxUid]: em });
+                } catch (e1) {
+                    // some rule sets allow create but not update — merge-set is the fallback
+                    await rxRef.set({ reactions: Object.assign({}, (rxDoc.data().reactions || {}), { [rxUid]: em }) }, { merge: true });
+                }
+                // Confirm it really landed — no more silent undo
+                const rxCheck = await rxRef.get();
+                const rxSaved = (rxCheck.data() && rxCheck.data().reactions) || {};
+                if (rxSaved[rxUid] !== em) {
+                    showToast('error', 'Reaction not saved', 'Your database is blocking this write. Read the rules note under these steps.');
+                    return;
+                }
+                bzSetRx(rxChatId, rxRef.id, Object.assign({}, rxSaved));
 
 
                 // 3. UPDATE the message cache so reactions survive app restart
-                const cachedMsgs = getMsgs(currentChatId);
-                const idx = cachedMsgs.findIndex(m => m.id === realId || m.id === msgId);
+                const cachedMsgs = getMsgs(rxChatId);
+                const idx = cachedMsgs.findIndex(m => m.id === realId || m.id === msgId || m.id === rxRef.id);
                 if (idx >= 0) {
                     cachedMsgs[idx].reactions = cachedMsgs[idx].reactions || {};
-                    cachedMsgs[idx].reactions[currentUser.id] = em;
-                    cachedMsgs[idx].id = realId; // make sure the cache uses the real id
-                    saveMsgs(currentChatId, cachedMsgs);
+                    cachedMsgs[idx].reactions[rxUid] = em;
+                    cachedMsgs[idx].id = rxRef.id; // make sure the cache uses the real id
+                    saveMsgs(rxChatId, cachedMsgs);
                 }
 
                 // Force a fresh re-render of this message's reactions from Firestore
                 // (safety net — guarantees group reactions show, not just personal chats)
                 try {
                     var fresh = await rxRef.get();
-                    var frx = (fresh.data() && fresh.data().reactions) || {};
+                    var frx = bzMergeRx(rxChatId, rxRef.id, (fresh.data() && fresh.data().reactions) || {});
                     var fuEm = {};
                     Object.values(frx).forEach(function(e){ fuEm[e] = (fuEm[e]||0)+1; });
                     var frxHtml = Object.keys(fuEm).length > 0 ?
@@ -6962,8 +6994,10 @@ EMOJIS.forEach(em => {
                         if (bubble && bubble.dataset && bubble.dataset.msgid === realId) {
                             var existingRx = m.querySelector('.message-reactions-row');
                             var mcEl = m.querySelector('.message-content');
-                            if (existingRx) { if (frxHtml) existingRx.outerHTML = frxHtml; else existingRx.remove(); }
-                            else if (mcEl && frxHtml) mcEl.insertAdjacentHTML('beforeend', frxHtml);
+                            if (!frxHtml) { if (existingRx) existingRx.remove(); return; }
+                            if (existingRx && existingRx.outerHTML === frxHtml) return;
+                            if (existingRx) existingRx.outerHTML = frxHtml;
+                            else if (mcEl) mcEl.insertAdjacentHTML('beforeend', frxHtml);
                             m.querySelectorAll('.reaction-tag').forEach(function(t){ t.addEventListener('click', function(e){ e.stopPropagation(); showMessageReactions(realId); }); });
                             if (window.lucide) lucide.createIcons();
                         }
@@ -7456,7 +7490,20 @@ if (auth) {
 // ============================================================
 // INITIALIZE DEFAULT DATA
 // ============================================================
-async function initializeApp() {
+function initializeApp() {
+    // Starter people available in memory immediately
+    DEFAULT_USERS.forEach(u => { allUsers[u.id] = u; });
+
+    // Seed ONCE per device, in the BACKGROUND. Before, this re-read 8 users + 13 posts from the
+    // database on EVERY open/login (21 round-trips) before the app or the feed could appear.
+    if (localStorage.getItem('bzSeeded_v2') === '1') return Promise.resolve();
+    bzSeedDefaults()
+        .then(() => localStorage.setItem('bzSeeded_v2', '1'))
+        .catch(e => console.error('Seed skipped:', e));
+    return Promise.resolve();
+}
+
+async function bzSeedDefaults() {
     for (const u of DEFAULT_USERS) {
         const d = await db.collection('users').doc(u.id).get();
         if (!d.exists) await db.collection('users').doc(u.id).set(u);
@@ -9068,8 +9115,8 @@ async function loadMorePosts() {
             if (_olderServed >= _olderPool.length) _postsHasMore = false;
         }
 
+        hidePostsSkeleton();   // always clear the shimmer — an empty or slow feed must never leave skeleton cards on screen
         if (batch.length) {
-            hidePostsSkeleton();
             if (currentViewMode === 'grid') document.getElementById('postsGrid').style.display = 'grid';
             else document.getElementById('postsList').style.display = 'block';
 
@@ -9097,8 +9144,9 @@ async function loadMorePosts() {
         if (currentViewMode === 'grid') { clearTimeout(_gridRebuildTimer); _gridRebuildTimer = setTimeout(function(){ if (currentViewMode === 'grid') buildGridView(); }, 150); }
         injectFeedBanners();
         lucide.createIcons();
-    } catch(e) {
+} catch(e) {
         console.error('Posts load error:', e);
+        if (typeof hidePostsSkeleton === 'function') hidePostsSkeleton();
     }
 
     _postsLoading = false;
@@ -10197,7 +10245,11 @@ async function loadMessages() {
         .orderBy('timestamp', 'asc').limitToLast(MSG_PAGE_SIZE)
         .onSnapshot(snap => {
             if (currentChatId !== chatId) return;
-            const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            const msgs = snap.docs.map(d => {
+                const o = { ...d.data(), id: d.id };
+                o.reactions = bzMergeRx(chatId, d.id, o.reactions || {});   // never drop a reaction this device saved
+                return o;
+            });
             // Merge with older cached messages for the full cache
             if (msgs.length) {
                 const olderCached = getMsgs(chatId).filter(m => _msgOldestTs && m.timestamp < _msgOldestTs);
@@ -10306,28 +10358,88 @@ function hideMessengerLoader() {
 
 let _renderedMsgIds = new Set();
 
+// ===== REACTION CACHE — a tap stays on screen and is never wiped by a refresh =====
+function bzRxKey(chatId, msgId) { return 'rx_' + chatId + '_' + msgId; }
+function bzGetRx(chatId, msgId) {
+    try { return JSON.parse(localStorage.getItem(bzRxKey(chatId, msgId)) || '{}') || {}; } catch (e) { return {}; }
+}
+function bzSetRx(chatId, msgId, map) {
+    try { localStorage.setItem(bzRxKey(chatId, msgId), JSON.stringify(map || {})); } catch (e) {}
+}
+// server data wins, but a reaction this phone already saved is never dropped
+function bzMergeRx(chatId, msgId, serverRx) {
+    if (!chatId || !msgId) return serverRx || {};
+    const local = bzGetRx(chatId, msgId);
+    const merged = Object.assign({}, local, serverRx || {});
+    for (const k in local) {
+        if (!serverRx || serverRx[k] !== local[k]) {
+            try { localStorage.setItem(bzRxKey(chatId, msgId), JSON.stringify(merged)); } catch (e) {}
+            break;
+        }
+    }
+    return merged;
+}
+
+// One builder for a message's reaction row — used by the first paint AND live updates
+function bzReactionsHtml(msg) {
+    const uEm = {};
+    Object.values(msg.reactions || {}).forEach(e => { uEm[e] = (uEm[e] || 0) + 1; });
+    const entries = Object.entries(uEm);
+    if (!entries.length) return '';
+    return `<div class="message-reactions-row">${entries.map(([e, c]) => `<div class="reaction-tag">${e}${c > 1 ? ' ' + c : ''}</div>`).join('')}</div>`;
+}
+
+// Update one on-screen message's reactions in place — does nothing when they already match,
+// so the messenger never flashes, jumps or freezes while a reaction lands.
+function bzSyncMsgReactions(el, msg) {
+    const wrap = el.querySelector('.message-content');
+    if (!wrap) return;
+    const next = bzReactionsHtml(msg);
+    const cur = el.querySelector('.message-reactions-row');
+    if (cur && cur.outerHTML === next) return;
+    if (cur) cur.remove();
+    if (next) wrap.insertAdjacentHTML('beforeend', next);
+    el.querySelectorAll('.reaction-tag').forEach(function (t) {
+        t.addEventListener('click', function (e) { e.stopPropagation(); showMessageReactions(msg.id); });
+    });
+}
+
 function renderMessages(messages, isFull, prepend) {
     const mc = document.getElementById('messagesContainer');
     const wasAtBottom = mc.scrollHeight - mc.scrollTop - mc.clientHeight < 100;
 
-
-    // Full rebuild only on first load or chat switch
+    // Reactions travel WITH their message. Rebuild only when the screen really shows a
+    // different conversation — when the cached paint is this same chat, keep it and bring
+    // the fresh reactions straight into those rows instead of wiping and redrawing.
     if (isFull) {
-        mc.innerHTML = '';
-        _renderedMsgIds = new Set();
+        const incomingKeys = messages.map(m => (m.senderId || '') + '_' + (m.timestamp || 0));
+        const onScreen = Array.from(mc.children).map(el => (el.dataset && el.dataset.msgkey) || '');
+        const continues = onScreen.length > 0 && onScreen.length <= incomingKeys.length &&
+                          onScreen.every((k, i) => k === incomingKeys[i]);
+        if (continues) {
+            for (let i = 0; i < onScreen.length; i++) bzSyncMsgReactions(mc.children[i], messages[i]);
+            messages = messages.slice(onScreen.length);
+        } else {
+            mc.innerHTML = '';
+            _renderedMsgIds = new Set();
+        }
     }
 
     let appendedAny = false;
     messages.forEach(msg => {
         const _msgKey = (msg.senderId||'') + '_' + (msg.timestamp||0);
-                if (_renderedMsgIds.has(_msgKey)) {
-                 // Message already on screen — live-update its reactions row instead of skipping
+        if (_renderedMsgIds.has(_msgKey)) {
+            // Already on screen — sync only its reaction row, no full-document icon re-scan
+            const row = mc.querySelector('[data-msgkey="' + _msgKey + '"]');
+            if (row) bzSyncMsgReactions(row, msg);
+            return;
+        }
+        if (_renderedMsgIds.has(_msgKey)) {
             const reactions = msg.reactions || {};
-            // Force refresh reactions from Firestore so everyone sees them         
             const uEm = {};
-            Object.values(reactions).forEach(e => { uEm[e] = (uEm[e]||0)+1; });
+            Object.values(reactions).forEach(e => { uEm[e] = (uEm[e] || 0) + 1; });
             const newRxHtml = Object.keys(uEm).length > 0
-                ? `<div class="message-reactions-row">${Object.entries(uEm).map(([e,c])=>`<div class="reaction-tag">${e}${c>1?' '+c:''}</div>`).join('')}</div>`
+                ? `<div class="message-reactions-row">${Object.entries(uEm).map(([e, c]) => `<div class="reaction-tag">${e}${c > 1 ? ' ' + c : ''}</div>`).join('')}</div>`
                 : '';
             document.querySelectorAll('#messagesContainer .message').forEach(m => {
                 const bubble = m.querySelector('.message-bubble');
@@ -10336,11 +10448,9 @@ function renderMessages(messages, isFull, prepend) {
                     const mcEl = m.querySelector('.message-content');
                     if (existingRx) { if (newRxHtml) existingRx.outerHTML = newRxHtml; else existingRx.remove(); }
                     else if (mcEl && newRxHtml) mcEl.insertAdjacentHTML('beforeend', newRxHtml);
-                    // Re-attach the "who reacted" click handler on every live update — outerHTML wiped the old ones
-                    m.querySelectorAll('.reaction-tag').forEach(function(t){
-                        t.addEventListener('click', function(e){ e.stopPropagation(); showMessageReactions(msg.id); });
+                    m.querySelectorAll('.reaction-tag').forEach(function (t) {
+                        t.addEventListener('click', function (e) { e.stopPropagation(); showMessageReactions(msg.id); });
                     });
-                    // Force lucide to re-scan so no broken/empty reaction tags linger
                     if (window.lucide) lucide.createIcons();
                 }
             });
@@ -10350,9 +10460,10 @@ function renderMessages(messages, isFull, prepend) {
         appendedAny = true;
 
         const div = document.createElement('div');
+        div.dataset.msgkey = _msgKey;
         if (msg.isSystem) {
             div.style.cssText = 'text-align:center;padding:4px 0;';
-               div.innerHTML = `<span style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;">${msg.text}</span>`;
+            div.innerHTML = `<span style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;">${msg.text}</span>`;
             prepend ? mc.insertBefore(div, mc.firstChild) : mc.appendChild(div);
             return;
         }
@@ -10364,7 +10475,7 @@ function renderMessages(messages, isFull, prepend) {
 
         let content = '';
         if (msg.replyTo) content += `<div class="reply-preview" style="background:rgba(15,23,42,0.06);border-left:3px solid #1e3a5f;border-radius:6px;padding:4px 8px;margin-bottom:4px;"><i data-lucide="corner-down-right" style="color:#000000;"></i><span class="reply-preview-text" style="color:#000000;font-size:12px;font-weight:600;">${msg.replyTo}</span></div>`;
-        if (msg.images?.length > 0) content += `<div class="message-images" style="margin-bottom:${msg.text?'4px':'0'};">${msg.images.map(i => `<img src="${i}" class="message-image" data-img="${i}">`).join('')}</div>`;
+        if (msg.images?.length > 0) content += `<div class="message-images" style="margin-bottom:${msg.text ? '4px' : '0'};">${msg.images.map(i => `<img src="${i}" class="message-image" data-img="${i}">`).join('')}</div>`;
         if (msg.text) content += `<div class="message-text" style="margin-top:0;">${formatMsgText(msg.text)}</div>`;
         if (msg.files?.length > 0) msg.files.forEach(f => { content += `<div class="message-file" data-url="${f.url}" data-name="${f.name}"><i data-lucide="file-text"></i><div class="file-info"><div class="file-name">${f.name}</div><div class="file-size">${fmtSize(f.size)}</div></div></div>`; });
 
@@ -10397,14 +10508,13 @@ function renderMessages(messages, isFull, prepend) {
 
         const bubble = div.querySelector('.message-bubble');
         attachMsgInteractions(bubble, msg);
-        div.querySelectorAll('.reaction-tag').forEach(t => t.addEventListener('click', function(e){ e.stopPropagation(); showMessageReactions(msg.id); }));
+        div.querySelectorAll('.reaction-tag').forEach(t => t.addEventListener('click', function (e) { e.stopPropagation(); showMessageReactions(msg.id); }));
         div.querySelectorAll('.message-image').forEach(img => attachImgInteractions(img, msg));
         div.querySelectorAll('.message-file').forEach(f => f.addEventListener('click', () => dlFile(f.dataset.url, f.dataset.name)));
         div.querySelectorAll('.voice-play-btn').forEach(b => b.addEventListener('click', () => playVoice(b.dataset.voice, b)));
-                prepend ? mc.insertBefore(div, mc.firstChild) : mc.appendChild(div);
+        prepend ? mc.insertBefore(div, mc.firstChild) : mc.appendChild(div);
     });
 
-    // Only run lucide.createIcons if we actually added new elements
     if (appendedAny) lucide.createIcons();
     if (wasAtBottom && !prepend) mc.scrollTop = mc.scrollHeight;
 }
@@ -10641,16 +10751,18 @@ async function sendMessage() {
 
 
 
-    // Persist to Firestore, then SWAP the temp id for the real one so reactions/deletes work
-    db.collection('chats').doc(currentChatId).collection('messages').add(msg)
+        // Persist to Firestore, then SWAP the temp id for the real one so reactions/deletes work
+    // Never store the optimistic "temp_" id inside the document — on read it overwrote the real doc id.
+    const _msgToSave = Object.assign({}, msg); delete _msgToSave.id;
+    db.collection('chats').doc(currentChatId).collection('messages').add(_msgToSave)
         .then(function(docRef) {
             // Replace the temp bubble's msgid with the real Firestore id
             const realId = docRef.id;
             document.querySelectorAll('#messagesContainer .message-bubble[data-msgid="' + _optimisticKey + '"]')
                 .forEach(function(b){ b.dataset.msgid = realId; });
-            // Update the rendered-id tracker so live updates don't duplicate
-            const oldKey = (msg.senderId||'') + '_' + (msg.timestamp||0);
-            _renderedMsgIds.delete(oldKey);
+       // KEEP the rendered-id key. Deleting it made the next live snapshot believe this
+            // message was new, so it was drawn a second time at the bottom (the double copy).
+            _renderedMsgIds.add((msg.senderId||'') + '_' + (msg.timestamp||0));
         })
         .catch(function(e){
             console.log('msg send error', e);
@@ -13559,6 +13671,37 @@ setInterval(() => purgeOldData(false), 6 * 60 * 60 * 1000);
 
 
 
+(function () {
+          var SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
+          var rendered = false;
+          function render() {
+            if (rendered || !window.grecaptcha || !grecaptcha.render) return;
+            var box = document.getElementById('bzSignupCaptcha');
+            if (!box) return;
+            grecaptcha.render(box, { sitekey: SITE_KEY, theme: 'light' });
+            rendered = true;
+          }
+          window.bzRecaptchaOnload = window.bzRecaptchaOnload || render;
+          var tries = 0;
+          var timer = setInterval(function () {
+            render();
+            if (rendered || ++tries > 40) clearInterval(timer);
+          }, 250);
+          document.getElementById('signupForm').addEventListener('submit', function (e) {
+            var token = window.grecaptcha && grecaptcha.getResponse ? grecaptcha.getResponse() : '';
+            if (token) return;
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var err = document.getElementById('bzSignupCaptchaError');
+            if (err) {
+              err.textContent = 'Please tick the reCAPTCHA box before creating your account.';
+              err.classList.add('show');
+            }
+          }, true);
+        })();
+
+
+
 
 
 //SYSTEM FOR HIDING BAD FACEBOOK CHAOS POSTS
@@ -14881,10 +15024,10 @@ function bzEditDisplayCount() {
 })();
 
 // Hook into openPostMgmt so the dashboard loads with it
-const _origOpenPostMgmt2 = openPostMgmt;
-openPostMgmt = async function() {
-  await _origOpenPostMgmt2();
-  bzLoadAudienceDashboard();
+const _origOpenPostMgmt2 = (typeof openPostMgmt === 'function') ? openPostMgmt : null;
+window.openPostMgmt = async function() {
+  if (_origOpenPostMgmt2) await _origOpenPostMgmt2();
+  if (typeof bzLoadAudienceDashboard === 'function') bzLoadAudienceDashboard();
 };
 
 // ===== BEELZECHAT ADS HUB LOGIC =====
