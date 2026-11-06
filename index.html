@@ -10,9 +10,9 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://www.google.com/recaptcha/api.js?render=explicit&onload=bzRecaptchaOnload" async defer></script>
 <script>
-var _loginRecaptchaId=null;
-function renderLoginRecaptcha(){if(_loginRecaptchaId!==null)return;if(location.hostname==='localhost'||location.hostname==='127.0.0.1'||location.protocol==='file:'){_loginRecaptchaId='local-dev';return;}if(typeof grecaptcha==='undefined'||!grecaptcha.render)return;var box=document.getElementById('loginRecaptcha');if(!box||box.offsetParent===null)return;try{_loginRecaptchaId=grecaptcha.render(box,{sitekey:'6LfYH40tAAAAAMlU_jZm94JNZ821uD7vMLWDxYgm'});}catch(e){}}
-window.bzRecaptchaOnload=function(){var iv=setInterval(function(){if(_loginRecaptchaId!==null){clearInterval(iv);return;}renderLoginRecaptcha();if(_loginRecaptchaId!==null)clearInterval(iv);},400);};
+/* reCAPTCHA protects ACCOUNT CREATION ONLY. The signup renderer below
+   replaces this stub. Nothing renders on the sign-in form. */
+window.bzRecaptchaOnload = window.bzRecaptchaOnload || function () {};
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-00EPZJGG4T"></script>
 <script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);} gtag('js', new Date());gtag('config', 'G-00EPZJGG4T');</script>
@@ -459,10 +459,24 @@ function coverBroken(img) {
   if (!window.lucide || lucide._bzSafe) return;
   var _orig = lucide.createIcons.bind(lucide);
   lucide._bzSafe = true;
-  lucide.createIcons = function(){
+  lucide.createIcons = function(opts){
     var el = document.activeElement;
-    if (el && (el.tagName==='INPUT' || el.tagName==='TEXTAREA' || el.isContentEditable)) return;
-    return _orig.apply(this, arguments);
+    var typing = el && (el.tagName==='INPUT' || el.tagName==='TEXTAREA' || el.isContentEditable);
+    if (!typing) return _orig.apply(this, arguments);
+    // Keyboard is open. Drawing the whole page would reset it, so draw only the icons
+    // that live OUTSIDE the field being typed in — feed buttons still appear at once.
+    var scope = (opts && opts.root) || document;
+    var pend = scope.querySelectorAll('i[data-lucide]');
+    var done = [];
+    for (var i = 0; i < pend.length; i++) {
+      var node = pend[i];
+      if (node.contains(el)) continue;
+      var holder = node.parentElement;
+      if (!holder || holder === el || holder.contains(el)) continue;
+      if (done.indexOf(holder) !== -1) continue;
+      done.push(holder);
+      try { _orig({ root: holder }); } catch (e) {}
+    }
   };
 })();
 
@@ -4158,13 +4172,6 @@ form input[type="text"] {
       </div>
       
   
-      
-            
-
-
-
-      <!-- reCAPTCHA (sign in) -->
-      <div id="loginRecaptcha" class="g-recaptcha" style="display:flex;justify-content:center;margin:10px 0 4px;"></div>
 
 <!-- Privacy policy consent checkbox -->
       <label style="display:flex;align-items:flex-start;gap:8px;margin:10px 0;font-size:13px;color:#475569;cursor:pointer;">
@@ -4173,11 +4180,9 @@ form input[type="text"] {
         <span>I have read and accept the <a href="https://privacypolicy.beelzechat.co.za" target="_blank" rel="noopener" onclick="event.stopPropagation();" style="color:#3F51B5;text-decoration:underline;font-weight:700;">Privacy Policy &amp; Terms</a>. I confirm I am 20 years or older.</span>
       </label>
 
-      <!-- reCAPTCHA "I'm not a bot" box — the engine renders the widget here when login is visible -->
-      <div id="loginRecaptcha" style="margin:10px 0 14px;display:flex;justify-content:center;min-height:78px;"></div>
+     
 
             <!-- Primary purple CTA -->
-            <div id="loginRecaptcha" style="margin-bottom:12px;display:flex;justify-content:center;"></div>
             <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="background:#3F51B5;color:#fff;border:1px solid #3F51B5;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.25);width:100%;">
         <i data-lucide="crown" style="width:20px;height:20px;color:#fff;stroke-width:1.5;"></i>
         Log in
@@ -4229,8 +4234,7 @@ form input[type="text"] {
           </button>
         </div>
       </div>
-            <!-- reCAPTCHA (create account) -->
-      <div id="signupRecaptcha" class="g-recaptcha" style="display:flex;justify-content:center;margin:10px 0 4px;"></div>
+            
 
       <button type="submit" class="btn btn-primary" id="signupSubmitBtn" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);width:100%;">
         <i data-lucide="user-check" style="width:20px;height:20px;"></i>
@@ -6237,15 +6241,7 @@ function closeAuthScreen() {
 }
 
 
-// Self-start fallback — recaptcha's onload can fire BEFORE this script runs
-// (async+defer race), which logs "couldn't find user-provided function".
-// This kicks the same poller ourselves so the widget still renders the moment
-// the login box becomes visible.
-setTimeout(function () {
-    if (_loginRecaptchaId === null && typeof grecaptcha !== 'undefined' && grecaptcha.render) {
-        window.bzRecaptchaOnload();
-    }
-}, 1200);
+
 
 // ============================================================
 // SKELETON LOADERS (YouTube-style shimmer)
@@ -6388,25 +6384,32 @@ function showLoadingScreen(force) {
     if (rb) rb.style.width = '0%';
     if (rp) rp.textContent = '0%';
     if (ipb) ipb.style.width = '0%';
-    if (ipt) ipt.textContent = 'Loading...';
+    if (ipt) ipt.textContent = 'Starting…';
     if (window._loadingIv) clearInterval(window._loadingIv);
+    // 100% is ONLY ever written by finishLoading(). Here the bar climbs toward the
+    // last REAL step (setLoadingPct) — never a random run to the end.
+    window._bzLoadCap = 5;
     let _pct = 0;
     window._loadingIv = setInterval(() => {
-        if (_pct < 30) _pct += Math.random() * 8;
-        else if (_pct < 60) _pct += Math.random() * 5;
-        else if (_pct < 85) _pct += Math.random() * 3;
-        else if (_pct < 95) _pct += Math.random() * 1.5;
-        else if (_pct < 99) _pct += 0.2;
-        _pct = Math.min(_pct, 99);
+        const cap = Math.max(5, Math.min(window._bzLoadCap || 90, 99));
+        if (_pct < cap) _pct = Math.min(cap, _pct + Math.max(0.4, (cap - _pct) * 0.18));
         const v = Math.floor(_pct);
         if (rb) rb.style.width = v + '%';
         if (rp) rp.textContent = v + '%';
         if (ipb) ipb.style.width = v + '%';
         if (ipt) ipt.textContent = 'Loading ' + v + '%';
-    }, 200);
+    }, 120);
     clearTimeout(window._loadingSafety);
-    window._loadingSafety = setTimeout(() => window.finishLoading && window.finishLoading(), 8000);
+    // Safety net only — must never fire on a normal signup.
+    window._loadingSafety = setTimeout(() => window.finishLoading && window.finishLoading(), 25000);
 }
+
+// Real progress report — call it at each real step of creating/loading an account.
+window.setLoadingPct = function(pct, text) {
+    window._bzLoadCap = Math.max(0, Math.min(pct, 99));
+    if (text) { const st = document.getElementById('loadingStatusText'); if (st) st.textContent = text; }
+};
+window.loadingStep = window.setLoadingPct;
 
 window.finishLoading = function() {
     if (window._loadingIv) { clearInterval(window._loadingIv); window._loadingIv = null; }
@@ -7603,7 +7606,8 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     _ls.style.display = 'flex';
     _ls.classList.remove('hide');
     document.getElementById('authScreen').style.display = 'none';
-    showLoadingScreen();
+    showLoadingScreen(true);                      // force a real 0% restart
+    window.setLoadingPct(10, 'Creating your account…');
     window._bzSignupPending = true;
 
     try {
@@ -13674,21 +13678,24 @@ setInterval(() => purgeOldData(false), 6 * 60 * 60 * 1000);
 (function () {
           var SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
           var rendered = false;
+          var widgetId = null;
           function render() {
             if (rendered || !window.grecaptcha || !grecaptcha.render) return;
             var box = document.getElementById('bzSignupCaptcha');
             if (!box) return;
-            grecaptcha.render(box, { sitekey: SITE_KEY, theme: 'light' });
+            widgetId = grecaptcha.render(box, { sitekey: SITE_KEY, theme: 'light' });
             rendered = true;
           }
-          window.bzRecaptchaOnload = window.bzRecaptchaOnload || render;
+          window.bzRecaptchaOnload = render;
           var tries = 0;
           var timer = setInterval(function () {
             render();
             if (rendered || ++tries > 40) clearInterval(timer);
           }, 250);
           document.getElementById('signupForm').addEventListener('submit', function (e) {
-            var token = window.grecaptcha && grecaptcha.getResponse ? grecaptcha.getResponse() : '';
+            // Read the create-account widget by ITS id — never "the first widget on the page".
+            var token = (widgetId !== null && window.grecaptcha && grecaptcha.getResponse)
+              ? grecaptcha.getResponse(widgetId) : '';
             if (token) return;
             e.preventDefault();
             e.stopImmediatePropagation();
