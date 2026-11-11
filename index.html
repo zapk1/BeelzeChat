@@ -557,7 +557,7 @@ function coverBroken(img) {
       "logo": "https://i.postimg.cc/mD0dbHM0/1000287857.png",
       "contactPoint": [
         { "@type": "ContactPoint", "contactType": "customer support", "email": "support@beelzechat.co.za", "areaServed": "ZA", "availableLanguage": ["English"] },
-        { "@type": "ContactPoint", "contactType": "sales", "email": "ads@beelzechat.co.za", "description": "Banner advertising from R690500", "areaServed": "ZA" },        
+        { "@type": "ContactPoint", "contactType": "sales", "email": "ads@beelzechat.co.za", "areaServed": "ZA" },        
         { "@type": "ContactPoint", "contactType": "public relations", "email": "ceo@beelzechat.co.za", "areaServed": "ZA" }
       ]
     },
@@ -566,8 +566,7 @@ function coverBroken(img) {
       "name": "BeelzeChat Banner Advertising",
       "serviceType": "Banner Ads",
       "provider": { "@id": "https://beelzechat.co.za/#org" },
-      "areaServed": "ZA",
-            "offers": { "@type": "Offer", "price": "690500", "priceCurrency": "ZAR", "description": "Banner ads starting from R690500 for 6 months" }
+      "areaServed": "ZA"
     }
   ]
 }
@@ -4209,7 +4208,7 @@ form input[type="text"] {
         <form id="signupForm" class="hidden">
       <div style="text-align:center;margin-bottom:14px;">
         <div id="bzSignupSub" style="font-size:13px;color:#6b7280;font-weight:700;justify-content:center;text-align:center;">
-          <span id="bzSignupSubText">Connection account — R175 / month</span>
+          <span id="bzSignupSubText">Connection Account — R60,000 for 12 months, unlocks after payment</span>
         </div>
       </div>
       <div class="form-group" style="margin-bottom:12px;">
@@ -4808,7 +4807,22 @@ form input[type="text"] {
             <div class="fs-sub">Manage your account</div>
         </div>
         <div style="padding:8px 24px 28px;">
-        <div class="profile-info">
+        <!-- Rich Accounts Earnings -->
+<div id="bzInvestBox" style="margin-bottom:16px;border-radius:16px;padding:16px;text-align:center;border:1px solid #e2e8f0;background:#fff;">
+  <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;">
+    <div style="position:relative;width:30px;height:30px;display:flex;align-items:center;justify-content:center;">
+      <i data-lucide="message-circle" style="position:absolute;inset:0;width:30px;height:30px;color:#0f172a;stroke-width:1;"></i>
+      <i data-lucide="crown" style="position:relative;width:15px;height:15px;color:#dc2626;stroke-width:1;z-index:2;"></i>
+    </div>
+    <div style="font-weight:900;font-size:15px;color:#0f172a;">Rich Accounts Earnings</div>
+  </div>
+  <div id="bzInvestAmount" style="font-weight:900;font-size:26px;color:#0f172a;">R0.00</div>
+  <div id="bzInvestNote" style="font-size:12px;color:#64748b;margin-top:4px;">This box is for Rich Investment Accounts only.</div>
+  <button id="bzInvestPayoutBtn" onclick="bzRequestPayout()" style="width:100%;margin-top:12px;display:none;align-items:center;justify-content:center;gap:7px;background:#dc2626;color:#fff;border:none;border-radius:12px;padding:12px;font-weight:800;font-size:13px;cursor:pointer;">
+    Request a Payout
+  </button>
+</div>
+<div class="profile-info">
             <input type="file" id="profilePicInput" class="file-input" accept="image/*">
             <div class="profile-avatar-large" id="profileAvatarLarge">
                 U
@@ -4942,53 +4956,7 @@ form input[type="text"] {
             <i data-lucide="shield-off" style="width:17px;height:17px;stroke-width:1.5;"></i> Blocked Users
         </button>
      
-                                <!-- ===== BEELZECHAT ADS SECTION (visible to everyone) ===== -->
-<div style="margin-top:18px;background:linear-gradient(135deg,#1a237e,#283593);border-radius:18px;padding:18px;border:1px solid #3949ab;box-shadow:0 8px 24px rgba(26,35,126,0.25);">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-    <div style="width:42px;height:42px;background:white;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
-      <i data-lucide="message-circle-more" style="width:24px;height:24px;color:#1a237e;"></i>
-    </div>
-    <div>
-      <div style="font-weight:800;color:white;font-size:16px;">BeelzeChat Ads</div>
-      <div style="font-size:11px;color:rgba(255,255,255,0.8);">Run Ads. Get Results. Grow Bigger.</div>
-    </div>
-  </div>
-<div style="background:rgba(255,255,255,0.1);border-radius:14px;padding:14px;text-align:center;margin-bottom:12px;">
-    <div style="font-size:12px;color:rgba(255,255,255,0.8);">Run Ads from</div>
-        <div style="font-size:32px;font-weight:900;color:white;letter-spacing:-1px;">R690,500</div>
-    <div style="font-size:12px;color:rgba(255,255,255,0.8);">for 6 Months</div>
-    <div style="margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,0.08);border-radius:10px;padding:8px;">
-      <i data-lucide="calendar-days" style="width:14px;height:14px;color:white;"></i>
-      <span style="font-size:12px;font-weight:700;color:white;">Ads In Daily: R3,836/day</span>
-    </div>
-    <div style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px;">
-      <i data-lucide="users-round" style="width:14px;height:14px;color:#86efac;"></i>
-      <span style="font-size:12px;font-weight:700;color:#86efac;">Reach 2,355,543-5,065,644 Users in 6 Months</span>
-    </div>
-  </div>
-  <div style="background:white;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:14px;">
-    <i data-lucide="building-2" style="width:16px;height:16px;color:#1a237e;"></i>
-    <span style="font-size:12px;font-weight:700;color:#1a237e;">For Big Businesses &amp; Real Enterprises Only</span>
-  </div>
-  <div style="display:flex;gap:8px;margin-bottom:14px;">
-    <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:10px;padding:10px;text-align:center;">
-      <i data-lucide="target" style="width:20px;height:20px;color:white;margin-bottom:4px;"></i>
-      <div style="font-size:10px;font-weight:700;color:white;">Target Audience</div>
-    </div>
-    <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:10px;padding:10px;text-align:center;">
-      <i data-lucide="trending-up" style="width:20px;height:20px;color:white;margin-bottom:4px;"></i>
-      <div style="font-size:10px;font-weight:700;color:white;">More Sales</div>
-    </div>
-    <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:10px;padding:10px;text-align:center;">
-      <i data-lucide="bar-chart-3" style="width:20px;height:20px;color:white;margin-bottom:4px;"></i>
-      <div style="font-size:10px;font-weight:700;color:white;">Real Results</div>
-    </div>
-  </div>
-  <button onclick="openBzAdsHub()" style="width:100%;padding:14px;background:linear-gradient(135deg,#ef4444,#dc2626);color:white;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(220,38,38,0.4);">
-    <i data-lucide="megaphone" style="width:18px;height:18px;"></i> Open BeelzeChat Ads
-  </button>
-  <a href="mailto:ads@beelzechat.co.za" style="display:block;text-align:center;font-size:11px;color:rgba(255,255,255,0.7);margin-top:10px;text-decoration:underline;">Report issues: ads@beelzechat.co.za</a>
-</div>
+                                
 
 <!-- Keep the original business box below -->
 <div style="margin-top:18px;background:#f8fafc;border-radius:14px;padding:14px;border:1px solid #e2e8f0;">
@@ -4996,7 +4964,7 @@ form input[type="text"] {
   <a href="mailto:support@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Support: support@beelzechat.co.za</a>
   <a href="mailto:ads@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Advertise: ads@beelzechat.co.za</a>
   <a href="mailto:ceo@beelzechat.co.za" style="display:block;font-size:13px;color:#3b82f6;margin-bottom:6px;">Owner: ceo@beelzechat.co.za</a>
-     <div style="font-size:12px;color:#475569;margin-top:8px;">Banner ads from <b>R690,500</b> / 6 months • <a href="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
+     <div style="font-size:12px;color:#475569;margin-top:8px;">Advertising enquiries only<a href="https://beelzechat.co.za" style="color:#3b82f6;">beelzechat.co.za</a></div>
   <!-- TERMS & POLICIES BUTTON -->
   <button onclick="document.getElementById('termsModal').classList.add('active');lucide.createIcons();" style="width:100%;margin-top:10px;display:flex;align-items:center;gap:8px;padding:12px 14px;background:#0f172a;color:white;border:none;border-radius:12px;cursor:pointer;font-weight:700;font-size:13px;">
       <i data-lucide="file-text" style="width:18px;height:18px;"></i> Terms &amp; Policies
@@ -5049,7 +5017,7 @@ form input[type="text"] {
             <div style="background:#f8fafc;border-radius:14px;padding:16px;margin-bottom:16px;">
                 <div style="font-weight:800;color:#0f172a;font-size:15px;margin-bottom:10px;">1. Terms &amp; Conditions</div>
                 <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>1.1 Permanent Storage Subscription — R50.00/month:</b> The subscription grants the user permanent storage of uploaded photos for the duration of their active subscription. Payment is monthly in advance via PayFast or EFT. The subscription does not auto-renew — users must manually renew each month.</p>
-                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>1.2 Banner Advertising — R1,000.00/30 days:</b> Advertisers pay upfront for a banner displayed on the platform for 30 consecutive days. The ad is activated within 24 hours of confirmed payment. BeelzeChat reserves the right to reject illegal, offensive, or misleading content.</p>
+                <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>1.2 Banner Advertising:</b> Advertisers pay upfront for a banner displayed on the platform for 30 consecutive days. The ad is activated within 24 hours of confirmed payment. BeelzeChat reserves the right to reject illegal, offensive, or misleading content.</p>
                 <p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:8px;"><b>1.3 User Accounts:</b> Users must be 13 years or older. Users are responsible for their uploaded content. BeelzeChat does not claim ownership of user content.</p>
                 <p style="font-size:13px;color:#334155;line-height:1.6;"><b>1.4 Acceptable Use:</b> Users agree not to upload illegal, copyrighted (without permission), or harmful content. BeelzeChat reserves the right to suspend accounts that violate these terms.</p>
             </div>
@@ -5719,7 +5687,8 @@ form input[type="text"] {
     <div style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch;padding-bottom:4px;">
       <button onclick="selectAllMgmtPosts()" style="display:flex;align-items:center;gap:6px;background:#eff6ff;color:#3b82f6;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="check-square" style="width:15px;height:15px;stroke-width:1.5;"></i> Select All</button>
       <button onclick="bulkDeleteMgmtPosts()" style="display:flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="trash-2" style="width:15px;height:15px;stroke-width:1.5;"></i> Delete Selected</button>
-      <button onclick="openPaidSignups()" style="display:flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="crown" style="width:15px;height:15px;stroke-width:1.5;"></i> Paid Signups</button>
+      <button onclick="bzOpenRichInv()" style="display:flex;align-items:center;justify-content:center;gap:6px;background:#fef2f2;color:#dc2626;border:1px solid #dc2626;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;line-height:1;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="crown" style="width:15px;height:15px;stroke-width:1.5;flex-shrink:0;"></i>Rich Investments</button>
+        <button onclick="openPaidSignups()" style="display:flex;align-items:center;gap:6px;background:#fef2f2;color:#dc2626;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="crown" style="width:15px;height:15px;stroke-width:1.5;"></i> Paid Signups</button>
       <button onclick="openNormalSignups()" style="display:flex;align-items:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="user-plus" style="width:15px;height:15px;stroke-width:1.5;"></i> Signups</button>
       <button onclick="openMktMgmt()" style="display:flex;align-items:center;gap:6px;background:#fff;color:#0f172a;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="store" style="width:15px;height:15px;color:#0f172a;stroke-width:1.5;"></i> Marketplace Products</button>
       <button onclick="openConnectionAccounts()" style="display:flex;align-items:center;gap:6px;background:#0f172a;color:#fff;border:1px solid #0f172a;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;white-space:nowrap;"><i data-lucide="crown" style="width:15px;height:15px;color:#fff;stroke-width:1;"></i> Connection Accounts</button>
@@ -5954,7 +5923,7 @@ form input[type="text"] {
     </div>
     <div>
       <div style="font-weight:900;font-size:18px;color:#0f172a;">Connection Accounts</div>
-      <div style="font-size:12px;color:#1e3a8a;font-weight:700;">R175 / month · paid &amp; unpaid months</div>
+      <div style="font-size:12px;color:#1e3a8a;font-weight:700;">R60,000 / 12 months</div>
     </div>
     <button onclick="document.getElementById('connAccOverlay').style.display='none';document.getElementById('postMgmtOverlay').style.display='flex';" style="margin-left:auto;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:18px;height:18px;color:#0f172a;stroke-width:1;"></i></button>
   </div>
@@ -5968,6 +5937,93 @@ form input[type="text"] {
 
 </div>
 
+<!-- ===== RICH INVESTMENT ACCOUNTS (ADMIN) ===== -->
+<div id="richInvOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:#fff;flex-direction:column;overflow-y:auto;">
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #e2e8f0;background:#fff;position:sticky;top:0;z-index:10;">
+    <div style="position:relative;width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <i data-lucide="message-circle" style="position:absolute;width:36px;height:36px;color:#0f172a;stroke-width:1;"></i>
+      <i data-lucide="crown" style="position:relative;width:18px;height:18px;color:#dc2626;stroke-width:1;z-index:2;"></i>
+    </div>
+    <div>
+      <div style="font-weight:900;font-size:18px;color:#0f172a;">Rich Investment Accounts</div>
+      <div style="font-size:12px;color:#dc2626;font-weight:700;">Credit or reduce earnings</div>
+    </div>
+    <button onclick="document.getElementById('richInvOverlay').style.display='none';" style="margin-left:auto;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
+  </div>
+  <div style="padding:12px 16px;border-bottom:1px solid #e2e8f0;background:#f8fafc;">
+    <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:9px 14px;">
+      <i data-lucide="search" style="width:16px;height:16px;color:#94a3b8;stroke-width:1;"></i>
+      <input id="richInvSearch" type="text" placeholder="Search names..." oninput="bzRenderRichInv()" style="border:none;outline:none;width:100%;font-size:14px;background:transparent;">
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;padding:12px 16px 0;">
+    <button id="bzRichFilterAll" onclick="bzSetRichFilter('all')" style="display:flex;align-items:center;gap:6px;border-radius:10px;padding:9px 14px;font-weight:800;font-size:12px;cursor:pointer;background:#0f172a;color:#fff;border:1px solid #0f172a;flex-shrink:0;white-space:nowrap;">All Accounts</button>
+    <button id="bzRichFilterRich" onclick="bzSetRichFilter('rich')" style="display:flex;align-items:center;gap:6px;border-radius:10px;padding:9px 14px;font-weight:800;font-size:12px;cursor:pointer;background:#fff;color:#0f172a;border:1px solid #e2e8f0;flex-shrink:0;white-space:nowrap;">Rich Only</button>
+    <span id="bzRichCount" style="margin-left:auto;font-size:11px;font-weight:700;color:#64748b;"></span>
+  </div>
+  <div id="richInvList" style="padding:14px 16px 32px;display:flex;flex-direction:column;gap:10px;"></div>
+</div>
+
+<!-- credit / reduce earnings -->
+<div id="richInvEdit" style="display:none;position:fixed;inset:0;z-index:1000000;background:rgba(15,23,42,0.55);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:22px;padding:22px 20px;width:100%;max-width:330px;">
+    <div style="position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;">
+      <i data-lucide="message-circle" style="position:absolute;inset:0;width:44px;height:44px;color:#0f172a;stroke-width:1.5;"></i>
+      <i data-lucide="crown" style="position:relative;width:22px;height:22px;color:#dc2626;stroke-width:1.5;z-index:2;"></i>
+    </div>
+    <div id="richInvEditName" style="font-weight:900;font-size:17px;color:#0f172a;text-align:center;">Account</div>
+    <div style="font-size:12px;color:#64748b;text-align:center;margin:4px 0 14px;">Current: <b id="richInvEditCur">R0.00</b></div>
+    <input id="richInvEditAmount" type="number" min="0" step="0.01" placeholder="Amount (R)" style="width:100%;padding:12px 14px;border:1px solid #e2e8f0;border-radius:12px;font-size:15px;box-sizing:border-box;outline:none;margin-bottom:12px;">
+    <div style="display:flex;gap:10px;">
+      <button onclick="bzApplyRichInv('credit')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:none;border-radius:12px;background:#16a34a;color:#fff;font-weight:800;font-size:13px;cursor:pointer;"><i data-lucide="plus" style="width:15px;height:15px;"></i> Credit</button>
+      <button onclick="bzApplyRichInv('reduce')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:none;border-radius:12px;background:#dc2626;color:#fff;font-weight:800;font-size:13px;cursor:pointer;"><i data-lucide="minus" style="width:15px;height:15px;"></i> Reduce</button>
+    </div>
+    <button onclick="document.getElementById('richInvEdit').style.display='none';" style="width:100%;margin-top:10px;padding:11px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;font-weight:700;font-size:13px;cursor:pointer;">Cancel</button>
+  </div>
+</div>
+
+<!-- member profile (admin) -->
+<div id="bzAdminProfile" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(15,23,42,0.55);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:24px;width:100%;max-width:350px;max-height:88vh;overflow-y:auto;padding:22px 20px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.35);">
+    <button onclick="document.getElementById('bzAdminProfile').style.display='none';" style="position:absolute;top:14px;right:14px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:16px;height:16px;color:#0f172a;"></i></button>
+    <div style="text-align:center;">
+      <div style="position:relative;width:52px;height:52px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+        <i data-lucide="message-circle" style="position:absolute;inset:0;width:52px;height:52px;color:#0f172a;stroke-width:1.5;"></i>
+        <i data-lucide="crown" style="position:relative;width:26px;height:26px;color:#dc2626;stroke-width:1.5;z-index:2;"></i>
+      </div>
+      <div id="bzProfAvatarWrap" style="width:74px;height:74px;border-radius:50%;background:#fef2f2;color:#dc2626;font-weight:900;font-size:28px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;overflow:hidden;border:2px solid #fecaca;"></div>
+      <div id="bzProfName" style="font-weight:900;font-size:18px;color:#0f172a;"></div>
+      <div id="bzProfContact" style="font-size:12px;color:#64748b;margin-top:2px;word-break:break-all;"></div>
+      <div id="bzProfBadge" style="display:inline-block;margin-top:10px;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:800;"></div>
+      <div id="bzProfEarnings" style="font-weight:900;font-size:24px;color:#dc2626;margin-top:14px;"></div>
+      <div style="font-size:10px;color:#94a3b8;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;">Rich Accounts Earnings</div>
+      <div id="bzProfBio" style="font-size:12px;color:#334155;margin-top:12px;line-height:1.5;"></div>
+      <div id="bzProfMeta" style="font-size:11px;color:#94a3b8;margin-top:8px;"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button id="bzProfRichBtn" onclick="bzToggleRichFromProfile()" style="flex:1;padding:12px;border-radius:12px;border:1px solid #e2e8f0;background:#fff;font-weight:800;font-size:12px;cursor:pointer;"></button>
+      <button onclick="bzEditRichInv(window._bzProfId)" style="flex:1;padding:12px;border-radius:12px;border:none;background:#0f172a;color:#fff;font-weight:800;font-size:12px;cursor:pointer;">Earnings</button>
+    </div>
+  </div>
+</div>
+
+<!-- payout request -->
+<div id="bzPayoutModal" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(15,23,42,0.55);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:24px;width:100%;max-width:330px;padding:24px 20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.35);">
+    <div style="position:relative;width:52px;height:52px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+      <i data-lucide="message-circle" style="position:absolute;inset:0;width:52px;height:52px;color:#0f172a;stroke-width:1.5;"></i>
+      <i data-lucide="crown" style="position:relative;width:26px;height:26px;color:#dc2626;stroke-width:1.5;z-index:2;"></i>
+    </div>
+    <div style="font-weight:900;font-size:18px;color:#0f172a;">Request a Payout</div>
+    <div id="bzPayoutBalance" style="font-size:12px;color:#64748b;margin-top:4px;"></div>
+    <div style="font-size:12px;font-weight:800;color:#334155;text-align:left;margin:16px 0 6px;">How much do you want to withdraw?</div>
+    <input id="bzPayoutAmount" type="number" min="0" step="0.01" placeholder="Amount (R)" style="width:100%;padding:13px 14px;border:1px solid #e2e8f0;border-radius:12px;font-size:16px;font-weight:800;box-sizing:border-box;outline:none;text-align:center;">
+    <div id="bzPayoutError" style="font-size:11px;color:#dc2626;font-weight:700;margin-top:6px;min-height:14px;"></div>
+    <button onclick="bzSubmitPayout()" style="width:100%;padding:13px;border:none;border-radius:12px;background:#dc2626;color:#fff;font-weight:800;font-size:14px;cursor:pointer;">Send Payout Request</button>
+    <button onclick="document.getElementById('bzPayoutModal').style.display='none';" style="width:100%;margin-top:8px;padding:11px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;font-weight:700;font-size:13px;cursor:pointer;">Cancel</button>
+  </div>
+</div>
+
 <!-- ===== PAID SIGNUPS DASHBOARD (ADMIN) ===== -->
 <div id="paidSignupsOverlay" style="display:none;position:fixed;inset:0;z-index:999999;background:white;flex-direction:column;overflow-y:auto;">
   <!-- Header -->
@@ -5977,7 +6033,7 @@ form input[type="text"] {
     </button>
     <div>
       <div style="font-weight:900;font-size:18px;color:#0f172a;">Paid Signups</div>
-      <div style="font-size:12px;color:#64748b;">People who paid R3,000 for a Rich Account</div>
+      <div style="font-size:12px;color:#64748b;">People who paid R95,000 for a Rich Investment Account</div>
     </div>
     <button onclick="document.getElementById('paidSignupsOverlay').style.display='none';" style="margin-left:auto;background:#f1f5f9;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
       <i data-lucide="x" style="width:18px;height:18px;"></i>
@@ -7292,7 +7348,7 @@ if (auth) {
                 richVerified: false,
                 accountType: 'connection', connectionAccount: true, connectionLocked: true,
                 lockAfter: Date.now() + 39000,   /* 39s grace — change 39000 to 20000 for 20 seconds */
-                connectionFee: 175, connectionPayments: {}, connectionSince: Date.now()
+                connectionFee: 60000, connectionPayments: {}, connectionSince: Date.now()
             });
             ud = await db.collection('users').doc(firebaseUserId).get();
         }
@@ -7576,7 +7632,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
 
 
 // ===== RICH ACCOUNT SIGNUP — pay R3,000 first, then create the account =====
-const RICH_SUBSCRIPTION_AMOUNT = '3000.00';
+const RICH_SUBSCRIPTION_AMOUNT = '95000.00';
 
 document.getElementById('signupForm').addEventListener('submit', async e => {
     e.preventDefault();
@@ -7591,7 +7647,7 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
 
     // PAID (Rich) — pass through the PayFast URL first; the return handler creates the account after payment
         if (window._bzAccountType === 'paid') {
-        // Paid (Rich) — remember the details, then show the Rich Account Subscription screen
+        // Paid (Rich) — remember the details, then show the Rich Investment Account screen
         // (sliding pictures + full benefits + red Pay button); PayFast comes from ITS button
         localStorage.setItem('bz_pendingRichSignup', JSON.stringify({ name, identifier, password }));
         document.getElementById('authScreen').style.display = 'none';
@@ -7736,11 +7792,14 @@ function showRichAccountPayScreen(name, email) {
 
             <!-- Benefits heading -->
             <div style="font-weight:800;font-size:13px;color:#0f172a;margin-bottom:8px;text-align:center;">
-                The benefits of creating a Rich Account with BeelzeChat
+                The benefits of creating a Rich Investment Account with BeelzeChat
             </div>
 
             <!-- Green-tick benefits (only the listed points) -->
             <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px;">
+                <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">You own shares in BeelzeChat — this is an investment account</span></div>
+                <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">You share in every income this app makes — including ad income</span></div>
+                <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">You can sell advertising on BeelzeChat and keep the money</span></div>
                 <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">Access Dark Market products</span></div>
                 <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">Access Wealthy partners</span></div>
                 <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check-circle" style="width:16px;height:16px;color:#22c55e;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:#334155;line-height:1.4;">Straight to the point — no manipulation</span></div>
@@ -7756,13 +7815,13 @@ function showRichAccountPayScreen(name, email) {
 
             <!-- Pay button with King icon -->
             <button id="richPayBtn" onclick="startRichPayment()" style="width:100%;padding:13px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 18px rgba(220,38,38,0.35);">
-                <i data-lucide="crown" style="width:18px;height:18px;"></i> Pay Rich Account
+                <i data-lucide="crown" style="width:18px;height:18px;"></i> Pay Rich Investment Account
             </button>
 
             <!-- Price + monthly note -->
             <div style="text-align:center;margin-top:10px;">
-                <div style="font-size:20px;font-weight:900;color:#dc2626;">R3,000</div>
-                <div style="font-size:11px;color:#64748b;font-weight:600;margin-top:4px;line-height:1.4;">It takes R3,000 every month to use it and to access the users inside this app.</div>
+                <div style="font-size:20px;font-weight:900;color:#dc2626;">R95,000</div>
+                <div style="font-size:11px;color:#64748b;font-weight:600;margin-top:4px;line-height:1.4;">R95,000 once off — your shares, your share of the app's income, and 12 months of full access.
             </div>
         </div>
     </div>`;
@@ -7804,7 +7863,7 @@ async function startRichPayment() {
             body: JSON.stringify({
                 amount: RICH_SUBSCRIPTION_AMOUNT,
                 itemName: 'BeelzeChat Rich Account Subscription',
-                itemDesc: 'R3,000/month — Rich Account access',
+                itemDesc: 'R95,000 once off — Rich Investment Account access',
                 nameFirst: (pending.name || '').split(' ')[0],
                 email: pending.identifier,
                 orderRef: orderRef
@@ -8062,10 +8121,10 @@ function showSignup() {
     const red = '#dc2626', black = '#0f172a';
     // Title
     const t = document.getElementById('bzSignupTitle');
-    if (t) t.textContent = paid ? 'Create Paid (Rich) Account' : 'Create Connection Account';
+    if (t) t.textContent = paid ? 'Create Rich Investment Account' : 'Create Connection Account';
     // Subtitle text + small logo icon before it (black for free, red crown for paid)
     const st = document.getElementById('bzSignupSubText');
-    if (st) st.textContent = paid ? "Paid account creation cost R3000 once off" : 'Connection account — R175 / month, unlocks after payment';
+    if (st) st.textContent = paid ? "Rich Investment Account — R95,000 once off" : 'Create it now — R60,000 unlocks 12 months';
     // Header logo crown — red for paid, black for free (bubble stays dark)
     const hC = document.getElementById('bzAuthLogoCrown');
     if (hC) hC.style.color = paid ? red : black;
@@ -8106,7 +8165,7 @@ async function startPaidPayFastRedirect(name, email, password) {
             body: JSON.stringify({
                 amount: RICH_SUBSCRIPTION_AMOUNT,
                 itemName: 'BeelzeChat Rich Account Subscription',
-                itemDesc: 'R3,000/month — Rich Account access',
+                itemDesc: 'R95,000 once off — Rich Investment Account access',
                 nameFirst: (name || '').split(' ')[0],
                 email: email,
                 orderRef: orderRef
@@ -11132,6 +11191,7 @@ document.getElementById('profilePhone').textContent = currentUser.phone || 'Not 
         lucide.createIcons();
     });
         document.getElementById('profileModal').classList.add('active');
+        if (window.bzRenderInvestBox) bzRenderInvestBox();
     // Show the Ads section ONLY to admins (post management access)
     const adsSection = document.getElementById('profileAdsSection');
     if (adsSection) adsSection.style.display = (currentUser && currentUser.role === 'admin') ? 'block' : 'none';
@@ -11558,19 +11618,28 @@ window.showAccountChoice = function() {
                 </div>
                 <a onclick="document.getElementById('bzFreePointsFull').style.display='flex';this.style.display='none';" style="display:block;margin-top:8px;font-size:12px;font-weight:800;color:#1d4ed8;cursor:pointer;text-decoration:underline;">Read more…</a>
                 <div id="bzFreePointsFull" style="display:none;flex-direction:column;gap:6px;font-size:13px;color:#334155;margin-top:6px;">
+                    ${bzTick('Licence to use the app for the full 12 months')}
+                    ${bzTick('Run unlimited ads — no limit, for the whole 12 months')}
+                    ${bzTick('Unlimited promotion for your business')}
                     ${bzTick('Pay for storage any time')}
-                    ${bzTick('Pay for ads any time')}
-                    <div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="x" style="width:15px;height:15px;color:#94a3b8;stroke-width:2;flex-shrink:0;margin-top:2px;"></i><span>Cannot run free ads (paid accounts can)</span></div>
-                </div>
-                <button onclick="bzChooseAccount('free');" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Free Account</button>
+                               </div>
+                <button onclick="bzChooseAccount('free');" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Connection Account</button>
             </div>
                         <div style="background:#fff;border:none;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(220,38,38,0.14);">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
                     <div style="width:38px;height:38px;border-radius:10px;background:#fef2f2;display:flex;align-items:center;justify-content:center;"><i data-lucide="crown" style="width:19px;height:19px;color:#dc2626;stroke-width:1.5;"></i></div>
-                    <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Paid (Rich) Account</div>
+                    <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Rich Investment Account</div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#334155;">
-                    ${bzTick('Everything in Free')}
+                  ${bzTick('Licence to use the app for the full 12 months')}
+                  ${bzTick('Run unlimited ads for the whole 12 months — no ad limit')}
+                    ${bzTick('You own shares in BeelzeChat — this is an investment account')}
+${bzTick('You share in every income this app makes — including ad income')}
+${bzTick('You can sell advertising on BeelzeChat and keep the money')}
+${bzTick('Rich Accounts Earnings box on your profile — request payouts any time')}
+${bzTick('Promote your business unlimited')}
+${bzTick('Everything in Free')}
+
                     ${bzTick('Run free ads — one free ad every day')}
                     ${bzTick('No storage fee — permanent storage')}
                     ${bzTick('Account protected from negativity tracking')}
@@ -12345,6 +12414,78 @@ document.getElementById('addAccountBtn').addEventListener('click', async () => {
     }, 1500);
 });
 
+/* ===== RICH ACCOUNTS EARNINGS — PROFILE BOX ===== */
+window.bzRenderInvestBox = async function () {
+  var box = document.getElementById('bzInvestBox');
+  if (!box || !currentUser) return;
+  var amtEl = document.getElementById('bzInvestAmount');
+  var noteEl = document.getElementById('bzInvestNote');
+  var btn = document.getElementById('bzInvestPayoutBtn');
+  var rich = false, amt = 0;
+  try {
+    var docs = [];
+    var mine = await db.collection('users').doc(currentUser.id).get();
+    if (mine.exists) docs.push(mine);
+    var ident = currentUser.identifier || currentUser.email || '';
+    if (ident) {
+      var qs = await db.collection('users').where('identifier', '==', ident).get();
+      qs.docs.forEach(function (x) { docs.push(x); });
+    }
+    docs.forEach(function (x) {
+      var o = x.data() || {};
+      if (o.richVerified === true || o.accountType === 'rich') rich = true;
+      amt = Math.max(amt, Number(o.investmentEarnings || 0));
+    });
+    currentUser.richVerified = rich;
+    currentUser.investmentEarnings = amt;
+    localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
+  } catch (e) {
+    rich = currentUser.richVerified === true || currentUser.accountType === 'rich';
+    amt = Number(currentUser.investmentEarnings || 0);
+  }
+  if (rich) {
+    box.style.background = '#fff';
+    box.style.border = '1px solid #fecaca';
+    amtEl.style.color = '#0f172a';
+    amtEl.textContent = 'R' + amt.toFixed(2);
+    noteEl.textContent = 'Your share of the app income. Payouts are handled by support.';
+    btn.style.display = 'flex';
+  } else {
+    box.style.background = '#f1f5f9';
+    box.style.border = '1px solid #e2e8f0';
+    amtEl.style.color = '#94a3b8';
+    amtEl.textContent = 'R0.00';
+    noteEl.textContent = 'This box is for Rich Investment Accounts only.';
+    btn.style.display = 'none';
+  }
+};
+
+window.bzRequestPayout = function () {
+  if (!currentUser) return;
+  var amt = Number(currentUser.investmentEarnings || 0);
+  document.getElementById('bzPayoutBalance').textContent = 'Available: R' + amt.toFixed(2);
+  document.getElementById('bzPayoutAmount').value = amt > 0 ? amt.toFixed(2) : '';
+  document.getElementById('bzPayoutError').textContent = '';
+  document.getElementById('bzPayoutModal').style.display = 'flex';
+  if (window.lucide) lucide.createIcons();
+};
+
+window.bzSubmitPayout = function () {
+  if (!currentUser) return;
+  var value = parseFloat(document.getElementById('bzPayoutAmount').value || '');
+  var amt = Number(currentUser.investmentEarnings || 0);
+  var err = document.getElementById('bzPayoutError');
+  if (isNaN(value) || value <= 0) { err.textContent = 'Type the amount you want to withdraw.'; return; }
+  if (value > amt) { err.textContent = 'You can withdraw up to R' + amt.toFixed(2) + '.'; return; }
+  var body = 'Hello BeelzeChat Support,\n\nI want to withdraw R' + value.toFixed(2) +
+    ' from my Rich Investment Account earnings.\n\nName: ' + (currentUser.name || '') +
+    '\nAccount email: ' + (currentUser.identifier || '') + '\n\nThank you.';
+  document.getElementById('bzPayoutModal').style.display = 'none';
+  window.location.href = 'mailto:support@beelzechat.co.za?subject=' +
+    encodeURIComponent('Payout request - Rich Investment Account') + '&body=' + encodeURIComponent(body);
+};
+
+
 document.getElementById('logoutBtn').addEventListener('click', () => {
     const modal = document.getElementById('logoutConfirmModal');
     modal.style.display = 'flex';
@@ -12372,7 +12513,8 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
     };
 
 // Sign Another Account — show loading, then show auth screen
-    document.getElementById('logoutSwitchAccount').onclick = async () => {
+    const switchBtn = document.getElementById('logoutSwitchAccount');
+  if (switchBtn) switchBtn.onclick = async () => {
         modal.style.display = 'none';
         document.getElementById('profileModal').classList.remove('active');
         document.getElementById('app').classList.remove('active');
@@ -13746,7 +13888,7 @@ async function checkPostMgmtPw() {
 
 let _mgmtAllPosts = [];
 
-// ===== PAID SIGNUPS DASHBOARD — only people who paid R3,000 for a Rich Account =====
+// ===== PAID SIGNUPS DASHBOARD — only people who paid R95,000 for a Rich Investment Account =====
 let _paidAllRows = [];
 
 async function openPaidSignups() {
@@ -13800,7 +13942,7 @@ function renderPaidSignups(rows) {
   const list = document.getElementById('paidSignupsList');
   list.innerHTML = '';
   if (!rows.length) {
-    list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">No paid signups yet — people who pay R3,000 will appear here.</div>';
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">No paid signups yet — people who pay R95,000 will appear here.</div>';
     return;
   }
   rows.forEach(r => {
@@ -14834,24 +14976,6 @@ function bzShowPostsEndIndicator() {
       </div>
     </div>
 
-    <!-- Price card -->
-    <div style="background:linear-gradient(135deg,#1a237e,#283593);border-radius:18px;padding:20px;text-align:center;margin-bottom:16px;box-shadow:0 8px 24px rgba(26,35,126,0.3);">
-      <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:4px;">Run Ads from</div>
-      <div style="font-size:36px;font-weight:900;color:white;letter-spacing:-1px;">R690,500</div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:14px;">for 6 Months</div>
-      <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:6px;">
-        <i data-lucide="calendar-days" style="width:14px;height:14px;color:white;"></i>
-        <span style="font-size:12px;font-weight:700;color:white;">Ads In Daily: R3,836/day</span>
-      </div>
-      <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px;">
-        <i data-lucide="users-round" style="width:14px;height:14px;color:#86efac;"></i>
-        <span style="font-size:12px;font-weight:700;color:#86efac;">Reach 2,355,543-5,065,644 Users in 6 Months</span>
-      </div>
-      <div style="background:white;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;justify-content:center;">
-        <i data-lucide="building-2" style="width:16px;height:16px;color:#1a237e;"></i>
-        <span style="font-size:12px;font-weight:700;color:#1a237e;">For Big Businesses &amp; Real Enterprises Only</span>
-      </div>
-    </div>
 
     <!-- My Ads (analytics with graphs) -->
     <div style="background:white;border-radius:18px;padding:16px;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,0.06);">
@@ -14887,7 +15011,7 @@ function bzShowPostsEndIndicator() {
       </div>
       <div style="flex:1;color:white;">
         <div style="font-weight:800;font-size:16px;">Submit Your Ad</div>
-        <div style="font-size:11px;opacity:0.85;">R690,500 for 6 Months</div>
+        <div style="font-size:11px;opacity:0.85;">Included with your account</div>
       </div>
       <button onclick="closeBzAdSubmit()" style="background:rgba(255,255,255,0.2);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
         <i data-lucide="x" style="width:18px;height:18px;color:white;"></i>
@@ -15063,6 +15187,7 @@ function closeBzAdsHub() {
 }
 
 function openBzAdSubmit() {
+  showToast('info', 'Ads by BeelzeChat', 'Advertising is arranged directly with BeelzeChat'); return;
   document.getElementById('bzAdSubmitModal').style.display = 'flex';
   _bzAdImages = [];
   document.getElementById('bzAdForm').reset();
@@ -15107,6 +15232,7 @@ function renderBzAdImagesPreview() {
 // Submit + Pay flow (PayFast worker)
 document.getElementById('bzAdForm').addEventListener('submit', async e => {
   e.preventDefault();
+  showToast('info', 'Ads by BeelzeChat', 'Advertising is arranged directly with BeelzeChat'); return;
   if (_bzAdImages.some(i => i === '__loading__')) { showToast('error', 'Wait', 'Pictures still uploading'); return; }
   if (_bzAdImages.length === 0) { showToast('error', 'Pictures required', 'Add at least 1 picture'); return; }
   if (!currentUser) { showToast('error', 'Login', 'Please log in first'); return; }
@@ -15387,8 +15513,8 @@ setTimeout(() => {
         logo(60) +
         '<div style="font-weight:900;font-size:19px;color:' + NAVY + ';margin-top:10px;">Create Account</div>' +
         '<div style="font-size:13px;color:#334155;line-height:1.55;margin:12px 0 16px;text-align:center;">' +
-          '<b>Connection Account</b> — R175 / month. Connects you with jobs, services and hiring — people and businesses that need you.<br><br>' +
-          '<b>Rich Account</b> — R3,000 once off. Connects you with big businesses and lets you run enterprises with free ads.' +
+          '<b><b>Connection Account</b> — R60,000 for 12 months. License to use the app for a full 12 months, unlimited ads, and connect with jobs, services and hiring.<br><br>' +
+          '<b>Rich Investment Account</b> — R95,000 once off. You get shares in BeelzeChat, a share of every income the app makes, the right to sell ads on the app, and your own Rich Accounts Earnings box on your profile.' +
         '</div>' +
         '<button onclick="document.getElementById(\'bzConnGate\').remove();document.body.style.overflow=\'\';showAccountChoice();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:' + NAVY + ';color:#fff;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1;"></i> Create account</button>' +
         '<button onclick="document.getElementById(\'bzConnGate\').remove();document.body.style.overflow=\'\';bzGuestOpenSignIn();" style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:' + BLUE + ';border:1px solid ' + BLUE + ';border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="log-in" style="width:16px;height:16px;color:' + BLUE + ';stroke-width:1;"></i> I already have an account</button>' +
@@ -15425,8 +15551,8 @@ setTimeout(() => {
           '<div>• It connects you to the people, services and jobs you came for.</div>' +
           '<div>• It takes a team to run and maintain it — that team gets paid.</div>' +
         '</div>' +
-        '<div style="font-weight:900;font-size:26px;color:' + NAVY + ';margin:10px 0 2px;">R175<span style="font-size:13px;font-weight:700;color:#64748b;"> / month</span></div>' +
-        '<div style="font-size:12px;color:#64748b;margin-bottom:16px;">Pay R175 to keep it running — your account unlocks as soon as the payment is confirmed.</div>' +
+        '<div style="font-weight:900;font-size:26px;color:' + NAVY + ';margin:10px 0 2px;">R60,000<span style="font-size:13px;font-weight:700;color:#64748b;"> / 12 months</span></div>' +
+        '<div style="font-size:12px;color:#64748b;margin-bottom:16px;">Pay R60,000 for a full 12 months — your account unlocks as soon as payment is confirmed.</div>' +
         '<button onclick="bzConnPay()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:' + NAVY + ';color:#fff;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="credit-card" style="width:16px;height:16px;color:#fff;stroke-width:1;"></i> Pay R175</button>' +
         (locked
           ? '<button onclick="bzConnSignOut()" style="width:100%;margin-top:8px;background:#fff;color:' + BLUE + ';border:1px solid ' + BLUE + ';border-radius:12px;padding:12px;font-weight:800;font-size:13px;cursor:pointer;">Sign out</button>'
@@ -15455,9 +15581,9 @@ setTimeout(() => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: '175.00',
+          amount: '60000.00',
           itemName: 'BeelzeChat Connection Account',
-          itemDesc: 'R175/month — connection account',
+          itemDesc: 'R60,000 / 12 months — connection account',
           nameFirst: (me.name || '').split(' ')[0],
           email: me.identifier || '',
           orderRef: orderRef
@@ -15493,8 +15619,10 @@ setTimeout(() => {
       ref.get().then(function (d) {
         var pays = (d.exists && d.data().connectionPayments) || {};
         var now = new Date();
-        pays[now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0')] = true;
-        return ref.update({ connectionLocked: false, connectionPayments: pays, connectionPaidAt: Date.now() });
+        var year = now.getFullYear();
+        pays[year] = { paid: true, amount: 60000, paidAt: Date.now() };
+        var until = new Date(year + 1, now.getMonth(), now.getDate()).getTime();
+        return ref.update({ connectionLocked: false, connectionPayments: pays, connectionFee: 60000, connectionPaidAt: Date.now(), connectionPaidUntil: until });
       }).then(function () {
         var ov = document.getElementById('bzConnPay'); if (ov) ov.remove();
         lockScroll(false);
@@ -15580,7 +15708,7 @@ setTimeout(() => {
             /* Full = every account in the app. New = only the people recorded under the
          connection account (the R175/month signups). */
       var isConn = function (u) {
-        return u.connectionAccount === true || u.accountType === 'connection' || u.accountType === 'rich' || u.connectionFee === 175;
+        return u.connectionAccount === true || u.accountType === 'connection' || u.accountType === 'rich' || u.connectionFee === 60000;
       };
       var connOnly = (mode === 'new') ? all.filter(isConn) : all;
 
@@ -15598,11 +15726,227 @@ setTimeout(() => {
   }
 
   window.openConnectionAccounts = function () {
-    document.getElementById('connAccOverlay').style.display = 'flex';
-    window.setConnMode(window._connMode || 'all');
-  };
+  document.getElementById('connAccOverlay').style.display = 'flex';
+  window.setConnMode(window._connMode || 'all');
+};
 
-  window._connMode = 'all';
+/* ===== RICH INVESTMENT ACCOUNTS (ADMIN) ===== */
+window._bzRichRows = [];
+window._bzRichEditId = null;
+
+window.bzOpenRichInv = async function () {
+  document.getElementById('postMgmtOverlay').style.display = 'none';
+  document.getElementById('richInvOverlay').style.display = 'flex';
+  document.getElementById('richInvList').innerHTML = '<div style="text-align:center;padding:30px;color:#94a3b8;">Loading accounts...</div>';
+  try {
+    var snap = await db.collection('users').get();
+    window._bzRichRows = snap.docs.map(function (d) {
+      var o = d.data() || {};
+      o.id = d.id;
+      return o;
+    })
+  } catch (e) {
+    document.getElementById('richInvList').innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">Could not load accounts: ' + (e.message || 'unknown error') + '</div>';
+    return;
+  }
+  window.bzRenderRichInv();
+};
+
+window.bzRenderRichInv = function () {
+  var list = document.getElementById('richInvList');
+  if (!list) return;
+  var q = ((document.getElementById('richInvSearch') || {}).value || '').toLowerCase();
+  var rows = (window._bzRichRows || []).filter(function (u) {
+    return (u.name || '').toLowerCase().indexOf(q) > -1;
+  });
+  if (!rows.length) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">No Rich Investment accounts found.</div>';
+    return;
+  }
+  list.innerHTML = rows.map(function (u) {
+    var amt = Number(u.investmentEarnings || 0);
+    return '<div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:12px;">' +
+      '<div style="width:38px;height:38px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center;font-weight:900;color:#dc2626;flex-shrink:0;">' + (u.name || 'U').charAt(0).toUpperCase() + '</div>' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-weight:800;font-size:14px;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (u.name || 'Unnamed') + '</div>' +
+        '<div style="font-size:11px;color:#64748b;">R' + amt.toFixed(2) + '</div>' +
+      '</div>' +
+      '<button data-uid="' + u.id + '" class="bzRichEditBtn" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="pencil" style="width:16px;height:16px;color:#1d4ed8;stroke-width:1;"></i></button>' +
+    '</div>';
+  }).join('');
+  Array.prototype.forEach.call(list.querySelectorAll('.bzRichEditBtn'), function (b) {
+    b.onclick = function () { window.bzEditRichInv(b.getAttribute('data-uid')); };
+  });
+  if (window.lucide) lucide.createIcons();
+};
+
+window.bzEditRichInv = function (uid) {
+  var u = (window._bzRichRows || []).filter(function (r) { return r.id === uid; })[0];
+  if (!u) return;
+  window._bzRichEditId = uid;
+  document.getElementById('richInvEditName').textContent = u.name || 'Account';
+  document.getElementById('richInvEditCur').textContent = 'R' + Number(u.investmentEarnings || 0).toFixed(2);
+  document.getElementById('richInvEditAmount').value = '';
+  document.getElementById('richInvEdit').style.display = 'flex';
+  if (window.lucide) lucide.createIcons();
+};
+
+window.bzApplyRichInv = async function (mode) {
+  var uid = window._bzRichEditId;
+  var u = (window._bzRichRows || []).filter(function (r) { return r.id === uid; })[0];
+  if (!u) return;
+  var amt = parseFloat(document.getElementById('richInvEditAmount').value);
+  if (isNaN(amt) || amt <= 0) { showToast('error', 'Invalid amount', 'Enter an amount bigger than 0'); return; }
+  var cur = Number(u.investmentEarnings || 0);
+  var next = mode === 'reduce' ? Math.max(0, cur - amt) : cur + amt;
+  try {
+    await db.collection('users').doc(uid).update({ investmentEarnings: next, investmentUpdatedAt: Date.now() });
+    u.investmentEarnings = next;
+    document.getElementById('richInvEdit').style.display = 'none';
+    window.bzRenderRichInv();
+    showToast('success', mode === 'reduce' ? 'Balance reduced' : 'Earnings credited', (u.name || 'Account') + ' is now R' + next.toFixed(2));
+  } catch (e) {
+    showToast('error', 'Could not save', e.message || 'Try again');
+  }
+};
+
+  /* ===== RICH INVESTMENT ACCOUNTS — LIST, FILTERS, PROFILE, SWITCH ===== */
+window._bzRichFilter = 'all';
+window._bzProfId = null;
+
+window.bzIsRich = function (u) {
+  return !!(u && (u.richVerified === true || u.accountType === 'rich'));
+};
+
+window.bzSetRichFilter = function (f) {
+  window._bzRichFilter = f;
+  window.bzRenderRichInv();
+};
+
+window.bzRenderRichInv = function () {
+  var list = document.getElementById('richInvList');
+  if (!list) return;
+  var f = window._bzRichFilter || 'all';
+  var allBtn = document.getElementById('bzRichFilterAll');
+  var richBtn = document.getElementById('bzRichFilterRich');
+  if (allBtn) {
+    allBtn.style.background = f === 'all' ? '#0f172a' : '#fff';
+    allBtn.style.color = f === 'all' ? '#fff' : '#0f172a';
+    allBtn.style.border = '1px solid ' + (f === 'all' ? '#0f172a' : '#e2e8f0');
+  }
+  if (richBtn) {
+    richBtn.style.background = f === 'rich' ? '#dc2626' : '#fff';
+    richBtn.style.color = f === 'rich' ? '#fff' : '#0f172a';
+    richBtn.style.border = '1px solid ' + (f === 'rich' ? '#dc2626' : '#e2e8f0');
+  }
+
+  var q = ((document.getElementById('richInvSearch') || {}).value || '').toLowerCase();
+  var all = window._bzRichRows || [];
+  var rows = all.filter(function (u) {
+    if (f === 'rich' && !window.bzIsRich(u)) return false;
+    var hay = ((u.name || '') + ' ' + (u.identifier || u.email || '')).toLowerCase();
+    return hay.indexOf(q) > -1;
+  });
+
+  var countEl = document.getElementById('bzRichCount');
+  if (countEl) countEl.textContent = all.filter(window.bzIsRich).length + ' rich / ' + all.length;
+
+  if (!rows.length) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">No accounts found.</div>';
+    return;
+  }
+
+  list.innerHTML = rows.map(function (u) {
+    var isRich = window.bzIsRich(u);
+    var amt = Number(u.investmentEarnings || 0);
+    var pic = u.profilePic || '';
+    var avatar = pic
+      ? '<img src="' + pic + '" style="width:100%;height:100%;object-fit:cover;">'
+      : (u.name || 'U').charAt(0).toUpperCase();
+    return '<div data-uid="' + u.id + '" class="bzRichRow" style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid ' + (isRich ? '#fecaca' : '#e2e8f0') + ';border-radius:14px;padding:12px;cursor:pointer;">' +
+      '<div style="width:40px;height:40px;border-radius:50%;background:' + (isRich ? '#fef2f2' : '#f1f5f9') + ';color:' + (isRich ? '#dc2626' : '#64748b') + ';display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;flex-shrink:0;">' + avatar + '</div>' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-weight:800;font-size:14px;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (u.name || 'Unnamed') + '</div>' +
+        '<div style="font-size:11px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (u.identifier || u.email || 'no contact') + ' &middot; R' + amt.toFixed(2) + '</div>' +
+      '</div>' +
+      '<div data-uid="' + u.id + '" data-on="' + (isRich ? '1' : '0') + '" class="bzRichSwitch" style="width:44px;height:24px;border-radius:999px;background:' + (isRich ? '#16a34a' : '#cbd5e1') + ';position:relative;flex-shrink:0;cursor:pointer;">' +
+        '<div style="position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.3);transition:transform 0.15s;transform:translateX(' + (isRich ? '20px' : '0') + ');"></div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  Array.prototype.forEach.call(list.querySelectorAll('.bzRichSwitch'), function (sw) {
+    sw.onclick = function (ev) {
+      ev.stopPropagation();
+      window.bzSetRich(sw.getAttribute('data-uid'), sw.getAttribute('data-on') !== '1');
+    };
+  });
+  Array.prototype.forEach.call(list.querySelectorAll('.bzRichRow'), function (row) {
+    row.onclick = function () { window.bzShowUserProfile(row.getAttribute('data-uid')); };
+  });
+  if (window.lucide) lucide.createIcons();
+};
+
+window.bzSetRich = async function (uid, on) {
+  var u = (window._bzRichRows || []).filter(function (r) { return r.id === uid; })[0];
+  if (!u) return;
+  var patch = { richVerified: !!on };
+  if (on) { patch.accountType = 'rich'; }
+  else if (u.accountType === 'rich') { patch.accountType = 'connection'; }
+  try {
+    await db.collection('users').doc(uid).update(patch);
+    for (var k in patch) { u[k] = patch[k]; }
+    if (currentUser && currentUser.id === uid) {
+      currentUser.richVerified = u.richVerified === true;
+      currentUser.accountType = u.accountType;
+      currentUser.investmentEarnings = Number(u.investmentEarnings || 0);
+      localStorage.setItem('sxchatUser', JSON.stringify(currentUser));
+      if (typeof window.bzRenderInvestBox === 'function') window.bzRenderInvestBox();
+    }
+    window.bzRenderRichInv();
+    showToast(on ? 'success' : 'info', on ? 'Marked as Rich' : 'Rich access removed', (u.name || 'Account') + (on ? ' is now a Rich Investment account.' : ' is a normal account again.'));
+  } catch (e) {
+    showToast('error', 'Could not save', e.message || 'Try again');
+  }
+};
+
+window.bzShowUserProfile = function (uid) {
+  var u = (window._bzRichRows || []).filter(function (r) { return r.id === uid; })[0];
+  if (!u) return;
+  window._bzProfId = uid;
+  var isRich = window.bzIsRich(u);
+  var pic = u.profilePic || '';
+  var av = document.getElementById('bzProfAvatarWrap');
+  av.innerHTML = pic ? '<img src="' + pic + '" style="width:100%;height:100%;object-fit:cover;">' : (u.name || 'U').charAt(0).toUpperCase();
+  document.getElementById('bzProfName').textContent = u.name || 'Unnamed';
+  document.getElementById('bzProfContact').textContent = u.identifier || u.email || 'No contact saved';
+  var badge = document.getElementById('bzProfBadge');
+  badge.textContent = isRich ? 'Rich Investment Account' : 'Normal Account';
+  badge.style.background = isRich ? '#fef2f2' : '#f1f5f9';
+  badge.style.color = isRich ? '#dc2626' : '#64748b';
+  document.getElementById('bzProfEarnings').textContent = 'R' + Number(u.investmentEarnings || 0).toFixed(2);
+  document.getElementById('bzProfBio').textContent = u.bio || '';
+  var joined = '';
+  try { joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : ''; } catch (e) {}
+  document.getElementById('bzProfMeta').textContent = joined ? 'Joined ' + joined : '';
+  var btn = document.getElementById('bzProfRichBtn');
+  btn.textContent = isRich ? 'Remove Rich Access' : 'Make Rich Account';
+  btn.style.background = isRich ? '#fff' : '#16a34a';
+  btn.style.color = isRich ? '#dc2626' : '#fff';
+  btn.style.border = '1px solid ' + (isRich ? '#fecaca' : '#16a34a');
+  document.getElementById('bzAdminProfile').style.display = 'flex';
+  if (window.lucide) lucide.createIcons();
+};
+
+window.bzToggleRichFromProfile = async function () {
+  var uid = window._bzProfId;
+  var u = (window._bzRichRows || []).filter(function (r) { return r.id === uid; })[0];
+  if (!u) return;
+  await window.bzSetRich(uid, !window.bzIsRich(u));
+  document.getElementById('bzAdminProfile').style.display = 'none';
+};
+
+window._connMode = 'all';
   window._connSearch = '';
   window.filterConnAccounts = function (t) {
     window._connSearch = (t || '').toLowerCase();
@@ -15656,13 +16000,13 @@ if (!rows || !rows.length) {
           '<div><b>Name:</b> ' + (u.name || '—') + '</div>' +
           '<div><b>Email:</b> ' + (u.identifier || '—') + '</div>' +
           '<div><b>Phone:</b> ' + (u.phone || '—') + '</div>' +
-          '<div><b>Type:</b> ' + (u.richVerified === true ? 'Rich (R3,000 paid)' : (u.accountType || 'connection')) + '</div>' +
+          '<div><b>Type:</b> ' + (u.richVerified === true ? 'Rich Investment (R95,000 paid)' : (u.accountType || 'connection')) + '</div>' +
           '<div><b>Joined:</b> ' + (u.createdAt ? new Date(u.createdAt).toLocaleString() : '—') + '</div>' +
         '</div>' : '') +
         '<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:3px;">' + cells + '</div>' +
         '<div style="display:flex;align-items:center;gap:8px;">' +
           '<i data-lucide="' + (locked ? 'lock' : 'unlock') + '" style="width:15px;height:15px;color:' + NAVY + ';stroke-width:1;"></i>' +
-          '<span style="flex:1;font-size:12px;font-weight:700;color:' + BLUE + ';">Pay R175 signal</span>' +
+          '<span style="flex:1;font-size:12px;font-weight:700;color:' + BLUE + ';">Pay R60,000 signal</span>' +
           '<button onclick="toggleConnLock(\'' + u.id + '\',' + (locked ? 'true' : 'false') + ')" style="background:' + (locked ? NAVY : '#fff') + ';color:' + (locked ? '#fff' : NAVY) + ';border:1px solid ' + NAVY + ';border-radius:10px;padding:8px 14px;font-size:12px;font-weight:800;cursor:pointer;">' + (locked ? 'Unlock' : 'Lock') + '</button>' +
         '</div>';
       list.appendChild(div);
@@ -15695,7 +16039,7 @@ if (!rows || !rows.length) {
       var row = (window._connAccRows || []).filter(function (r) { return r.id === uid; })[0];
       if (row) row.connectionLocked = !locked;
       window.renderConnAccounts(window._connAccRows || []);
-      if (locked) showToast('success', 'Unlocked', 'The Pay R175 popup is gone for this account');
+      if (locked) showToast('success', 'Unlocked', 'The Pay R60,000 popup is gone for this account');
       else showToast('info', 'Lock signal sent', 'They now see the Pay R175 popup');
     } catch (e) { showToast('error', 'Error', e.message || 'Could not update'); }
   };
