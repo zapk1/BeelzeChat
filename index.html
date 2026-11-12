@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=overlays-content, viewport-fit=cover" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, viewport-fit=cover" />
     <title>BeelzeChat — Freedom of Informal, Open to All Rich and Business people</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="https://i.postimg.cc/mD0dbHM0/1000287857.png" type="image/png">
@@ -612,6 +612,32 @@ function coverBroken(img) {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
 }
+/* King logo — colours slide through the crown lines, pure CSS (no JS timer) */
+@keyframes bzKingStopA { 0%, 100% { stop-color: #dc2626; } 33% { stop-color: #f59e0b; } 66% { stop-color: #22c55e; } }
+@keyframes bzKingStopB { 0%, 100% { stop-color: #3b82f6; } 33% { stop-color: #a855f7; } 66% { stop-color: #dc2626; } }
+@keyframes bzKingStopC { 0%, 100% { stop-color: #22c55e; } 33% { stop-color: #3b82f6; } 66% { stop-color: #f59e0b; } }
+.bzKgA { animation: bzKingStopA 6s linear infinite; }
+.bzKgB { animation: bzKingStopB 6s linear infinite; }
+.bzKgC { animation: bzKingStopC 6s linear infinite; }
+.bzKingSvg, .bzKingSvg *, #bzConnGate .lucide-message-circle, #bzConnGate .lucide-message-circle ~ svg { stroke: url(#bzKingGrad) !important; }
+
+/* Choice-screen king logo — colour drifts slowly (minutes, not seconds) */
+@keyframes bzSlowStopA { 0%,100% { stop-color:#dc2626; } 25% { stop-color:#f59e0b; } 50% { stop-color:#22c55e; } 75% { stop-color:#3b82f6; } }
+@keyframes bzSlowStopB { 0%,100% { stop-color:#22c55e; } 25% { stop-color:#dc2626; } 50% { stop-color:#3b82f6; } 75% { stop-color:#a855f7; } }
+@keyframes bzSlowStopC { 0%,100% { stop-color:#3b82f6; } 25% { stop-color:#22c55e; } 50% { stop-color:#a855f7; } 75% { stop-color:#dc2626; } }
+.bzSlowA { animation: bzSlowStopA 300s linear infinite; }
+.bzSlowB { animation: bzSlowStopB 300s linear infinite; }
+.bzSlowC { animation: bzSlowStopC 300s linear infinite; }
+.bzChoiceKing, .bzChoiceKing * { stroke: url(#bzChoiceGrad) !important; }
+
+/* Signup fields — black, big soft curve, thin icon inside each box */
+#signupForm .bzField { position: relative; margin-bottom: 10px; }
+#signupForm .bzField > svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: #0f172a; stroke-width: 1.5; pointer-events: none; }
+#signupForm .bzField input { width: 100%; padding: 13px 14px 13px 38px; border: 1px solid #0f172a; border-radius: 16px; font-size: 14px; background: #fff; color: #111827; box-sizing: border-box; outline: none; }
+#signupForm .bzField input:focus { box-shadow: 0 0 0 3px rgba(15,23,42,0.08); }
+#signupForm .bzField.has-eye input { padding-right: 44px; }
+
+
 /* YouTube-style shimmer effect for skeleton loaders */
     @keyframes shimmer {
     0% { background-position: -468px 0; }
@@ -2983,7 +3009,7 @@ label[for="postImagesInput"].upload-btn {
 }
 #profileModal .profile-name { font-size: 20px !important; font-weight: 800 !important; color: #111827 !important; }
 #profileModal .profile-identifier { color: #6b7280 !important; font-size: 14px !important; margin-top: 2px !important; }
-#profileModal #profileBioDisplay { color: #374151 !important; font-size: 14px !important; }
+#profileModal #profileBioDisplay { color: #374151 !important; font-size: 13.5px !important; line-height: 1.55 !important; white-space: pre-wrap !important; overflow-wrap: anywhere !important; word-break: break-word !important; text-align: center !important; }
 #profileModal .profile-code-box { border-radius: 16px !important; padding: 16px !important; border: 1px solid transparent !important; }
 #profileModal .code-label {
     font-size: 12px !important; font-weight: 700 !important; text-transform: uppercase !important;
@@ -4129,7 +4155,7 @@ form input[type="text"] {
                 <i data-lucide="crown" id="bzAuthLogoCrown" style="position:relative;width:32px;height:32px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
             </div>
       <div class="app-title" style="font-size:24px;font-weight:800;color:#111827;letter-spacing:-0.5px;">Welcome to BeelzeChat</div>
-      <div class="auth-subtitle" style="color:#3F51B5;font-size:13px;margin-top:8px;font-weight:700;">Platform for Uniting and marketing</div>
+      <div class="auth-subtitle" id="bzAuthSubtitle" style="color:#0f172a;font-size:11.5px;margin-top:6px;font-weight:700;">The account for connecting, buying and selling with people.</div>
     </div>
 
         <!-- LOGIN — HTML 2's model (Google + email) -->
@@ -4206,37 +4232,39 @@ form input[type="text"] {
         <!-- SIGNUP (pop-up style) -->
         <!-- SIGNUP — HTML 2's model (free & paid use the same look) -->
         <form id="signupForm" class="hidden">
-      <div style="text-align:center;margin-bottom:14px;">
-        <div id="bzSignupSub" style="font-size:13px;color:#6b7280;font-weight:700;justify-content:center;text-align:center;">
-          <span id="bzSignupSubText">Connection Account — R60,000 for 12 months, unlocks after payment</span>
+      <div style="text-align:center;margin-bottom:10px;">
+        <div id="bzSignupSub" style="font-size:11.5px;color:#0f172a;font-weight:700;justify-content:center;text-align:center;line-height:1.4;">
+          <span id="bzSignupSubText">Connection Account — R1,000 per month</span>
         </div>
       </div>
-      <div class="form-group" style="margin-bottom:12px;">
-        <input type="text" class="form-input" id="signupName" placeholder="Full name" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+      <!-- Sliding pictures — same pictures as the Rich screen -->
+      <div id="bzSignupBelt" style="margin-bottom:14px;"></div>
+      <div class="bzField">
+        <i data-lucide="user" class="bzFieldIcon"></i>
+        <input type="text" class="form-input" id="signupName" placeholder="Full name" required>
       </div>
-      <div class="form-group" style="margin-bottom:12px;">
-        <input type="email" class="form-input" id="signupIdentifier" placeholder="Email" required style="width:100%;padding:13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
+      <div class="bzField">
+        <i data-lucide="mail" class="bzFieldIcon"></i>
+        <input type="email" class="form-input" id="signupIdentifier" placeholder="Email" required>
       </div>
-      <div class="form-group" style="margin-bottom:12px;">
-        <div style="position:relative;">
-          <input type="password" class="form-input" id="signupPassword" placeholder="Create a password" required style="width:100%;padding:13px 44px 13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
-          <button type="button" onclick="togglePw('signupPassword','signupEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
-            <i data-lucide="eye" id="signupEye" style="width:20px;height:20px;color:#9ca3af;"></i>
-          </button>
-        </div>
+      <div class="bzField has-eye">
+        <i data-lucide="lock" class="bzFieldIcon"></i>
+        <input type="password" class="form-input" id="signupPassword" placeholder="Create a password" required>
+        <button type="button" onclick="togglePw('signupPassword','signupEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
+          <i data-lucide="eye" id="signupEye" style="width:19px;height:19px;color:#9ca3af;"></i>
+        </button>
       </div>
-      <div class="form-group" style="margin-bottom:14px;">
-        <div style="position:relative;">
-          <input type="password" class="form-input" id="signupConfirmPassword" placeholder="Confirm password" required style="width:100%;padding:13px 44px 13px 14px;border:1px solid #3F51B5;border-radius:10px;font-size:15px;background:#fff;color:#111827;box-sizing:border-box;">
-          <button type="button" onclick="togglePw('signupConfirmPassword','confirmEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
-            <i data-lucide="eye" id="confirmEye" style="width:20px;height:20px;color:#9ca3af;"></i>
-          </button>
-        </div>
+      <div class="bzField has-eye" style="margin-bottom:14px;">
+        <i data-lucide="shield-check" class="bzFieldIcon"></i>
+        <input type="password" class="form-input" id="signupConfirmPassword" placeholder="Confirm password" required>
+        <button type="button" onclick="togglePw('signupConfirmPassword','confirmEye')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;">
+          <i data-lucide="eye" id="confirmEye" style="width:19px;height:19px;color:#9ca3af;"></i>
+        </button>
       </div>
             
 
-      <button type="submit" class="btn btn-primary" id="signupSubmitBtn" style="background:#3F51B5;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(63,81,181,0.3);width:100%;">
-        <i data-lucide="user-check" style="width:20px;height:20px;"></i>
+      <button type="submit" class="btn btn-primary" id="signupSubmitBtn" style="background:#ffffff;color:#dc2626;border:1px solid #dc2626;border-radius:14px;padding:14px;font-size:15px;font-weight:800;box-shadow:none;width:100%;">
+        <span style="position:relative;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;"><i data-lucide="message-circle" style="position:absolute;inset:0;width:18px;height:18px;color:#dc2626;stroke-width:1;"></i><i data-lucide="crown" style="position:relative;width:9px;height:9px;color:#dc2626;fill:#dc2626;stroke-width:1;z-index:2;"></i></span>
         <span id="bzSignupBtnText">Create account</span>
       </button>
 
@@ -4457,10 +4485,10 @@ form input[type="text"] {
 
 
 <!-- ⚠️ EXPIRY WARNING BANNER (Posts) -->
-<div style="margin:8px 20px 12px;background:linear-gradient(135deg,#dc2626,#ef4444);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 14px rgba(220,38,38,0.25);">
+<div style="margin:8px 20px 12px;background:linear-gradient(135deg,#dc2626,#ef4444);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 4px 14px rgba(220,38,38,0.25);">
     <i data-lucide="alert-triangle" style="width:24px;height:24px;color:white;flex-shrink:0;"></i>
     <div style="flex:1;min-width:0;">
-        <div style="font-weight:800;font-size:13px;color:white;display:flex;align-items:center;gap:5px;">
+        <div style="font-weight:800;font-size:13px;color:white;display:flex;align-items:center;gap:5px;white-space:nowrap;">
             <i data-lucide="clock" style="width:13px;height:13px;"></i> Posts expire in 3 months
         </div>
 <div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">Subscribe for R100/month to keep them forever.</div>
@@ -4780,7 +4808,7 @@ form input[type="text"] {
           
           <!-- SYSTEM FOR WRITING MESSAGES -->
           
-<textarea class="message-input" id="messageInput" placeholder="Write a message" rows="1" autocomplete="on" autocorrect="on" autocapitalize="sentences" spellcheck="true" inputmode="text" style="white-space:nowrap;overflow:hidden;"></textarea>
+<textarea class="message-input" id="messageInput" placeholder="Write a message" rows="1" autocomplete="on" autocorrect="on" autocapitalize="sentences" spellcheck="true" inputmode="text" style="overflow:hidden;"></textarea>
             
             <button class="send-btn" id="sendBtn">
                 <i data-lucide="send"></i>
@@ -4837,8 +4865,8 @@ form input[type="text"] {
                 </button>
             </div>
             <div class="profile-identifier" id="profileIdentifier">user@example.com</div>
-               <div style="display:flex;align-items:center;gap:6px;margin-top:8px;">
-                <span id="profileBioDisplay" style="color:#1e293b;font-size:14px;text-align:center;display:block;width:100%;">Bio loading…</span>
+               <div style="display:flex;align-items:flex-start;justify-content:center;gap:6px;margin-top:8px;width:100%;">
+                <span id="profileBioDisplay" style="color:#1e293b;font-size:13.5px;line-height:1.55;text-align:center;display:block;flex:1;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;">Bio loading…</span>
                 <button onclick="editBio()" style="background:none;border:none;cursor:pointer;"><i data-lucide="pencil" style="width:14px;height:14px;color:#94a3b8;"></i></button>
             </div>
                 </div>
@@ -5923,7 +5951,7 @@ form input[type="text"] {
     </div>
     <div>
       <div style="font-weight:900;font-size:18px;color:#0f172a;">Connection Accounts</div>
-      <div style="font-size:12px;color:#1e3a8a;font-weight:700;">R60,000 / 12 months</div>
+      <div style="font-size:12px;color:#1e3a8a;font-weight:700;">R1,000 / month</div>
     </div>
     <button onclick="document.getElementById('connAccOverlay').style.display='none';document.getElementById('postMgmtOverlay').style.display='flex';" style="margin-left:auto;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i data-lucide="x" style="width:18px;height:18px;color:#0f172a;stroke-width:1;"></i></button>
   </div>
@@ -7076,8 +7104,10 @@ EMOJIS.forEach(em => {
 
 
 let _actMsg = null;
-function showMsgActionBar(msg, e) {
-    _actMsg = msg;
+function showMsgActionBar(msg, e, bubbleEl) {
+    // The bubble's own id is the truth — never the id captured when it was first drawn
+    const liveId = bubbleEl && bubbleEl.dataset ? bubbleEl.dataset.msgid : null;
+    _actMsg = liveId ? Object.assign({}, msg, { id: liveId }) : msg;
     const bar = document.getElementById('msgActionBar');
     bar.style.display = 'flex';
     const del = document.getElementById('mabDelete');
@@ -7128,7 +7158,15 @@ function showMsgActionBar(msg, e) {
             document.getElementById('closeChatBtn').click();
         };
     };
-    setTimeout(() => document.addEventListener('click', ()=>bar.style.display='none', { once:true }), 100);
+        // Outside tap closes the bar — but never the lift-of-finger tap that just opened it
+    setTimeout(() => {
+        const _close = (ev) => {
+            if (bar.contains(ev.target)) return;
+            bar.style.display = 'none';
+            document.removeEventListener('pointerdown', _close, true);
+        };
+        document.addEventListener('pointerdown', _close, true);
+    }, 250);
 }
 
 
@@ -7172,14 +7210,23 @@ function closeEmoji() {
 const delDialog = document.getElementById('deleteDialog');
 document.getElementById('deleteCancelBtn').addEventListener('click', () => { delDialog.classList.remove('active'); msgToDelete = null; });
 document.getElementById('deleteConfirmBtn').addEventListener('click', async () => {
-    if (msgToDelete && currentChatId) {
-        await db.collection('chats').doc(currentChatId).collection('messages').doc(msgToDelete).delete();
-        const cached = getMsgs(currentChatId).filter(m => m.id !== msgToDelete);
-        saveMsgs(currentChatId, cached);
-        showToast('success', 'Deleted', 'Message removed');
-    }
+    const id = msgToDelete, cid = currentChatId;
     delDialog.classList.remove('active');
     msgToDelete = null;
+    if (!id || !cid) return;
+    try {
+        await db.collection('chats').doc(cid).collection('messages').doc(id).delete();
+    } catch (err) {
+        showToast('error', 'Not deleted', 'Check your connection and try again');
+        return;
+    }
+    saveMsgs(cid, getMsgs(cid).filter(m => String(m.id) !== String(id)));
+    // Take the bubble off the screen at once — before, it just stayed there
+    document.querySelectorAll('#messagesContainer .message').forEach(function (m) {
+        const b = m.querySelector('.message-bubble');
+        if (b && String(b.dataset.msgid) === String(id)) m.remove();
+    });
+    showToast('success', 'Deleted', 'Message removed');
 });
 function showDeleteDialog(msgId) { msgToDelete = msgId; delDialog.classList.add('active'); lucide.createIcons(); }
 
@@ -7194,12 +7241,13 @@ function attachMsgInteractions(bubble, msg) {
     let lpTimer = null, touchMoved = false;
     bubble.addEventListener('touchstart', e => {
         touchMoved = false;
-        lpTimer = setTimeout(() => { if (!touchMoved) { showMsgActionBar(msg, e.touches[0]); lpTimer = null; } }, 500);
+        lpTimer = setTimeout(() => { if (!touchMoved) { showMsgActionBar(msg, e.touches[0], bubble); lpTimer = null; } }, 500);
     }, { passive: true });
     bubble.addEventListener('touchmove', () => { touchMoved = true; clearTimeout(lpTimer); }, { passive: true });
     bubble.addEventListener('touchend', () => { if (lpTimer) clearTimeout(lpTimer); });
-    bubble.addEventListener('click', e => { e.stopPropagation(); showMsgActionBar(msg, e); });
-    bubble.addEventListener('contextmenu', e => { e.preventDefault(); showMsgActionBar(msg, e); });
+    bubble.addEventListener('click', e => { e.stopPropagation(); showMsgActionBar(msg, e, bubble); });
+    bubble.addEventListener('contextmenu', e => { e.preventDefault(); showMsgActionBar(msg, e, bubble); });
+
 }
 
 
@@ -7348,7 +7396,7 @@ if (auth) {
                 richVerified: false,
                 accountType: 'connection', connectionAccount: true, connectionLocked: true,
                 lockAfter: Date.now() + 39000,   /* 39s grace — change 39000 to 20000 for 20 seconds */
-                connectionFee: 60000, connectionPayments: {}, connectionSince: Date.now()
+                connectionFee: 1000, connectionPayments: {}, connectionSince: Date.now()
             });
             ud = await db.collection('users').doc(firebaseUserId).get();
         }
@@ -7821,7 +7869,7 @@ function showRichAccountPayScreen(name, email) {
             <!-- Price + monthly note -->
             <div style="text-align:center;margin-top:10px;">
                 <div style="font-size:20px;font-weight:900;color:#dc2626;">R95,000</div>
-                <div style="font-size:11px;color:#64748b;font-weight:600;margin-top:4px;line-height:1.4;">R95,000 once off — your shares, your share of the app's income, and 12 months of full access.
+                <div style="font-size:11px;color:#64748b;font-weight:600;margin-top:4px;line-height:1.4;">R95,000 for 12 months — your shares, your share of the app's income, and full access for the whole 12 months.
             </div>
         </div>
     </div>`;
@@ -7863,7 +7911,7 @@ async function startRichPayment() {
             body: JSON.stringify({
                 amount: RICH_SUBSCRIPTION_AMOUNT,
                 itemName: 'BeelzeChat Rich Account Subscription',
-                itemDesc: 'R95,000 once off — Rich Investment Account access',
+                itemDesc: 'R95,000 for 12 months — Rich Investment Account access',
                 nameFirst: (pending.name || '').split(' ')[0],
                 email: pending.identifier,
                 orderRef: orderRef
@@ -7941,15 +7989,17 @@ function resetRichPayBtn(btn) {
                     userAgent: navigator.userAgent,
                     richVerified: true,            // ← auto-verified as a Rich user
                     richSubscribedAt: Date.now(),
-                    richSubscriptionAmount: 3000,
+                    richSubscriptionAmount: 95000,
                     accountType: 'rich', connectionAccount: true, connectionLocked: true,
-                    lockAfter: Date.now() + 39000,   /* 39s grace — change 39000 to 20000 for 20 seconds */
-                    connectionFee: 175, connectionPayments: {}, connectionSince: Date.now()
+                    richUntil: Date.now() + (365 * 24 * 60 * 60 * 1000),   /* Rich = 12 months of access */
+                    connectionPaidUntil: Date.now() + (365 * 24 * 60 * 60 * 1000),
+                    lockAfter: Date.now() + (365 * 24 * 60 * 60 * 1000),   /* account only locks after the 12 months */
+                    connectionFee: 1000, connectionPayments: {}, connectionSince: Date.now()
                 });
                 // Record the payment in a subscriptions collection for the admin panel
                 await db.collection('richSubscriptions').add({
                     userId, userName: name, userEmail: identifier,
-                    amount: 3000, orderRef: pending.orderRef || '',
+                    amount: 95000, months: 12, orderRef: pending.orderRef || '',
                     paidAt: Date.now(), status: 'paid'
                 });
             } else {
@@ -7957,7 +8007,11 @@ function resetRichPayBtn(btn) {
                 await db.collection('users').doc(userId).update({
                     richVerified: true,
                     richSubscribedAt: Date.now(),
-                    richSubscriptionAmount: 3000
+                    richSubscriptionAmount: 95000,
+                    richUntil: Date.now() + (365 * 24 * 60 * 60 * 1000),
+                    connectionPaidUntil: Date.now() + (365 * 24 * 60 * 60 * 1000),
+                    connectionLocked: true,
+                    lockAfter: Date.now() + (365 * 24 * 60 * 60 * 1000)
                 });
             }
 
@@ -8109,6 +8163,8 @@ function bzChooseAccount(type) {
 function showAuthMain() { showLogin(); }
 function showLogin() {
     window._bzAccountType = 'free';
+    const _hs = document.getElementById('bzAuthSubtitle');
+    if (_hs) _hs.textContent = 'The account for connecting, buying and selling with people.';
     const hC = document.getElementById('bzAuthLogoCrown');
     if (hC) hC.style.color = '#0f172a';
     document.getElementById('loginForm').classList.remove('hidden');
@@ -8124,23 +8180,31 @@ function showSignup() {
     if (t) t.textContent = paid ? 'Create Rich Investment Account' : 'Create Connection Account';
     // Subtitle text + small logo icon before it (black for free, red crown for paid)
     const st = document.getElementById('bzSignupSubText');
-    if (st) st.textContent = paid ? "Rich Investment Account — R95,000 once off" : 'Create it now — R60,000 unlocks 12 months';
+    if (st) st.textContent = paid ? "Rich Investment Account — R95,000 for 12 months" : 'Connection Account — R1,000 per month';
+    // Header line — says what THIS account is actually for
+    const hs = document.getElementById('bzAuthSubtitle');
+    if (hs) hs.textContent = paid
+        ? 'The account for investing and selling advertising.'
+        : 'The account for connecting, buying and selling with people.';
+    // Sliding pictures, sized down
+    const bl = document.getElementById('bzSignupBelt');
+    if (bl && !bl.innerHTML.trim()) bl.innerHTML = bzMiniBelt(44);
     // Header logo crown — red for paid, black for free (bubble stays dark)
     const hC = document.getElementById('bzAuthLogoCrown');
     if (hC) hC.style.color = paid ? red : black;
     // Input borders — red for paid, blue for free
-    const bColor = paid ? red : '#3F51B5';
     ['signupName','signupIdentifier','signupPassword','signupConfirmPassword'].forEach(function(id){
-        const el = document.getElementById(id); if (el) el.style.borderColor = bColor;
+        const el = document.getElementById(id); if (el) el.style.borderColor = '#0f172a';
     });
     // Submit button — red with full logo icon for paid, blue with user-check for free
     const btn = document.getElementById('signupSubmitBtn');
     if (btn) {
-        btn.style.background = paid ? red : '#3F51B5';
-        btn.style.boxShadow = paid ? '0 4px 12px rgba(220,38,38,0.3)' : '0 4px 12px rgba(63,81,181,0.3)';
-        btn.innerHTML = paid
-            ? '<span style="position:relative;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;"><i data-lucide="message-circle" style="position:absolute;width:20px;height:20px;color:#fff;stroke-width:1.5;"></i><i data-lucide="crown" style="position:relative;width:10px;height:10px;color:#fff;stroke-width:1.5;z-index:2;"></i></span><span>Continue to payfast.com</span>'
-            : '<i data-lucide="user-check" style="width:20px;height:20px;"></i><span>Create account</span>';
+                btn.style.background = '#ffffff';
+        btn.style.color = red;
+        btn.style.border = '1px solid ' + red;
+        btn.style.boxShadow = 'none';
+        btn.innerHTML = bzMiniLogo(18) + '<span id="bzSignupBtnText">' +
+            (paid ? 'Continue to payfast.com' : 'Create account') + '</span>';
     }
     document.getElementById('loginForm').classList.add('hidden');
     document.getElementById('signupForm').classList.remove('hidden');
@@ -10622,7 +10686,11 @@ msgInput.style.overflowY = 'auto';
 msgInput.style.resize = 'none';
 // Enter key creates a new line (vertical space) — only the send button sends
 
-document.getElementById('attachmentBtn').addEventListener('click', () => document.getElementById('attachmentOptions').classList.toggle('active'));
+document.getElementById('attachmentBtn').addEventListener('click', () => {
+    const inp = document.getElementById('messageInput');
+    if (inp && document.activeElement === inp) { try { inp.blur(); } catch (e) {} }
+    setTimeout(() => document.getElementById('attachmentOptions').classList.toggle('active'), 60);
+});
 document.querySelectorAll('.attachment-option').forEach(o => o.addEventListener('click', () => {
     const t = o.dataset.type;
     if (t === 'photo') document.getElementById('fileInputPhoto').click();
@@ -10821,6 +10889,7 @@ async function sendMessage() {
         .then(function(docRef) {
             // Replace the temp bubble's msgid with the real Firestore id
             const realId = docRef.id;
+            msg.id = realId; // the tap handlers hold this object — a temp id here made delete/react do nothing
             document.querySelectorAll('#messagesContainer .message-bubble[data-msgid="' + _optimisticKey + '"]')
                 .forEach(function(b){ b.dataset.msgid = realId; });
        // KEEP the rendered-id key. Deleting it made the next live snapshot believe this
@@ -11435,6 +11504,29 @@ function bzBrandLogo(size) {
         <i data-lucide="crown" style="position:relative;width:${Math.round(s * 0.5)}px;height:${Math.round(s * 0.5)}px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
     </div>`;
 }
+// Small sliding belt — exactly the same pictures as the Rich screen, sized down
+// White button artwork — 1px red bubble, red-filled crown, red text
+function bzMiniLogo(sz) {
+    var s = sz || 18, c = '#dc2626';
+    return '<span style="position:relative;width:' + s + 'px;height:' + s + 'px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+        '<i data-lucide="message-circle" style="position:absolute;inset:0;width:' + s + 'px;height:' + s + 'px;color:' + c + ';stroke-width:1;"></i>' +
+        '<i data-lucide="crown" style="position:relative;width:' + Math.round(s * 0.5) + 'px;height:' + Math.round(s * 0.5) + 'px;color:' + c + ';fill:' + c + ';stroke-width:1;z-index:2;"></i>' +
+        '</span>';
+}
+function bzMiniBelt(box) {
+    const s = box || 44;
+    const pics = [
+        'https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/7765672e5_instagram_1790271173897.jpg',
+        'https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/dc8ec6cd2_instagram_1790271182281.jpg',
+        'https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/285401ebb_instagram_1790271177432.jpg',
+        'https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/f85c42a79_instagram_1790271163744.jpg',
+        'https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/df2843057_instagram_1790271121630.jpg'
+        ].map(function (u) {
+        return '<img src="' + u + '" data-bz-covered="1" style="width:' + s + 'px;height:' + s + 'px;object-fit:cover;border-radius:9px;display:block;flex:0 0 auto;background:#f1f5f9;">';
+    }).join('');
+    const set = '<div style="display:flex;gap:4px;padding-right:4px;">' + pics + '</div>';
+    return '<div style="overflow:hidden;max-width:100%;"><div style="display:flex;width:max-content;animation:richPayBeltScroll 28s linear infinite;">' + set + set + '</div></div>';
+}
 function bzTick(t) { return `<div style="display:flex;align-items:flex-start;gap:7px;"><i data-lucide="check" style="width:15px;height:15px;color:#22c55e;stroke-width:2;flex-shrink:0;margin-top:2px;"></i><span>${t}</span></div>`; }
 
 // Centered, smooth, curved gate popup with the King logo (no full-screen blur)
@@ -11600,15 +11692,29 @@ window.showAccountChoice = function() {
     <div style="width:100%;max-width:420px;position:relative;">
         <button onclick="document.getElementById('bzChoiceScreen').remove();" style="position:fixed;top:16px;right:16px;z-index:10;width:38px;height:38px;border-radius:50%;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.08);"><i data-lucide="x" style="width:20px;height:20px;color:#475569;"></i></button>
         <div style="text-align:center;padding:10px 0 18px;">
-            ${bzBrandLogo(56)}
+            <svg width="0" height="0" style="position:absolute;width:0;height:0;" aria-hidden="true"><defs>
+                <linearGradient id="bzChoiceGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="56" y2="56">
+                    <stop offset="0%" class="bzSlowA" stop-color="#dc2626"></stop>
+                    <stop offset="50%" class="bzSlowB" stop-color="#22c55e"></stop>
+                    <stop offset="100%" class="bzSlowC" stop-color="#3b82f6"></stop>
+                </linearGradient>
+            </defs></svg>
+            <div style="position:relative;width:56px;height:56px;margin:0 auto;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="message-circle" class="bzChoiceKing" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;color:#0f172a;stroke-width:1.5;"></i>
+                <i data-lucide="crown" class="bzChoiceKing" style="position:relative;width:28px;height:28px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>
+            </div>
             <div style="font-weight:900;font-size:22px;color:#0f172a;margin-top:8px;">BeelzeChat</div>
             <div style="font-size:13px;color:#64748b;">Choose the account you want</div>
+            <div style="margin-top:12px;">${bzMiniBelt(46)}</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:12px;">
             <div style="background:#fff;border:none;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(15,23,42,0.10);">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
                     <div style="width:38px;height:38px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;"><i data-lucide="crown" style="width:19px;height:19px;color:#1d4ed8;stroke-width:1.5;"></i></div>
-                    <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Connection Account</div>
+                    <div>
+                        <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Connection Account</div>
+                        <div style="font-size:11.5px;color:#1d4ed8;font-weight:800;margin-top:2px;">R1,000 per month — connect, buy and sell</div>
+                    </div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#334155;">
                     ${bzTick('Access People, chat, posts and Marketplace')}
@@ -11618,17 +11724,20 @@ window.showAccountChoice = function() {
                 </div>
                 <a onclick="document.getElementById('bzFreePointsFull').style.display='flex';this.style.display='none';" style="display:block;margin-top:8px;font-size:12px;font-weight:800;color:#1d4ed8;cursor:pointer;text-decoration:underline;">Read more…</a>
                 <div id="bzFreePointsFull" style="display:none;flex-direction:column;gap:6px;font-size:13px;color:#334155;margin-top:6px;">
-                    ${bzTick('Licence to use the app for the full 12 months')}
-                    ${bzTick('Run unlimited ads — no limit, for the whole 12 months')}
+                    ${bzTick('Licence to use the app — one month at a time')}
+                    ${bzTick('Run unlimited ads — no limit, every month')}
                     ${bzTick('Unlimited promotion for your business')}
                     ${bzTick('Pay for storage any time')}
                                </div>
-                <button onclick="bzChooseAccount('free');" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d4ed8;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Connection Account</button>
+                <button onclick="bzChooseAccount('free');" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:1px solid #dc2626;border-radius:14px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;">${bzMiniLogo(18)}<span>Create Connection Account</span></button>
             </div>
                         <div style="background:#fff;border:none;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(220,38,38,0.14);">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
                     <div style="width:38px;height:38px;border-radius:10px;background:#fef2f2;display:flex;align-items:center;justify-content:center;"><i data-lucide="crown" style="width:19px;height:19px;color:#dc2626;stroke-width:1.5;"></i></div>
-                    <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Rich Investment Account</div>
+                    <div>
+                        <div style="font-weight:900;font-size:16px;color:#0f172a;">Create Rich Investment Account</div>
+                        <div style="font-size:11.5px;color:#dc2626;font-weight:800;margin-top:2px;">R95,000 for 12 months — invest and sell advertising</div>
+                    </div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#334155;">
                   ${bzTick('Licence to use the app for the full 12 months')}
@@ -11649,7 +11758,7 @@ ${bzTick('Everything in Free')}
                     ${bzTick('Rich verified badge on your profile')}
                     ${bzTick('Full marketing and uniting platform access')}
                 </div>
-                <button onclick="bzChooseAccount('paid');" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#dc2626;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1.5;"></i> Create Paid Account</button>
+                <button onclick="bzChooseAccount('paid');" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#ffffff;color:#dc2626;border:1px solid #dc2626;border-radius:14px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;">${bzMiniLogo(18)}<span>Create Paid Account</span></button>
             </div>
         </div>
         <button onclick="document.getElementById('bzChoiceScreen').remove();document.getElementById('authScreen').style.display='flex';" style="width:100%;margin-top:14px;padding:12px;border:none;background:none;color:#64748b;font-weight:800;cursor:pointer;">Close</button>
@@ -14773,9 +14882,18 @@ history.pushState(null, '', window.location.href);
   function visH(){ var v = vv(); return v ? v.height : window.innerHeight; }
   function offTop(){ var v = vv(); return v ? v.offsetTop : 0; }
 
+  // Page height while no keyboard is open
+  window._bzNoKbHeight = window.innerHeight;
+  function kbTookLayout(){
+    // The browser already shrank the page for the keyboard. Resizing the chat on top of that
+    // is what froze Gboard (dead suggestions, hidden emoji panel, first letters lost).
+    return window.innerHeight <= (window._bzNoKbHeight || window.innerHeight) - 80;
+  }
+
   function syncChat(){
     var cv = document.getElementById('chatView');
     if(!cv || !cv.classList.contains('active')) return;
+    if(kbTookLayout()) return;
     cv.style.height = visH() + 'px';
     cv.style.top = offTop() + 'px';
     cv.style.bottom = 'auto';
@@ -14797,13 +14915,26 @@ history.pushState(null, '', window.location.href);
   }
   function lift(el){
     syncChat(); syncComments();
-    if(el){ try{ el.scrollIntoView({block:'center', behavior:'instant'}); }catch(e){} }
+    // No scrollIntoView here — it moved the page while the keyboard was opening,
+    // which is what made Gboard die only some of the time
     var mc = document.getElementById('messagesContainer');
     if(mc && document.getElementById('chatView').classList.contains('active')){ try{ mc.scrollTop = mc.scrollHeight; }catch(e){} }
   }
 
+    // The moment the keyboard comes up, the photo/attachment sheet and the emoji picker must close
+  function closeComposerPanels(){
+    var ao = document.getElementById('attachmentOptions');
+    if(ao) ao.classList.remove('active');
+    try{ if(typeof closeEmoji === 'function') closeEmoji(); }catch(e){}
+  }
+  function keyboardUp(){
+    var V = vv();
+    return kbTookLayout() || (V && V.height < window.innerHeight - 100);
+  }
+  function onKeyboardMaybe(){ if(keyboardUp()) closeComposerPanels(); }
+
   var _rafPending = false;
-  function syncChatRaf(){ if(_rafPending) return; _rafPending = true; requestAnimationFrame(function(){ _rafPending = false; syncChat(); }); }
+  function syncChatRaf(){ if(_rafPending) return; _rafPending = true; requestAnimationFrame(function(){ _rafPending = false; syncChat(); onKeyboardMaybe(); }); }
   var v = vv();
   if(v){ v.addEventListener('resize', syncChatRaf); }
   window.addEventListener('resize', syncChatRaf);
@@ -14820,12 +14951,13 @@ history.pushState(null, '', window.location.href);
   var msg = document.getElementById('messageInput');
   if(msg){
     msg.addEventListener('focus', function(){
+      closeComposerPanels();
       if(window._bzPauseImgObs) window._bzPauseImgObs();
       setTimeout(function(){ lift(msg); }, 120);
       setTimeout(function(){
         var V = vv();
         if(V && V.height < window.innerHeight - 20){ syncChat(); }
-        else {
+        else if(!kbTookLayout()) {
           // adjustPan fallback (keyboard didn't shrink the viewport) — reserve ~42% screen height
           var cv = document.getElementById('chatView');
           if(cv && cv.classList.contains('active')){
@@ -14836,7 +14968,13 @@ history.pushState(null, '', window.location.href);
         }
       }, 400);
     });
-    msg.addEventListener('blur', function(){ if(window._bzResumeImgObs) window._bzResumeImgObs(); setTimeout(resetChat, 180); });
+    msg.addEventListener('blur', function(){
+      if(window._bzResumeImgObs) window._bzResumeImgObs();
+      setTimeout(function(){
+        resetChat();
+        setTimeout(function(){ window._bzNoKbHeight = window.innerHeight; }, 150);
+      }, 180);
+    });
   }
 
   // The manual keyboard-lift button (Lucide "keyboard" icon) on the left of the input row
@@ -15502,6 +15640,22 @@ setTimeout(() => {
   function lockScroll(on) { document.body.style.overflow = on ? 'hidden' : ''; }
 
   /* ---- 1. GATE: visitors see blurred content + this popup ---- */
+  var BZ_GATE_IMGS = [
+    'https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/7765672e5_instagram_1790271173897.jpg',
+    'https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/dc8ec6cd2_instagram_1790271182281.jpg',
+    'https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/285401ebb_instagram_1790271177432.jpg',
+    'https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/f85c42a79_instagram_1790271163744.jpg',
+    'https://media.base44.com/images/public/6a29189dea2a5f352c6fea39/df2843057_instagram_1790271121630.jpg'
+  ];
+  function bzGateBelt() {
+    var boxW = 'flex:0 0 auto;width:calc((min(300px, 100vw - 88px) - 6px) / 3);aspect-ratio:1/1;overflow:hidden;border-radius:10px;';
+    var set = BZ_GATE_IMGS.map(function (src) { return '<div style="' + boxW + '"><img src="' + src + '" style="width:100%;height:100%;object-fit:cover;display:block;"></div>'; }).join('');
+    return '<div style="overflow:hidden;border-radius:10px;margin:0 0 14px;background:#f8fafc;">' +
+      '<div style="display:flex;width:max-content;animation:richPayBeltScroll 22s linear infinite;">' +
+      '<div style="display:flex;gap:3px;padding-right:3px;">' + set + '</div>' +
+      '<div style="display:flex;gap:3px;padding-right:3px;">' + set + '</div>' +
+      '</div></div>';
+  }
   window.bzShowConnectionGate = function () {
     if (localStorage.getItem('sxchatUser')) return;
     if (document.getElementById('bzConnGate')) return;
@@ -15510,12 +15664,17 @@ setTimeout(() => {
     ov.style.cssText = 'position:fixed;inset:0;z-index:9999998;background:rgba(15,23,42,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;';
     ov.innerHTML =
       '<div style="background:#fff;border-radius:22px;width:100%;max-width:340px;padding:24px 20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.35);border:1px solid ' + NAVY + ';position:relative;">' +
-        logo(60) +
+                '<svg width="0" height="0" style="position:absolute;width:0;height:0;" aria-hidden="true"><defs><linearGradient id="bzKingGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="24" y2="24"><stop offset="0%" stop-color="#dc2626" class="bzKgA"></stop><stop offset="50%" stop-color="#3b82f6" class="bzKgB"></stop><stop offset="100%" stop-color="#22c55e" class="bzKgC"></stop></linearGradient></defs></svg>' +
+        '<div style="position:relative;width:60px;height:60px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:0 auto;">' +
+          '<i data-lucide="message-circle" class="bzKingSvg" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;color:#0f172a;stroke-width:1.5;"></i>' +
+          '<i data-lucide="crown" class="bzKingSvg" style="position:relative;width:30px;height:30px;color:#0f172a;stroke-width:1.5;z-index:2;"></i>' +
+        '</div>' +
         '<div style="font-weight:900;font-size:19px;color:' + NAVY + ';margin-top:10px;">Create Account</div>' +
         '<div style="font-size:13px;color:#334155;line-height:1.55;margin:12px 0 16px;text-align:center;">' +
-          '<b><b>Connection Account</b> — R60,000 for 12 months. License to use the app for a full 12 months, unlimited ads, and connect with jobs, services and hiring.<br><br>' +
-          '<b>Rich Investment Account</b> — R95,000 once off. You get shares in BeelzeChat, a share of every income the app makes, the right to sell ads on the app, and your own Rich Accounts Earnings box on your profile.' +
+          '<div style="font-size:12.5px;color:#334155;line-height:1.45;text-align:left;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;"><b>Connection Account</b> — R1,000 per month. Full app use, unlimited ads, and connect with jobs, services and hiring.</div>' +
+          '<div style="font-size:12.5px;color:#334155;line-height:1.45;text-align:left;margin-top:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;"><b>Rich Investment Account</b> — R95,000 for 12 months. Shares in BeelzeChat, a share of app income, the right to sell ads, and your own Rich Earnings box.</div>' +
         '</div>' +
+        bzGateBelt() +
         '<button onclick="document.getElementById(\'bzConnGate\').remove();document.body.style.overflow=\'\';showAccountChoice();" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:' + NAVY + ';color:#fff;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="crown" style="width:16px;height:16px;color:#fff;stroke-width:1;"></i> Create account</button>' +
         '<button onclick="document.getElementById(\'bzConnGate\').remove();document.body.style.overflow=\'\';bzGuestOpenSignIn();" style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:' + BLUE + ';border:1px solid ' + BLUE + ';border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="log-in" style="width:16px;height:16px;color:' + BLUE + ';stroke-width:1;"></i> I already have an account</button>' +
         '<button onclick="document.getElementById(\'bzConnGate\').remove();document.body.style.overflow=\'\';bzViewAsGuest();" style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;background:#f8fafc;color:#475569;border:1px solid #cbd5e1;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="eye" style="width:16px;height:16px;color:#475569;stroke-width:1;"></i> View as guest</button>' +
@@ -15532,7 +15691,25 @@ setTimeout(() => {
     document.body.style.overflow = '';
     var g = document.getElementById('bzConnGate'); if (g) g.remove();
     var fab = document.getElementById('bzGateFab'); if (fab) fab.style.display = 'flex';
-    showToast('info', 'Guest mode', 'You can browse Posts and Market. Create an account to like, comment, chat or sell.');
+    bzShowGuestWelcome();
+  };
+
+  /* ---- 1c. GUEST WELCOME — red & white app popup ---- */
+  window.bzShowGuestWelcome = function () {
+    var old = document.getElementById('bzGuestWelcome'); if (old) old.remove();
+    var ov = document.createElement('div');
+    ov.id = 'bzGuestWelcome';
+    ov.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9999990;width:calc(100% - 56px);max-width:258px;';
+    ov.innerHTML =
+      '<div style="position:relative;background:#fff;border:1px solid #fee2e2;border-radius:20px;padding:14px 14px 12px;text-align:center;box-shadow:0 16px 36px rgba(220,38,38,0.16),0 2px 8px rgba(15,23,42,0.06);">' +
+        '<button onclick="document.getElementById(\'bzGuestWelcome\').remove()" style="position:absolute;top:7px;right:7px;width:20px;height:20px;border:none;border-radius:50%;background:#fef2f2;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;"><i data-lucide="x" style="width:11px;height:11px;color:#dc2626;stroke-width:2.8;"></i></button>' +
+        '<img src="https://i.postimg.cc/mD0dbHM0/1000287857.png" style="width:36px;height:36px;border-radius:11px;object-fit:cover;display:block;margin:0 auto 7px;box-shadow:0 4px 12px rgba(220,38,38,0.22);">' +
+        '<div style="font-size:13px;font-weight:900;color:#dc2626;letter-spacing:0.2px;">Guest mode</div>' +
+        '<div style="font-size:11px;color:#64748b;line-height:1.45;margin-top:3px;">Browse Posts &amp; Market. Create an account to like, comment, chat or sell.</div>' +
+        '<button onclick="document.getElementById(\'bzGuestWelcome\').remove();showAccountChoice();" style="width:100%;margin-top:10px;background:#dc2626;color:#fff;border:none;border-radius:999px;padding:8px;font-weight:800;font-size:11.5px;cursor:pointer;">Create account</button>' +
+      '</div>';
+    document.body.appendChild(ov);
+    if (window.lucide) lucide.createIcons();
   };
 
   /* ---- 2. PAY NOTICE: shown after signup, and when admin locks the account ---- */
@@ -15551,8 +15728,8 @@ setTimeout(() => {
           '<div>• It connects you to the people, services and jobs you came for.</div>' +
           '<div>• It takes a team to run and maintain it — that team gets paid.</div>' +
         '</div>' +
-        '<div style="font-weight:900;font-size:26px;color:' + NAVY + ';margin:10px 0 2px;">R60,000<span style="font-size:13px;font-weight:700;color:#64748b;"> / 12 months</span></div>' +
-        '<div style="font-size:12px;color:#64748b;margin-bottom:16px;">Pay R60,000 for a full 12 months — your account unlocks as soon as payment is confirmed.</div>' +
+        '<div style="font-weight:900;font-size:26px;color:' + NAVY + ';margin:10px 0 2px;">R1,000<span style="font-size:13px;font-weight:700;color:#64748b;"> / month</span></div>' +
+        '<div style="font-size:12px;color:#64748b;margin-bottom:16px;">Pay R1,000 for one month — your account unlocks as soon as payment is confirmed.</div>' +
         '<button onclick="bzConnPay()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:' + NAVY + ';color:#fff;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:14px;cursor:pointer;"><i data-lucide="credit-card" style="width:16px;height:16px;color:#fff;stroke-width:1;"></i> Pay R175</button>' +
         (locked
           ? '<button onclick="bzConnSignOut()" style="width:100%;margin-top:8px;background:#fff;color:' + BLUE + ';border:1px solid ' + BLUE + ';border-radius:12px;padding:12px;font-weight:800;font-size:13px;cursor:pointer;">Sign out</button>'
@@ -15581,9 +15758,9 @@ setTimeout(() => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: '60000.00',
+          amount: '1000.00',
           itemName: 'BeelzeChat Connection Account',
-          itemDesc: 'R60,000 / 12 months — connection account',
+          itemDesc: 'R1,000 / month — connection account',
           nameFirst: (me.name || '').split(' ')[0],
           email: me.identifier || '',
           orderRef: orderRef
@@ -15620,9 +15797,9 @@ setTimeout(() => {
         var pays = (d.exists && d.data().connectionPayments) || {};
         var now = new Date();
         var year = now.getFullYear();
-        pays[year] = { paid: true, amount: 60000, paidAt: Date.now() };
-        var until = new Date(year + 1, now.getMonth(), now.getDate()).getTime();
-        return ref.update({ connectionLocked: false, connectionPayments: pays, connectionFee: 60000, connectionPaidAt: Date.now(), connectionPaidUntil: until });
+        pays[now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0')] = { paid: true, amount: 1000, paidAt: Date.now() };
+        var until = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate()).getTime();
+        return ref.update({ connectionLocked: false, connectionPayments: pays, connectionFee: 1000, connectionPaidAt: Date.now(), connectionPaidUntil: until });
       }).then(function () {
         var ov = document.getElementById('bzConnPay'); if (ov) ov.remove();
         lockScroll(false);
@@ -15708,7 +15885,7 @@ setTimeout(() => {
             /* Full = every account in the app. New = only the people recorded under the
          connection account (the R175/month signups). */
       var isConn = function (u) {
-        return u.connectionAccount === true || u.accountType === 'connection' || u.accountType === 'rich' || u.connectionFee === 60000;
+        return u.connectionAccount === true || u.accountType === 'connection' || u.accountType === 'rich' || u.connectionFee === 1000 || u.connectionFee === 60000;
       };
       var connOnly = (mode === 'new') ? all.filter(isConn) : all;
 
@@ -16006,7 +16183,7 @@ if (!rows || !rows.length) {
         '<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:3px;">' + cells + '</div>' +
         '<div style="display:flex;align-items:center;gap:8px;">' +
           '<i data-lucide="' + (locked ? 'lock' : 'unlock') + '" style="width:15px;height:15px;color:' + NAVY + ';stroke-width:1;"></i>' +
-          '<span style="flex:1;font-size:12px;font-weight:700;color:' + BLUE + ';">Pay R60,000 signal</span>' +
+          '<span style="flex:1;font-size:12px;font-weight:700;color:' + BLUE + ';">Pay R1,000 signal</span>' +
           '<button onclick="toggleConnLock(\'' + u.id + '\',' + (locked ? 'true' : 'false') + ')" style="background:' + (locked ? NAVY : '#fff') + ';color:' + (locked ? '#fff' : NAVY) + ';border:1px solid ' + NAVY + ';border-radius:10px;padding:8px 14px;font-size:12px;font-weight:800;cursor:pointer;">' + (locked ? 'Unlock' : 'Lock') + '</button>' +
         '</div>';
       list.appendChild(div);
@@ -16039,7 +16216,7 @@ if (!rows || !rows.length) {
       var row = (window._connAccRows || []).filter(function (r) { return r.id === uid; })[0];
       if (row) row.connectionLocked = !locked;
       window.renderConnAccounts(window._connAccRows || []);
-      if (locked) showToast('success', 'Unlocked', 'The Pay R60,000 popup is gone for this account');
+      if (locked) showToast('success', 'Unlocked', 'The Pay R1,000 popup is gone for this account');
       else showToast('info', 'Lock signal sent', 'They now see the Pay R175 popup');
     } catch (e) { showToast('error', 'Error', e.message || 'Could not update'); }
   };
